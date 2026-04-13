@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biverway — Model A</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:      #08090e;
+  --surf:    #0d0f18;
+  --surf2:   #111420;
+  --line:    #1e2236;
+  --line2:   #262d44;
+  --gold:    #c9973a;
+  --gold-hi: #e8b84b;
+  --gold-lo: #7a5c1e;
+  --green:   #2db882;
+  --red:     #e05050;
+  --amber:   #d4821a;
+  --blue:    #4a8fd4;
+  --dim:     #4a5878;
+  --dim2:    #1a2035;
+  --text:    #d0daf0;
+  --text2:   #7888aa;
+  --text3:   #a0b0cc;
+  --opt-txt: #8898b8;
+  --ref-txt: #44526a;
+  --ref-name:#5a6a84;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");}
+.top-rule{height:1px;background:linear-gradient(90deg,transparent 0%,var(--gold-lo) 20%,var(--gold) 50%,var(--gold-lo) 80%,transparent 100%);}
+.wrap{max-width:660px;margin:0 auto;padding:0 20px;}
+
+/* ── HEADER ── */
+header{padding:28px 0 20px;border-bottom:1px solid var(--line);}
+.hdr{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.brand-eye{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
+.brand-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,7vw,46px);letter-spacing:0.05em;line-height:1;color:#fff;}
+.brand-name span{color:var(--gold);}
+.mode-sw{display:flex;gap:4px;background:var(--surf);border:1px solid var(--line2);border-radius:8px;padding:3px;}
+.msw{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 13px;border-radius:6px;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:all 0.2s;}
+.msw.on-fx{background:rgba(74,143,212,0.15);color:var(--blue);}
+.msw.on-au{background:rgba(201,151,58,0.15);color:var(--gold);}
+.mode-sub{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.1em;margin-top:8px;}
+
+/* ── VERDICT BAR ── */
+.vbar{position:sticky;top:0;z-index:200;background:rgba(8,9,14,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
+.vbar-in{display:flex;align-items:center;gap:10px;padding:10px 20px;}
+.vdot{width:7px;height:7px;border-radius:50%;background:var(--dim2);flex-shrink:0;transition:all 0.3s;}
+.vdot.g{background:var(--green);box-shadow:0 0 8px var(--green);}
+.vdot.au{background:var(--gold);box-shadow:0 0 8px var(--gold);animation:breathe 2s infinite;}
+.vdot.r{background:var(--red);box-shadow:0 0 8px var(--red);}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:0.4}}
+.vtxt{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.04em;flex:1;color:var(--dim);transition:color 0.3s;}
+.fpips{display:flex;gap:4px;align-items:center;}
+.fpip{width:7px;height:7px;border-radius:50%;background:var(--dim2);border:1px solid var(--line2);transition:all 0.25s;}
+.fpip.warn{background:var(--amber);border-color:var(--amber);box-shadow:0 0 5px var(--amber);}
+.fpip.kill{background:var(--red);border-color:var(--red);box-shadow:0 0 5px var(--red);}
+.vbadge{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:0.1em;padding:3px 10px;border-radius:5px;border:1px solid var(--line2);color:var(--dim);transition:all 0.25s;white-space:nowrap;}
+
+/* ── MAIN ── */
+.main{padding:16px 0 80px;}
+
+/* ── SECTION ── */
+.section{margin-bottom:10px;border:1px solid var(--line);border-radius:14px;background:var(--surf);overflow:hidden;}
+.section-hdr{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.section-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.1em;color:var(--text3);}
+.section-tag{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:3px;}
+.st-kill{background:rgba(224,80,80,0.08);color:#c06060;border:1px solid rgba(224,80,80,0.18);}
+.st-zone{background:rgba(201,151,58,0.08);color:var(--gold-lo);border:1px solid rgba(201,151,58,0.18);}
+.st-state{background:rgba(74,143,212,0.06);color:#5880a8;border:1px solid rgba(74,143,212,0.15);}
+.st-ctx{background:rgba(45,184,130,0.06);color:#408868;border:1px solid rgba(45,184,130,0.15);}
+
+/* ── SUBSECTION ── */
+.sub{border-top:1px solid var(--line);overflow:hidden;transition:border-color 0.3s;}
+.sub:first-child{border-top:none;}
+.sub.sk{border-left:3px solid rgba(224,80,80,0.6);}
+.sub.wa{border-left:3px solid rgba(212,130,26,0.5);}
+.sub.pa{border-left:3px solid rgba(45,184,130,0.3);}
+.sub.au{border-left:3px solid rgba(201,151,58,0.4);}
+.sub-hdr{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surf2);}
+.sub-num{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);min-width:20px;letter-spacing:0.06em;}
+.sub-title{font-size:12px;font-weight:600;flex:1;color:var(--text);letter-spacing:0.01em;}
+.sub-tag{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px;}
+.t-kill{background:rgba(224,80,80,0.1);color:var(--red);border:1px solid rgba(224,80,80,0.2);}
+.t-med{background:rgba(212,130,26,0.1);color:var(--amber);border:1px solid rgba(212,130,26,0.2);}
+.t-hist{background:rgba(201,151,58,0.1);color:var(--gold);border:1px solid rgba(201,151,58,0.2);}
+.t-km{background:rgba(224,80,80,0.07);color:#d06060;border:1px solid rgba(224,80,80,0.15);}
+.sub-stat{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.04em;min-width:64px;text-align:right;}
+.sub-body{padding:12px 16px;}
+.sq{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:12px;}
+
+/* ── CHIPS ── */
+input[type="radio"]{display:none;}
+.opts{display:flex;flex-wrap:wrap;gap:7px;}
+.olabel{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;width:100%;margin-top:12px;margin-bottom:3px;padding-top:10px;border-top:1px solid var(--line);}
+.olabel:first-child{margin-top:0;border-top:none;padding-top:0;}
+.opt{display:inline-flex;align-items:center;padding:8px 14px;border-radius:8px;border:1px solid var(--line2);background:var(--bg);cursor:pointer;font-family:'Space Mono',monospace;font-size:10px;color:var(--opt-txt);transition:all 0.15s;user-select:none;line-height:1.3;letter-spacing:0.02em;}
+.opt:hover{color:#fff;border-color:var(--text2);}
+input[type="radio"]:checked+.opt-r  {background:rgba(224,80,80,0.12);border-color:rgba(224,80,80,0.55);color:#f08080;}
+input[type="radio"]:checked+.opt-g  {background:rgba(45,184,130,0.1); border-color:rgba(45,184,130,0.5); color:#50d4a0;}
+input[type="radio"]:checked+.opt-a  {background:rgba(212,130,26,0.12);border-color:rgba(212,130,26,0.55);color:#e89a40;}
+input[type="radio"]:checked+.opt-au {background:rgba(201,151,58,0.12);border-color:rgba(201,151,58,0.55);color:var(--gold-hi);}
+input[type="radio"]:checked+.opt-n  {background:rgba(45,184,130,0.08);border-color:rgba(45,184,130,0.35);color:#40c890;}
+input[type="radio"]:checked+.opt-b  {background:rgba(74,143,212,0.1); border-color:rgba(74,143,212,0.45);color:#70aae8;}
+
+/* ── LAYER DIVIDER ── */
+.layer-div{display:none;margin-top:14px;padding:12px 0 4px;border-top:1px solid var(--line);}
+.layer-div.show{display:block;}
+.ltitle{font-family:'Space Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:8px;}
+
+/* ── CONDITIONAL ── */
+.cond{display:none;margin-top:12px;padding:12px 13px;background:rgba(201,151,58,0.03);border:1px solid rgba(201,151,58,0.18);border-radius:8px;}
+.cond.show{display:block;}
+.ctitle{font-family:'Space Mono',monospace;font-size:8px;color:var(--gold);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:9px;}
+.crow{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;}
+.crow:last-child{margin-bottom:0;}
+.cdot{width:6px;height:6px;border-radius:50%;background:var(--dim);flex-shrink:0;margin-top:4px;transition:background 0.25s;}
+.cdot.ok{background:var(--green);}
+.cdot.bad{background:var(--red);}
+.clabel{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);line-height:1.55;transition:color 0.25s;}
+
+/* ── INPUTS ── */
+.iblock{margin-bottom:10px;}
+.iblock label{display:block;font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:6px;}
+input[type="number"]{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:8px;color:var(--text);font-family:'Space Mono',monospace;font-size:14px;padding:10px 12px;outline:none;transition:border-color 0.2s;-moz-appearance:textfield;max-width:220px;}
+input[type="number"]::-webkit-outer-spin-button,input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+input[type="number"]:focus{border-color:var(--gold-lo);}
+
+/* ── INLINE RESULT ── */
+.iresult{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;background:var(--dim2);border:1px solid var(--line);font-family:'Space Mono',monospace;font-size:9px;margin-top:8px;}
+
+/* ── FLAG COUNTER ── */
+.fc{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--surf2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.fcpips{display:flex;gap:5px;}
+.fcpip{width:10px;height:10px;border-radius:50%;background:var(--line);border:1px solid var(--line2);transition:all 0.25s;}
+.fcpip.warn{background:var(--amber);border-color:var(--amber);box-shadow:0 0 7px var(--amber);}
+.fcpip.kill{background:var(--red);border-color:var(--red);box-shadow:0 0 7px var(--red);}
+.fctxt{font-family:'Space Mono',monospace;font-size:9px;flex:1;transition:color 0.25s;}
+
+/* ── CANDLE REF ── */
+.cref{margin-top:14px;border:1px solid var(--line);border-radius:9px;overflow:hidden;opacity:0.75;}
+.cref-hdr{padding:7px 12px;background:var(--surf2);border-bottom:1px solid var(--line);}
+.cref-hdr-txt{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);letter-spacing:0.16em;text-transform:uppercase;}
+.cref-grid{display:grid;grid-template-columns:1fr 1fr;}
+.cref-row{padding:9px 12px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);}
+.cref-row:nth-child(even){border-right:none;}
+.cref-row.full{grid-column:1/-1;border-right:none;}
+.cref-row:last-child{border-bottom:none;}
+.cref-row:nth-last-child(2):nth-child(odd){border-bottom:none;}
+.cref-name{font-family:'Space Mono',monospace;font-size:8px;color:var(--ref-name);font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
+.cref-desc{font-size:9px;color:var(--ref-txt);line-height:1.5;}
+
+/* ── GOLD NOTE ── */
+.gnote{display:none;font-family:'Space Mono',monospace;font-size:8px;color:var(--gold-lo);line-height:1.7;letter-spacing:0.03em;padding:9px 13px;background:rgba(201,151,58,0.03);border:1px solid rgba(201,151,58,0.12);border-radius:8px;margin-bottom:10px;}
+.gnote.show{display:block;}
+
+/* ── VERDICT PANEL ── */
+.vp{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:10px;transition:border-color 0.4s,box-shadow 0.4s;}
+.vp-eye{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+.vp-dec{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:0.05em;line-height:1;margin-bottom:8px;transition:color 0.3s;}
+.vp-note{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:16px;min-height:40px;}
+.vp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
+.vps{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;}
+.vps-l{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;margin-bottom:4px;}
+.vps-v{font-size:13px;font-weight:600;}
+.rbtn{display:block;width:100%;padding:10px;background:transparent;border:1px solid var(--line2);border-radius:8px;color:var(--dim);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:4px;}
+.rbtn:hover{border-color:var(--gold-lo);color:var(--gold);}
+
+footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.1em;}
+.order-toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-6px);background:var(--surf2);border:1px solid rgba(224,80,80,0.4);color:#e07070;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;padding:8px 16px;border-radius:6px;opacity:0;transition:opacity 0.25s,transform 0.25s;pointer-events:none;z-index:500;white-space:nowrap;max-width:90vw;text-align:center;}
+
+@media(max-width:480px){.wrap{padding:0 13px;}.vbar-in{padding:9px 13px;}.sub-body{padding:10px 13px;}.section-hdr{padding:10px 13px;}.sub-hdr{padding:9px 13px;}}
+</style>
+</head>
+<body>
+<div class="order-toast" id="order-toast"></div>
+<div class="top-rule"></div>
+
+<div class="wrap">
+<header>
+  <div class="hdr">
+    <div>
+      <div class="brand-eye">Day Trading · Decision Engine</div>
+      <div class="brand-name">Biverway <span>Model A</span></div>
+    </div>
+  </div>
+  <div class="mode-sub" id="mode-sub">EURUSD · GBPUSD · USDCHF · XAUUSD</div>
+</header>
+</div>
+
+<div class="vbar">
+  <div class="wrap">
+    <div class="vbar-in">
+      <div class="vdot" id="vdot"></div>
+      <div class="vtxt" id="vtxt">Complete all steps to receive verdict</div>
+      <div class="fpips">
+        <div class="fpip" id="fp1"></div>
+        <div class="fpip" id="fp2"></div>
+        <div class="fpip" id="fp3"></div>
+      </div>
+      <div class="vbadge" id="vbadge">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap"><div class="main">
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1 — MARKET CONDITIONS
+══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-name">Market Conditions</span>
+    <span class="section-tag st-kill">Hard / Medium Filter</span>
+  </div>
+
+  <!-- S1 · Sub 1 — News -->
+  <div class="sub" id="c-news">
+    <div class="sub-hdr">
+      <span class="sub-num">01</span>
+      <span class="sub-title">Post News Whipsaw Day</span>
+      <span class="sub-stat" id="st-news" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Was yesterday a high-impact news day that closed as a DBI Sweep Candle — large range, body under 30%, both wicks dominant on each side, sweeping both the DBI high and DBI low?</div>
+      <div class="opts">
+        <input type="radio" name="news" id="news-y" value="kill" onchange="run()">
+        <label for="news-y" class="opt opt-r">Yes — whipsaw day confirmed</label>
+        <input type="radio" name="news" id="news-n" value="pass" onchange="run()">
+        <label for="news-n" class="opt opt-g">No — normal day</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- S1 · Sub 2 — Gap -->
+  <div class="sub" id="c-gap">
+    <div class="sub-hdr">
+      <span class="sub-num">02</span>
+      <span class="sub-title">Gap Day</span>
+      <span class="sub-stat" id="st-gap" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Did today open with a gap from yesterday's close?</div>
+      <div class="opts">
+        <input type="radio" name="gap" id="gap-y" value="yes" onchange="run()">
+        <label for="gap-y" class="opt opt-a">Yes — gap present</label>
+        <input type="radio" name="gap" id="gap-n" value="no" onchange="run()">
+        <label for="gap-n" class="opt opt-g">No gap</label>
+      </div>
+      <div class="cond" id="gap-cond">
+        <div class="ctitle">Nature of the zone relative to the gap</div>
+        <div class="sq" style="margin-bottom:10px;">Was this zone created by a gap-driven MSS, or is it a new organic structure formed after the gap was absorbed?</div>
+        <div class="opts">
+          <input type="radio" name="gpos" id="gpos-b" value="before" onchange="run()">
+          <label for="gpos-b" class="opt opt-g">Post-Gap Organic Structure — new independent MSS after gap absorption</label>
+          <input type="radio" name="gpos" id="gpos-a" value="after" onchange="run()">
+          <label for="gpos-a" class="opt opt-r">Gap-Driven Structure — zone origin is a gap-initiated MSS</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S1 · Sub 3 — HTF -->
+  <div class="sub" id="c-htf">
+    <div class="sub-hdr">
+      <span class="sub-num">03</span>
+      <span class="sub-title">HTF Opposing Zone</span>
+      <span class="sub-stat" id="st-htf" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Did the impulse leg that caused the M15 MSS — the same impulse that created your zone — reach into a D1 or H4 decisional or extreme opposing zone?</div>
+      <div class="opts">
+        <input type="radio" name="htf" id="htf-n" value="pass" onchange="run()">
+        <label for="htf-n" class="opt opt-g">No HTF opposing zone</label>
+        <input type="radio" name="htf" id="htf-h4" value="med" onchange="run()">
+        <label for="htf-h4" class="opt opt-a">H4 only — decisional or extreme</label>
+        <input type="radio" name="htf" id="htf-d1" value="kill" onchange="run()">
+        <label for="htf-d1" class="opt opt-r">D1 involved — alone or combined with H4</label>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end section 1 -->
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2 — ZONE STRUCTURE
+══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-name">Zone Structure</span>
+    <span class="section-tag st-zone">Hard / Medium Filter</span>
+  </div>
+
+  <!-- S2 · Sub 1 — Zone Condition -->
+  <div class="sub" id="c-zone">
+    <div class="sub-hdr">
+      <span class="sub-num">04</span>
+      <span class="sub-title">Zone Condition</span>
+      <span class="sub-stat" id="st-zone" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+
+      <div class="olabel" style="margin-top:0;border-top:none;padding-top:0;">Layer 1 — Zone Depth</div>
+      <div class="sq">What is the structural depth of the pullback?</div>
+      <div class="opts" id="depth-opts">
+        <input type="radio" name="zdepth" id="zd-dh" value="deep-h1" onchange="onDepth()">
+        <label for="zd-dh" class="opt opt-g">Deep — H1 Validated</label>
+        <input type="radio" name="zdepth" id="zd-dsw" value="deep-sw" onchange="onDepth()">
+        <label for="zd-dsw" class="opt opt-g">Deep — H1 + Clean Consolidation Base</label>
+        <input type="radio" name="zdepth" id="zd-m45" value="shallow-m45" onchange="onDepth()">
+        <label for="zd-m45" class="opt opt-n" id="l-zdm45">Shallow — M45 Validated</label>
+        <input type="radio" name="zdepth" id="zd-sh" value="shallow-none" onchange="onDepth()">
+        <label for="zd-sh" class="opt opt-r" id="l-zdsh">Shallow — No Validation</label>
+      </div>
+
+      <div class="layer-div" id="zone-l2">
+        <div class="ltitle">Layer 2 — Liquidity Condition</div>
+        <div class="sq" style="margin-bottom:10px;">Is the pullback structure clean, or does overlap exist at the zone base?</div>
+        <div class="opts">
+          <input type="radio" name="zliq" id="zl-cl" value="clean" onchange="run()">
+          <label for="zl-cl" class="opt opt-g">Clean — no overlap</label>
+          <input type="radio" name="zliq" id="zl-ov" value="overlap" onchange="run()">
+          <label for="zl-ov" class="opt opt-a">Overlapping — staircase structure present</label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- S2 · Sub 2 — Zone History (container) -->
+  <div class="sub" id="c-zh-group" style="border-top:1px solid var(--line);">
+    <div class="sub-hdr" style="background:transparent;">
+      <span class="sub-num"></span>
+      <span class="sub-title" style="color:var(--text2);font-size:11px;font-weight:500;">Zone History</span>
+      <span class="sub-tag t-hist">History Checks</span>
+      <span class="sub-stat"></span>
+    </div>
+  </div>
+
+  <!-- S2 · Sub 3 — 5a Asian -->
+  <div class="sub" id="c-asian" style="border-top:1px solid var(--line);">
+    <div class="sub-hdr">
+      <span class="sub-num">05a</span>
+      <span class="sub-title">PD Asian Range Coincidence</span>
+      <span class="sub-stat" id="st-asian" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Is this zone the same price as yesterday's Asian range high or low — where price never broke outside that range, making the Asian boundary the PDH or PDL by default?</div>
+      <div class="opts">
+        <input type="radio" name="asian" id="asian-y" value="yes" onchange="run()">
+        <label for="asian-y" class="opt opt-au">Yes — coincides with PD Asian range</label>
+        <input type="radio" name="asian" id="asian-n" value="no" onchange="run()">
+        <label for="asian-n" class="opt opt-g">No — independent of PD Asian range</label>
+      </div>
+      <div class="cond" id="asian-cond">
+        <div class="ctitle">Conditional check — any one triggers a hard kill</div>
+        <div class="crow"><div class="cdot" id="exc-ov-dot"></div><div class="clabel" id="exc-ov-lbl">Overlap — reading from Zone Condition</div></div>
+        <div class="crow"><div class="cdot" id="exc-adr-dot"></div><div class="clabel" id="exc-adr-lbl">ADR above 1.5 — enter ADR in Market State</div></div>
+        <div class="crow"><div class="cdot" id="exc-imp-dot"></div><div class="clabel" id="exc-imp-lbl">Impulse above 3.0 — enter Impulse in Market State</div></div>
+        <div style="margin-top:9px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">All three clear — proceed. Any one present — hard kill.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 · Sub 4 — 5b DBI Asian -->
+  <div class="sub" id="c-dba">
+    <div class="sub-hdr">
+      <span class="sub-num">05b</span>
+      <span class="sub-title">Prior Failure at DBI Asian Range</span>
+      <span class="sub-stat" id="st-dba" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">On a prior visit, did this zone reach the Day-Before-It's Asian range boundary and reject without a candle closing or sweeping through it?</div>
+      <div class="opts">
+        <input type="radio" name="dba" id="dba-y" value="kill" onchange="run()">
+        <label for="dba-y" class="opt opt-r">Yes — rejected at DBI Asian range, no body through</label>
+        <input type="radio" name="dba" id="dba-n" value="pass" onchange="run()">
+        <label for="dba-n" class="opt opt-g">No — or fresh zone with no prior visits</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 · Sub 5 — 5c DBI High/Low -->
+  <div class="sub" id="c-dbh">
+    <div class="sub-hdr">
+      <span class="sub-num">05c</span>
+      <span class="sub-title">Prior Failure at DBI High / Low</span>
+      <span class="sub-stat" id="st-dbh" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">On a prior visit, did this zone reach the Day-Before-It's high or low without convincingly breaking through? That level remains uncleared.</div>
+      <div class="opts">
+        <input type="radio" name="dbh" id="dbh-y" value="kill" onchange="run()">
+        <label for="dbh-y" class="opt opt-r">Yes — reached DBI high/low, no convincing break</label>
+        <input type="radio" name="dbh" id="dbh-n" value="pass" onchange="run()">
+        <label for="dbh-n" class="opt opt-g">No — or fresh zone with no prior visits</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2 · Sub 6 — 5d Historical ref -->
+  <div class="sub" id="c-hist">
+    <div class="sub-hdr">
+      <span class="sub-num">05d</span>
+      <span class="sub-title">Historical Reference Location</span>
+      <span class="sub-stat" id="st-hist" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Is this zone sourced from a 2–3 day old high or low rather than a fresh structural level of yesterday's range?</div>
+      <div class="opts">
+        <input type="radio" name="hist" id="hist-y" value="med" onchange="run()">
+        <label for="hist-y" class="opt opt-a">Yes — 2 to 3 day old reference level</label>
+        <input type="radio" name="hist" id="hist-n" value="pass" onchange="run()">
+        <label for="hist-n" class="opt opt-g">No — fresh or PD structural level</label>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end section 2 -->
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3 — MARKET STATE
+══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-name">Market State</span>
+    <span class="section-tag st-state">Medium Flag</span>
+  </div>
+
+  <!-- S3 · Sub 1 — Impulse -->
+  <div class="sub" id="c-imp">
+    <div class="sub-hdr">
+      <span class="sub-num">06</span>
+      <span class="sub-title">Impulse Ratio</span>
+      <span class="sub-stat" id="st-imp" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Enter the impulse ratio.</div>
+      <div class="iblock">
+        <input type="number" id="imp" step="0.01" min="0" placeholder="e.g. 1.8" oninput="run()">
+      </div>
+      <div class="iresult" id="imp-res">
+        <div class="cdot" id="imp-dot"></div>
+        <span id="imp-txt" style="color:var(--dim)">Enter value to evaluate</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3 · Sub 2 — ADR -->
+  <div class="sub" id="c-adr">
+    <div class="sub-hdr">
+      <span class="sub-num">07</span>
+      <span class="sub-title">ADR Ratio</span>
+      <span class="sub-stat" id="st-adr" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Enter the ADR ratio.</div>
+      <div class="iblock">
+        <input type="number" id="adr" step="0.01" min="0" placeholder="e.g. 0.94" oninput="run()">
+      </div>
+      <div class="iresult" id="adr-res">
+        <div class="cdot" id="adr-dot"></div>
+        <span id="adr-txt" style="color:var(--dim)">Enter value to evaluate</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end section 3 -->
+
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4 — CONTEXT
+══════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-hdr">
+    <span class="section-name">Context</span>
+    <span class="section-tag st-ctx">Soft / Medium Filter</span>
+  </div>
+
+  <!-- S4 · Sub 1 — Location -->
+  <div class="sub" id="c-loc">
+    <div class="sub-hdr">
+      <span class="sub-num">08</span>
+      <span class="sub-title">Zone's Location in PD Range</span>
+      <span class="sub-stat" id="st-loc" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Where does the zone sit within yesterday's range?</div>
+      <div class="opts">
+        <input type="radio" name="loc" id="l-pdhl" value="prime" onchange="run()">
+        <label for="l-pdhl" class="opt opt-au">PDH / PDL</label>
+        <input type="radio" name="loc" id="l-near" value="good" onchange="run()">
+        <label for="l-near" class="opt opt-g">Near PDH / PDL</label>
+        <input type="radio" name="loc" id="l-6279" value="good" onchange="run()">
+        <label for="l-6279" class="opt opt-g">62 – 79%</label>
+        <input type="radio" name="loc" id="l-5062" value="good" onchange="run()">
+        <label for="l-5062" class="opt opt-g">50 – 62%</label>
+        <input type="radio" name="loc" id="l-4050" value="mid" onchange="run()">
+        <label for="l-4050" class="opt opt-b">40 – 50%</label>
+        <input type="radio" name="loc" id="l-3040" value="weak" onchange="run()">
+        <label for="l-3040" class="opt opt-a">30 – 40%</label>
+        <input type="radio" name="loc" id="l-2030" value="weak" onchange="run()">
+        <label for="l-2030" class="opt opt-a">20 – 30%</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4 · Sub 2 — Candle -->
+  <div class="sub" id="c-candle">
+    <div class="sub-hdr">
+      <span class="sub-num">09</span>
+      <span class="sub-title">Previous Day Candle Type</span>
+      <span class="sub-stat" id="st-candle" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">What type of candle did yesterday close as?</div>
+      <div class="opts" style="margin-bottom:14px;">
+        <input type="radio" name="candle" id="c-pb" value="pos" onchange="run()">
+        <label for="c-pb" class="opt opt-g">Pin Bar</label>
+        <input type="radio" name="candle" id="c-bal" value="pos" onchange="run()">
+        <label for="c-bal" class="opt opt-g">Balanced</label>
+        <input type="radio" name="candle" id="c-sd" value="neu" onchange="run()">
+        <label for="c-sd" class="opt opt-b">Strong Directional</label>
+        <input type="radio" name="candle" id="c-ind" value="neg" onchange="run()">
+        <label for="c-ind" class="opt opt-a">Indecisive</label>
+        <input type="radio" name="candle" id="c-dbi" value="med" onchange="run()">
+        <label for="c-dbi" class="opt opt-r">DBI Sweep Candle</label>
+      </div>
+
+      <!-- Candle reference -->
+      <div class="cref">
+        <div class="cref-hdr"><span class="cref-hdr-txt">Candle Type Reference</span></div>
+        <div class="cref-grid">
+          <div class="cref-row">
+            <div class="cref-name">Pin Bar</div>
+            <div class="cref-desc">Body 30% or less. One wick at least 2× body. Opposing wick under 50% of body.</div>
+          </div>
+          <div class="cref-row">
+            <div class="cref-name">Balanced</div>
+            <div class="cref-desc">Body 40% or less of range. No single dominant wick.</div>
+          </div>
+          <div class="cref-row">
+            <div class="cref-name">Strong Directional</div>
+            <div class="cref-desc">Body above 40%. Closes near candle extreme.</div>
+          </div>
+          <div class="cref-row">
+            <div class="cref-name">Indecisive</div>
+            <div class="cref-desc">Small body, wicks present but not dominant. No clear direction. Includes doji.</div>
+          </div>
+          <div class="cref-row full">
+            <div class="cref-name">DBI Sweep Candle <span style="color:var(--amber);font-size:7px;letter-spacing:0.08em;font-weight:400;margin-left:6px;">MEDIUM FLAG</span></div>
+            <div class="cref-desc">Large range, body under 30%, both wicks each 70%+ of body. Swept DBI high and low.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- end section 4 -->
+
+
+<!-- ── FLAG COUNTER ── -->
+<div class="fc">
+  <div class="fcpips">
+    <div class="fcpip" id="mp1"></div>
+    <div class="fcpip" id="mp2"></div>
+    <div class="fcpip" id="mp3"></div>
+  </div>
+  <span class="fctxt" id="fctxt" style="color:var(--dim)">Medium flags: 0 — two or more triggers a skip</span>
+</div>
+
+<!-- ── VERDICT ── -->
+<div class="vp" id="vp">
+  <div class="vp-eye">Final Decision</div>
+  <div class="vp-dec" id="vp-dec" style="color:var(--dim)">—</div>
+  <div class="vp-note" id="vp-note">Complete all steps above to receive your verdict.</div>
+  <div class="vp-stats">
+    <div class="vps"><div class="vps-l">Hard Kills</div><div class="vps-v" id="vps-k" style="color:var(--dim)">—</div></div>
+    <div class="vps"><div class="vps-l">Med Flags</div><div class="vps-v" id="vps-f" style="color:var(--dim)">—</div></div>
+    <div class="vps"><div class="vps-l">Grade</div><div class="vps-v" id="vps-g" style="color:var(--dim)">—</div></div>
+  </div>
+  <button class="rbtn" onclick="resetAll()">Clear All &amp; Start Over</button>
+</div>
+
+</div></div><!-- end main / wrap -->
+
+<footer>Biverway Trading System &nbsp;·&nbsp; Model A &nbsp;·&nbsp; Supply &amp; Demand Day Trading</footer>
+
+<script>
+// Unified system — no mode separation
+function g(id){return document.getElementById(id);}
+function rv(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:null;}
+var STEPS=['news','gap','htf','zone','asian','dba','dbh','hist','imp','adr','loc','candle'];
+
+// Returns the index of the first incomplete step (0-based)
+function firstIncomplete(){
+  for(var i=0;i<STEPS.length;i++){if(!stepDone(STEPS[i]))return i;}
+  return STEPS.length;
+}
+
+// Lock/unlock steps based on completion
+function updateLocks(){
+  var fi=firstIncomplete();
+  STEPS.forEach(function(s,i){
+    var locked=i>fi;
+    var subEl=g('c-'+s);
+    if(!subEl)return;
+    // Visual lock state
+    if(locked){
+      subEl.style.opacity='0.38';
+      subEl.style.pointerEvents='none';
+    }else{
+      subEl.style.opacity='1';
+      subEl.style.pointerEvents='';
+    }
+  });
+}
+
+// Intercept any radio click to enforce serial order
+document.addEventListener('change',function(e){
+  if(e.target.type!=='radio'&&e.target.type!=='number')return;
+  // Find which step this belongs to
+  var stepMap={
+    news:'news',gap:'gap',gpos:'gap',
+    htf:'htf',
+    zdepth:'zone',zliq:'zone',
+    asian:'asian',dba:'dba',dbh:'dbh',hist:'hist',
+    imp:'imp',adr:'adr',
+    loc:'loc',candle:'candle'
+  };
+  var name=e.target.name||(e.target.id==='imp'?'imp':e.target.id==='adr'?'adr':null);
+  if(!name)return;
+  var step=stepMap[name];
+  if(!step)return;
+  var stepIdx=STEPS.indexOf(step);
+  var fi=firstIncomplete();
+  if(stepIdx>fi){
+    // Attempted to fill out of order — revert and notify
+    e.target.checked=false;
+    showOrderError(STEPS[fi]);
+    return;
+  }
+},true);
+
+// Also intercept number inputs for serial enforcement
+document.addEventListener('input',function(e){
+  if(e.target.type!=='number')return;
+  var stepMap={imp:'imp',adr:'adr'};
+  var step=stepMap[e.target.id];
+  if(!step)return;
+  var stepIdx=STEPS.indexOf(step);
+  var fi=firstIncomplete();
+  if(stepIdx>fi){
+    e.target.value='';
+    showOrderError(STEPS[fi]);
+  }
+},true);
+function showOrderError(requiredStep){
+  var names={
+    news:'Step 01 — Post News Whipsaw Day',
+    gap:'Step 02 — Gap Day',
+    htf:'Step 03 — HTF Opposing Zone',
+    zone:'Step 04 — Zone Condition',
+    asian:'Step 05a — PD Asian Range Coincidence',
+    dba:'Step 05b — Prior Failure at DBI Asian Range',
+    dbh:'Step 05c — Prior Failure at DBI High / Low',
+    hist:'Step 05d — Historical Reference Location',
+    imp:'Step 06 — Impulse Ratio',
+    adr:'Step 07 — ADR Ratio',
+    loc:'Step 08 — Zone Location',
+    candle:'Step 09 — Previous Day Candle Type'
+  };
+  var toast=g('order-toast');
+  if(!toast)return;
+  toast.textContent='Complete '+names[requiredStep]+' first';
+  toast.style.opacity='1';
+  toast.style.transform='translateY(0)';
+  clearTimeout(orderToast);
+  orderToast=setTimeout(function(){
+    toast.style.opacity='0';
+    toast.style.transform='translateY(-6px)';
+  },2200);
+}
+
+function sc(id,cls){var el=g('c-'+id);if(el)el.className='sub'+(cls?' '+cls:'');}
+function ss(id,t,c){var el=g('st-'+id);if(el){el.textContent=t;el.style.color=c;}}
+function setVBar(dc,t,b,bc,bb){
+  var d=g('vdot');d.className='vdot'+(dc?' '+dc:'');
+  var vt=g('vtxt');vt.textContent=t;vt.style.color=dc==='g'?'var(--green)':dc==='au'?'var(--gold)':dc==='r'?'var(--red)':'var(--dim)';
+  var vb=g('vbadge');vb.textContent=b;vb.style.color=bc||'var(--dim)';vb.style.borderColor=bb||'var(--line2)';vb.style.background=bb?bb.replace(/[\d.]+\)$/,'0.1)'):'transparent';
+}
+
+function onDepth(){
+  var dv=rv('zdepth');
+  // Show layer 2 unless shallow-none on forex (immediate kill, no liq needed)
+  var isForexShallowNone=(dv==='shallow-none');
+  var showL2=dv&&!isForexShallowNone;
+  g('zone-l2').className='layer-div'+(showL2?' show':'');
+  if(!showL2){document.querySelectorAll('input[name="zliq"]').forEach(function(r){r.checked=false;});}
+  run();
+  updateLocks();
+}
+
+function stepDone(s){
+  if(s==='news') return !!rv('news');
+  if(s==='gap'){var gv=rv('gap');if(!gv)return false;if(gv==='no')return true;return !!rv('gpos');}
+  if(s==='htf') return !!rv('htf');
+  if(s==='zone'){
+    var dv=rv('zdepth');if(!dv)return false;
+    if(dv==='shallow-none')return true;// hard kill path — no liq needed
+    return !!rv('zliq');
+  }
+  if(s==='asian'){
+    var av=rv('asian');if(!av)return false;
+    // Selecting either option counts as done — conditional check resolves live as steps 6/7 fill
+    return true;
+  }
+  if(s==='dba') return !!rv('dba');
+  if(s==='dbh') return !!rv('dbh');
+  if(s==='hist') return !!rv('hist');
+  if(s==='imp') return !isNaN(parseFloat(g('imp').value));
+  if(s==='adr') return !isNaN(parseFloat(g('adr').value));
+  if(s==='loc') return !!rv('loc');
+  if(s==='candle') return !!rv('candle');
+  return false;
+}
+
+function allDone(){
+  return['news','gap','htf','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].every(stepDone);
+}
+
+function run(){
+  var kills=0,mf=0,kr=[];
+  var impV=parseFloat(g('imp').value),adrV=parseFloat(g('adr').value);
+  var hasI=!isNaN(impV),hasA=!isNaN(adrV);
+  var depthV=rv('zdepth'),liqV=rv('zliq');
+  var hasOv=(liqV==='overlap');
+  var impFlag=hasI&&impV>3.0,adrFlag=hasA&&adrV>1.5;
+
+  // ── Step 1 News ──────────────────────────────────────────────
+  var nv=rv('news');
+  if(!nv){sc('news','');ss('news','—','var(--dim)');}
+  else if(nv==='kill'){kills++;kr.push('Post news whipsaw day');sc('news','sk');ss('news','Skip','var(--red)');}
+  else{sc('news','pa');ss('news','Clear','var(--green)');}
+
+  // ── Step 2 Gap ───────────────────────────────────────────────
+  var gv=rv('gap'),gpv=rv('gpos');
+  g('gap-cond').className='cond'+(gv==='yes'?' show':'');
+  if(!gv){sc('gap','');ss('gap','—','var(--dim)');}
+  else if(gv==='no'){sc('gap','pa');ss('gap','Clear','var(--green)');}
+  else{
+    if(!gpv){sc('gap','');ss('gap','Select','var(--amber)');}
+    else if(gpv==='before'){sc('gap','pa');ss('gap','Organic','var(--green)');}
+    else{kills++;kr.push('Gap-Driven Structure — zone origin is gap-initiated');sc('gap','sk');ss('gap','Skip','var(--red)');}
+  }
+
+  // ── Step 3 HTF ───────────────────────────────────────────────
+  var hv=rv('htf');
+  if(!hv){sc('htf','');ss('htf','—','var(--dim)');}
+  else if(hv==='kill'){kills++;kr.push('D1 HTF opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
+  else if(hv==='med'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
+  else{sc('htf','pa');ss('htf','Clear','var(--green)');}
+
+  // ── Step 4 Zone ──────────────────────────────────────────────
+  var isForexShNone=(depthV==='shallow-none');
+  var showL2=depthV&&!isForexShNone;
+  g('zone-l2').className='layer-div'+(showL2?' show':'');
+
+  if(!depthV){sc('zone','');ss('zone','—','var(--dim)');}
+  else{
+    // Determine zone outcome
+    // Forex: shallow-none = hard kill
+    // Both: shallow+overlap = hard kill (includes shallow-none+overlap on gold)
+    // Both: any overlap on valid zone = medium flag
+    // Gold: shallow-none = not a kill, not a flag — needs liq for stacking to work
+    var zk=false,zkr='';
+    if(depthV==='shallow-none'){zk=true;zkr='Shallow — no validation';}
+    // Shallow + overlap on any depth (including m45+overlap) = hard kill
+    if(!zk&&hasOv&&(depthV==='shallow-none'||depthV==='shallow-m45')){
+      // Only hard kill if we're on forex for shallow-none (already caught above)
+      // For shallow-m45+overlap: hard kill on both
+      if(depthV==='shallow-m45'){zk=true;zkr='Shallow M45 + Overlap';}
+    }
+    // Pure shallow+overlap on forex already caught above
+    // For gold shallow-none+overlap: hard kill
+    // unified — shallow-none already killed above
+
+    var needsLiq=showL2&&!liqV;
+    var zf=!zk&&liqV&&hasOv; // overlap on valid depth = medium flag
+
+    if(zk){kills++;kr.push(zkr);sc('zone','sk');ss('zone','Skip','var(--red)');}
+    else if(needsLiq){sc('zone','');ss('zone','Select','var(--amber)');}
+    else if(zf){mf++;sc('zone','wa');ss('zone','Flag','var(--amber)');}
+    else if(depthV&&(!showL2||liqV)){sc('zone','pa');ss('zone','Clear','var(--green)');}
+    else{sc('zone','');ss('zone','—','var(--dim)');}
+  }
+
+  // ── Step 5a Asian ────────────────────────────────────────────
+  var asv=rv('asian');
+  g('asian-cond').className='cond'+(asv==='yes'?' show':'');
+  if(asv==='yes'){
+    var zoneReady=depthV&&(depthV==='shallow-none'||!!liqV);
+    if(zoneReady){g('exc-ov-dot').className='cdot '+(hasOv?'bad':'ok');g('exc-ov-lbl').textContent=hasOv?'Overlap present — kill condition triggered':'No overlap — clear';g('exc-ov-lbl').style.color=hasOv?'var(--red)':'var(--green)';}
+    else{g('exc-ov-dot').className='cdot';g('exc-ov-lbl').textContent='Overlap — complete Zone Condition first';g('exc-ov-lbl').style.color='var(--dim)';}
+    if(hasA){g('exc-adr-dot').className='cdot '+(adrFlag?'bad':'ok');g('exc-adr-lbl').textContent='ADR '+adrV+(adrFlag?' — above 1.5, kill condition':' — below 1.5, clear');g('exc-adr-lbl').style.color=adrFlag?'var(--red)':'var(--green)';}
+    else{g('exc-adr-dot').className='cdot';g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';}
+    if(hasI){g('exc-imp-dot').className='cdot '+(impFlag?'bad':'ok');g('exc-imp-lbl').textContent='Impulse '+impV+(impFlag?' — above 3.0, kill condition':' — below 3.0, clear');g('exc-imp-lbl').style.color=impFlag?'var(--red)':'var(--green)';}
+    else{g('exc-imp-dot').className='cdot';g('exc-imp-lbl').textContent='Impulse above 3.0 — enter Impulse in Market State';g('exc-imp-lbl').style.color='var(--dim)';}
+  }
+  if(!asv){sc('asian','');ss('asian','—','var(--dim)');}
+  else if(asv==='no'){sc('asian','pa');ss('asian','Clear','var(--green)');}
+  else{
+    var hz2=depthV&&(depthV==='shallow-none'||!!liqV);
+    if(!hz2||!hasI||!hasA){sc('asian','au');ss('asian','Pending','var(--gold)');}
+    else{
+      var ak=hasOv||adrFlag||impFlag;
+      if(ak){kills++;kr.push('Asian coincide — overlap or exhaustion present');sc('asian','sk');ss('asian','Skip','var(--red)');}
+      else{sc('asian','au');ss('asian','Conditional','var(--gold)');}
+    }
+  }
+
+  // ── Step 5b DBA ──────────────────────────────────────────────
+  var dbav=rv('dba');
+  if(!dbav){sc('dba','');ss('dba','—','var(--dim)');}
+  else if(dbav==='kill'){kills++;kr.push('Prior failure at DBI Asian range');sc('dba','sk');ss('dba','Skip','var(--red)');}
+  else{sc('dba','pa');ss('dba','Clear','var(--green)');}
+
+  // ── Step 5c DBH ──────────────────────────────────────────────
+  var dbhv=rv('dbh');
+  if(!dbhv){sc('dbh','');ss('dbh','—','var(--dim)');}
+  else if(dbhv==='kill'){kills++;kr.push('Prior failure at DBI high/low');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
+  else{sc('dbh','pa');ss('dbh','Clear','var(--green)');}
+
+  // ── Step 5d Hist ─────────────────────────────────────────────
+  var hiv=rv('hist');
+  if(!hiv){sc('hist','');ss('hist','—','var(--dim)');}
+  else if(hiv==='med'){mf++;sc('hist','wa');ss('hist','Flag','var(--amber)');}
+  else{sc('hist','pa');ss('hist','Clear','var(--green)');}
+
+  // ── Step 6 Impulse ───────────────────────────────────────────
+  if(hasI){
+    if(impFlag)mf++;
+    g('imp-dot').className='cdot '+(impFlag?'bad':'ok');
+    g('imp-txt').textContent=impFlag?'Impulse '+impV+' — above 3.0, medium flag':'Impulse '+impV+' — below 3.0, clear';
+    g('imp-txt').style.color=impFlag?'var(--amber)':'var(--green)';
+    sc('imp',impFlag?'wa':'pa');
+    ss('imp',impFlag?'Flag':'Clear',impFlag?'var(--amber)':'var(--green)');
+  }else{sc('imp','');ss('imp','—','var(--dim)');g('imp-dot').className='cdot';g('imp-txt').textContent='Enter value to evaluate';g('imp-txt').style.color='var(--dim)';}
+
+  // ── Step 7 ADR ───────────────────────────────────────────────
+  if(hasA){
+    if(adrFlag)mf++;
+    g('adr-dot').className='cdot '+(adrFlag?'bad':'ok');
+    g('adr-txt').textContent=adrFlag?'ADR '+adrV+' — above 1.5, medium flag':'ADR '+adrV+' — below 1.5, clear';
+    g('adr-txt').style.color=adrFlag?'var(--amber)':'var(--green)';
+    sc('adr',adrFlag?'wa':'pa');
+    ss('adr',adrFlag?'Flag':'Clear',adrFlag?'var(--amber)':'var(--green)');
+  }else{sc('adr','');ss('adr','—','var(--dim)');g('adr-dot').className='cdot';g('adr-txt').textContent='Enter value to evaluate';g('adr-txt').style.color='var(--dim)';}
+
+  // ── Step 8 Location ──────────────────────────────────────────
+  var lv2=rv('loc');
+  if(lv2){sc('loc','pa');ss('loc','Noted','var(--green)');}
+  else{sc('loc','');ss('loc','—','var(--dim)');}
+
+  // ── Step 9 Candle ────────────────────────────────────────────
+  var cv=rv('candle');
+  if(cv==='med')mf++;
+  if(cv){sc('candle',cv==='med'?'wa':'pa');ss('candle',cv==='med'?'Flag':'Noted',cv==='med'?'var(--amber)':'var(--green)');}
+  else{sc('candle','');ss('candle','—','var(--dim)');}
+
+  // ── Flag pips ────────────────────────────────────────────────
+  var sf=Math.min(mf,3);
+  ['mp1','mp2','mp3'].forEach(function(id,i){g(id).className='fcpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
+  ['fp1','fp2','fp3'].forEach(function(id,i){g(id).className='fpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
+  var fct=mf===0?'Medium flags: 0 — clear':mf===1?'Medium flags: 1 — one flag present':'Medium flags: '+mf+' — skip triggered';
+  g('fctxt').textContent=fct;g('fctxt').style.color=mf===0?'var(--green)':mf===1?'var(--amber)':'var(--red)';
+  if(mf>=2)kills++;
+
+  // ── Verdict ──────────────────────────────────────────────────
+  var hasKill=kills>0,done=allDone();
+
+  // Verdict fields always visible
+  // Output only when: hard kill fires OR all done
+  var showOutput=hasKill||done;
+
+  if(hasKill){
+    g('vp-dec').textContent='SKIP'; g('vp-dec').style.color='var(--red)';
+    g('vp-note').textContent=kr.join('. ')+'.';
+    g('vp').style.borderColor='rgba(224,80,80,0.3)';g('vp').style.boxShadow='0 0 30px rgba(224,80,80,0.05)';
+    g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
+    g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf>=2?'var(--red)':mf===1?'var(--amber)':'var(--green)';
+    g('vps-g').textContent='SKIP';g('vps-g').style.color='var(--red)';
+    setVBar('r','Skip — '+kr[0],'SKIP','var(--red)','rgba(224,80,80,0.4)');
+  }else if(done){
+    var verdict=mf===0?'PRIME':'TAKE';
+    var vc=mf===0?'var(--gold)':'var(--green)';
+    var dc2=mf===0?'au':'g';
+    var vbc=mf===0?'var(--gold)':'var(--green)';
+    var vbb=mf===0?'rgba(201,151,58,0.4)':'rgba(45,184,130,0.4)';
+    var vnote=mf===0?'Clean structure across every filter. Zero flags. Execute with full conviction and hold to the full 1:3 target.':'All hard kills clear. One medium flag present. Setup is valid — execute at full size.';
+    if(cv==='med')vnote+=' DBI Sweep Candle noted — track this instance.';
+    g('vp-dec').textContent=verdict;g('vp-dec').style.color=vc;
+    g('vp-note').textContent=vnote;
+    g('vp').style.borderColor=mf===0?'rgba(201,151,58,0.2)':'rgba(45,184,130,0.15)';
+    g('vp').style.boxShadow=mf===0?'0 0 30px rgba(201,151,58,0.06)':'0 0 30px rgba(45,184,130,0.04)';
+    g('vps-k').textContent='None';g('vps-k').style.color='var(--green)';
+    g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf===1?'var(--amber)':'var(--green)';
+    g('vps-g').textContent=verdict;g('vps-g').style.color=vc;
+    setVBar(dc2,verdict==='PRIME'?'Prime — full conviction':'Take — one flag present',verdict,vbc,vbb);
+  }else{
+    // Not done, no kill — show placeholder state
+    g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
+    g('vp-note').textContent='Complete all steps above to receive your verdict.';
+    g('vp').style.borderColor='var(--line)';g('vp').style.boxShadow='none';
+    g('vps-k').textContent='—';g('vps-k').style.color='var(--dim)';
+    g('vps-f').textContent='—';g('vps-f').style.color='var(--dim)';
+    g('vps-g').textContent='—';g('vps-g').style.color='var(--dim)';
+    setVBar('','Complete all steps to receive verdict','—','var(--dim)','var(--line2)');
+  }
+  updateLocks();
+}
+
+function resetAll(){
+  document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
+  document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
+  ['news','gap','htf','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
+  g('gap-cond').className='cond';
+  g('zone-l2').className='layer-div';
+  g('asian-cond').className='cond';
+  ['exc-ov-dot','exc-adr-dot','exc-imp-dot'].forEach(function(id){var el=g(id);if(el)el.className='cdot';});
+  g('exc-ov-lbl').textContent='Overlap — reading from Zone Condition';g('exc-ov-lbl').style.color='var(--dim)';
+  g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';
+  g('exc-imp-lbl').textContent='Impulse above 3.0 — enter Impulse in Market State';g('exc-imp-lbl').style.color='var(--dim)';
+  g('imp-dot').className='cdot';g('imp-txt').textContent='Enter value to evaluate';g('imp-txt').style.color='var(--dim)';
+  g('adr-dot').className='cdot';g('adr-txt').textContent='Enter value to evaluate';g('adr-txt').style.color='var(--dim)';
+  ['mp1','mp2','mp3'].forEach(function(id){g(id).className='fcpip';});
+  ['fp1','fp2','fp3'].forEach(function(id){g(id).className='fpip';});
+  g('fctxt').textContent='Medium flags: 0 — two or more triggers a skip';g('fctxt').style.color='var(--dim)';
+  g('vp').style.borderColor='var(--line)';g('vp').style.boxShadow='none';
+  g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
+  g('vp-note').textContent='Complete all steps above to receive your verdict.';
+  g('vps-k').textContent='—';g('vps-k').style.color='var(--dim)';
+  g('vps-f').textContent='—';g('vps-f').style.color='var(--dim)';
+  g('vps-g').textContent='—';g('vps-g').style.color='var(--dim)';
+  setVBar('','Complete all steps to receive verdict','—','var(--dim)','var(--line2)');
+  updateLocks();
+}
+// Initial lock state on page load
+updateLocks();
+</script>
+</body>
+</html>
