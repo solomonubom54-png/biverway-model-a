@@ -171,9 +171,165 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
 .rbtn:hover{border-color:var(--gold-lo);color:var(--gold);}
 
 footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.1em;}
+
+/* ══════════════════════════════════════════
+   DATASET FOUNDATION
+══════════════════════════════════════════ */
+.df-wrap{margin-top:10px;margin-bottom:0;}
+.df-trigger{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;padding:18px 0 4px;cursor:pointer;
+  user-select:none;position:relative;
+}
+.df-trigger::before,.df-trigger::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,transparent,var(--line2));
+}
+.df-trigger::after{
+  background:linear-gradient(270deg,transparent,var(--line2));
+}
+.df-glyph{
+  font-family:'Space Mono',monospace;font-size:7px;
+  letter-spacing:0.22em;color:var(--dim);
+  text-transform:uppercase;padding:0 14px;
+  transition:color 0.25s;
+  white-space:nowrap;
+}
+.df-trigger:hover .df-glyph{color:var(--text2);}
+.df-trigger[aria-expanded="true"] .df-glyph{color:var(--gold-lo);}
+.df-panel{
+  display:none;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:var(--surf);
+  overflow:hidden;
+  margin-top:6px;
+}
+.df-panel.open{display:block;}
+.df-hdr{
+  padding:16px 20px 14px;
+  border-bottom:1px solid var(--line);
+  display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+}
+.df-eyebrow{
+  font-family:'Space Mono',monospace;font-size:7px;
+  letter-spacing:0.22em;color:var(--gold-lo);
+  text-transform:uppercase;margin-bottom:5px;
+}
+.df-title{
+  font-family:'Bebas Neue',sans-serif;font-size:22px;
+  letter-spacing:0.08em;color:var(--text3);line-height:1;
+}
+.df-size{
+  font-family:'Space Mono',monospace;font-size:9px;
+  color:var(--dim);letter-spacing:0.06em;text-align:right;
+  line-height:1.6;
+}
+.df-tabs{
+  display:flex;border-bottom:1px solid var(--line);
+  background:var(--surf2);
+}
+.df-tab{
+  flex:1;padding:9px 0;text-align:center;
+  font-family:'Space Mono',monospace;font-size:8px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--dim);cursor:pointer;border:none;background:transparent;
+  border-right:1px solid var(--line);transition:all 0.18s;
+  position:relative;
+}
+.df-tab:last-child{border-right:none;}
+.df-tab::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:1px;background:var(--gold);
+  transform:scaleX(0);transition:transform 0.2s;
+}
+.df-tab.active{color:var(--gold);}
+.df-tab.active::after{transform:scaleX(1);}
+.df-pane{display:none;padding:16px 20px;}
+.df-pane.active{display:block;}
+.df-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.df-block{
+  background:var(--bg);border:1px solid var(--line);
+  border-radius:9px;padding:12px 14px;
+}
+.df-block-label{
+  font-family:'Space Mono',monospace;font-size:7px;
+  letter-spacing:0.16em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:10px;
+}
+.df-stat-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;}
+.df-stat-row:last-child{margin-bottom:0;}
+.df-stat-name{font-family:'Space Mono',monospace;font-size:8px;color:var(--ref-name);letter-spacing:0.04em;}
+.df-stat-val{font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:0.04em;}
+.df-stat-val.pos{color:var(--green);}
+.df-stat-val.neg{color:var(--red);}
+.df-stat-val.neu{color:var(--text3);}
+.df-stat-val.gld{color:var(--gold);}
+.df-filter-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:6px;margin-bottom:14px;
+}
+.df-mini{
+  background:var(--bg);border:1px solid var(--line);
+  border-radius:8px;padding:9px 10px;text-align:center;
+}
+.df-mini-l{
+  font-family:'Space Mono',monospace;font-size:6px;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:5px;
+}
+.df-mini-v{
+  font-family:'Space Mono',monospace;font-size:11px;
+  font-weight:700;
+}
+.df-detail-trigger{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Space Mono',monospace;font-size:7px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--dim);cursor:pointer;padding:6px 0 2px;
+  border:none;background:transparent;width:100%;
+  transition:color 0.2s;
+}
+.df-detail-trigger:hover{color:var(--text2);}
+.df-detail-trigger .df-chevron{
+  width:12px;height:12px;border:1px solid var(--line2);
+  border-radius:3px;display:flex;align-items:center;justify-content:center;
+  font-size:8px;color:var(--dim);flex-shrink:0;transition:all 0.2s;
+  line-height:1;
+}
+.df-detail-trigger[aria-expanded="true"] .df-chevron{
+  border-color:var(--gold-lo);color:var(--gold-lo);
+  transform:rotate(180deg);
+}
+.df-detail-trigger[aria-expanded="true"]{color:var(--text2);}
+.df-detail-trigger span{flex:1;}
+.df-detail{display:none;margin-top:12px;}
+.df-detail.open{display:block;}
+.df-grade-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;}
+.df-grade-block{
+  background:var(--surf2);border:1px solid var(--line);
+  border-radius:8px;padding:11px 13px;
+}
+.df-grade-eye{
+  font-family:'Space Mono',monospace;font-size:7px;
+  letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:6px;
+}
+.df-grade-name{
+  font-family:'Bebas Neue',sans-serif;font-size:17px;
+  letter-spacing:0.08em;margin-bottom:8px;
+}
+.df-grade-name.prime{color:var(--gold);}
+.df-grade-name.take{color:var(--green);}
+.df-note{
+  font-family:'Space Mono',monospace;font-size:7px;
+  line-height:1.75;letter-spacing:0.04em;
+  color:var(--ref-txt);padding-top:10px;
+  border-top:1px solid var(--line);margin-top:4px;
+}
 .order-toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-6px);background:var(--surf2);border:1px solid rgba(224,80,80,0.4);color:#e07070;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;padding:8px 16px;border-radius:6px;opacity:0;transition:opacity 0.25s,transform 0.25s;pointer-events:none;z-index:500;white-space:nowrap;max-width:90vw;text-align:center;}
 
-@media(max-width:480px){.wrap{padding:0 13px;}.vbar-in{padding:9px 13px;}.sub-body{padding:10px 13px;}.section-hdr{padding:10px 13px;}.sub-hdr{padding:9px 13px;}}
+@media(max-width:480px){.wrap{padding:0 13px;}.vbar-in{padding:9px 13px;}.sub-body{padding:10px 13px;}.section-hdr{padding:10px 13px;}.sub-hdr{padding:9px 13px;}.df-filter-row{grid-template-columns:repeat(2,1fr);}.df-compare{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -589,6 +745,204 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <button class="rbtn" onclick="resetAll()">Clear All &amp; Start Over</button>
 </div>
 
+
+<!-- ══════════════════════════════════════════════
+     DATASET FOUNDATION
+══════════════════════════════════════════════ -->
+<div class="df-wrap">
+
+  <div class="df-trigger" id="df-trigger" role="button" tabindex="0"
+       aria-expanded="false" aria-controls="df-panel"
+       onclick="toggleDF()" onkeydown="if(event.key==='Enter'||event.key===' ')toggleDF()">
+    <span class="df-glyph" id="df-glyph">Dataset Foundation</span>
+  </div>
+
+  <div class="df-panel" id="df-panel" role="region">
+    <div class="df-hdr">
+      <div class="df-hdr-left">
+        <div class="df-eyebrow">71 Trades</div>
+        <div class="df-title">Dataset Foundation</div>
+      </div>
+      <div class="df-size">
+        Dec 2024 – Mar 2025 &nbsp;·&nbsp; Nov 2025 – Mar 2026<br>
+        EU &nbsp;·&nbsp; GU &nbsp;·&nbsp; UC &nbsp;·&nbsp; XU
+      </div>
+    </div>
+
+    <div class="df-tabs">
+      <button class="df-tab active" onclick="dfTab('forex',this)">Forex</button>
+      <button class="df-tab" onclick="dfTab('gold',this)">Gold</button>
+      <button class="df-tab" onclick="dfTab('all',this)">Combined</button>
+    </div>
+
+    <!-- FOREX -->
+    <div class="df-pane active" id="dfp-forex">
+      <div class="df-compare">
+        <div class="df-block">
+          <div class="df-block-label">Baseline — all 59 taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">29</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">30</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">49.2%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+57R</span></div>
+        </div>
+        <div class="df-block">
+          <div class="df-block-label">Filtered — 31 trades taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">25</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">6</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">80.6%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+69R</span></div>
+        </div>
+      </div>
+      <div class="df-filter-row">
+        <div class="df-mini"><div class="df-mini-l">Skipped</div><div class="df-mini-v" style="color:var(--text3)">28</div></div>
+        <div class="df-mini"><div class="df-mini-l">Losses Avoided</div><div class="df-mini-v" style="color:var(--green)">24</div></div>
+        <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">4</div></div>
+        <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">85.7%</div></div>
+      </div>
+      <button class="df-detail-trigger" id="dft-forex" aria-expanded="false" onclick="toggleDetail('forex')">
+        <div class="df-chevron">&#8964;</div><span>View Detailed Metrics</span>
+      </button>
+      <div class="df-detail" id="dfd-forex">
+        <div class="df-grade-grid" style="margin-top:12px;">
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name prime">PRIME</div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">10</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">10</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">0</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
+          </div>
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">TAKE</div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">21</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">15</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">6</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">71.4%</span></div>
+          </div>
+        </div>
+        <div class="df-grade-grid">
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Drawdown</div>
+            <div class="df-stat-row" style="margin-top:6px;"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Max Drawdown</span><span class="df-stat-val neg">2R</span></div>
+          </div>
+        </div>
+        <div class="df-note">PRIME = zero medium flags. 10 trades, 10 wins, 0 losses. The cleanest signal the system produces.<br>TAKE = one medium flag. 21 trades, 15W / 6L at 71.4% win rate.<br>28 skipped — 24 were losses. The filter protects more than it costs.</div>
+      </div>
+    </div>
+
+    <!-- GOLD -->
+    <div class="df-pane" id="dfp-gold">
+      <div class="df-compare">
+        <div class="df-block">
+          <div class="df-block-label">Baseline — all 12 taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">5</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">7</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">41.7%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+8R</span></div>
+        </div>
+        <div class="df-block">
+          <div class="df-block-label">Filtered — 8 trades taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">4</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">4</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">50.0%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+8R</span></div>
+        </div>
+      </div>
+      <div class="df-filter-row">
+        <div class="df-mini"><div class="df-mini-l">Skipped</div><div class="df-mini-v" style="color:var(--text3)">4</div></div>
+        <div class="df-mini"><div class="df-mini-l">Losses Avoided</div><div class="df-mini-v" style="color:var(--green)">3</div></div>
+        <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">1</div></div>
+        <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">75.0%</div></div>
+      </div>
+      <button class="df-detail-trigger" id="dft-gold" aria-expanded="false" onclick="toggleDetail('gold')">
+        <div class="df-chevron">&#8964;</div><span>View Detailed Metrics</span>
+      </button>
+      <div class="df-detail" id="dfd-gold">
+        <div class="df-grade-grid" style="margin-top:12px;">
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name prime">PRIME</div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">2</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">2</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">0</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
+          </div>
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">TAKE</div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">6</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">2</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">4</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">33.3%</span></div>
+          </div>
+        </div>
+        <div class="df-grade-grid">
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Drawdown</div>
+            <div class="df-stat-row" style="margin-top:6px;"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Max Drawdown</span><span class="df-stat-val neg">3R</span></div>
+          </div>
+        </div>
+        <div class="df-note">12 trades. Smaller sample — interpret with weight proportional to size.<br>PRIME held clean: both trades resolved as wins. TAKE carries the dataset variance.<br>Gold operates under the same unified rules as forex. No separate filter set.</div>
+      </div>
+    </div>
+
+    <!-- COMBINED -->
+    <div class="df-pane" id="dfp-all">
+      <div class="df-compare">
+        <div class="df-block">
+          <div class="df-block-label">Baseline — all 71 taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">34</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">37</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">47.9%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+65R</span></div>
+        </div>
+        <div class="df-block">
+          <div class="df-block-label">Filtered — 39 trades taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">29</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">10</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">74.4%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+77R</span></div>
+        </div>
+      </div>
+      <div class="df-filter-row">
+        <div class="df-mini"><div class="df-mini-l">Skipped</div><div class="df-mini-v" style="color:var(--text3)">32</div></div>
+        <div class="df-mini"><div class="df-mini-l">Losses Avoided</div><div class="df-mini-v" style="color:var(--green)">27</div></div>
+        <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">5</div></div>
+        <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">84.4%</div></div>
+      </div>
+      <button class="df-detail-trigger" id="dft-all" aria-expanded="false" onclick="toggleDetail('all')">
+        <div class="df-chevron">&#8964;</div><span>View Detailed Metrics</span>
+      </button>
+      <div class="df-detail" id="dfd-all">
+        <div class="df-grade-grid" style="margin-top:12px;">
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name prime">PRIME</div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">12</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">12</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">0</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
+          </div>
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">TAKE</div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">27</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">17</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">10</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">63.0%</span></div>
+          </div>
+        </div>
+        <div class="df-grade-grid">
+          <div class="df-grade-block">
+            <div class="df-grade-eye">Drawdown</div>
+            <div class="df-stat-row" style="margin-top:6px;"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Max Drawdown</span><span class="df-stat-val neg">3R</span></div>
+          </div>
+        </div>
+        <div class="df-note">12 PRIME trades across all instruments. Zero losses. When every filter clears, the dataset has held 100%.<br>32 trades skipped — 27 were losses. The system removes noise, not opportunity.<br>47.9% baseline becomes 74.4% filtered. The edge is in the selection, not the setup.</div>
+      </div>
+    </div>
+
+  </div><!-- end df-panel -->
+</div><!-- end df-wrap -->
+
 </div></div><!-- end main / wrap -->
 
 <footer>Biverway Trading System &nbsp;·&nbsp; Model A &nbsp;·&nbsp; Supply &amp; Demand Day Trading</footer>
@@ -744,7 +1098,7 @@ function run(){
   var hasOv=(liqV==='overlap');
   var impFlag=hasI&&impV>3.0,adrFlag=hasA&&adrV>1.5;
 
-  // ── Step 1 News ──────────────────────────────────────────────
+    // ── Step 1 News ──────────────────────────────────────────────
   var nv=rv('news');
   if(!nv){sc('news','');ss('news','—','var(--dim)');}
   else if(nv==='kill'){kills++;kr.push('Post news whipsaw day');sc('news','sk');ss('news','Skip','var(--red)');}
@@ -954,6 +1308,54 @@ function resetAll(){
 }
 // Initial lock state on page load
 updateLocks();
+
+function toggleDF() {
+  var trigger = document.getElementById('df-trigger');
+  var panel   = document.getElementById('df-panel');
+  var isOpen  = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  trigger.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function dfTab(id, el) {
+  var tabBar = el.parentElement;
+  tabBar.querySelectorAll('.df-tab').forEach(function(t){ t.classList.remove('active'); });
+  tabBar.parentElement.querySelectorAll('.df-pane').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('dfp-' + id).classList.add('active');
+}
+
+function toggleDetail(id) {
+  var trigger = document.getElementById('dft-' + id);
+  var detail  = document.getElementById('dfd-' + id);
+  var isOpen  = detail.classList.contains('open');
+  detail.classList.toggle('open', !isOpen);
+  trigger.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function toggleDF() {
+  var trigger = document.getElementById('df-trigger');
+  var panel   = document.getElementById('df-panel');
+  var isOpen  = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  trigger.setAttribute('aria-expanded', String(!isOpen));
+}
+
+function dfTab(id, el) {
+  var tabBar = el.parentElement;
+  tabBar.querySelectorAll('.df-tab').forEach(function(t){ t.classList.remove('active'); });
+  tabBar.parentElement.querySelectorAll('.df-pane').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('dfp-' + id).classList.add('active');
+}
+
+function toggleDetail(id) {
+  var trigger = document.getElementById('dft-' + id);
+  var detail  = document.getElementById('dfd-' + id);
+  var isOpen  = detail.classList.contains('open');
+  detail.classList.toggle('open', !isOpen);
+  trigger.setAttribute('aria-expanded', String(!isOpen));
+}
 </script>
 </body>
 </html>
