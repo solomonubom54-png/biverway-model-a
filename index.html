@@ -327,6 +327,13 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   color:var(--ref-txt);padding-top:10px;
   border-top:1px solid var(--line);margin-top:4px;
 }
+/* ── MSS REFERENCE ── */
+.mss-ref{margin-top:14px;border:1px solid var(--line);border-radius:9px;overflow:hidden;opacity:0.72;}
+.mss-ref-hdr{padding:7px 12px;background:var(--surf2);border-bottom:1px solid var(--line);font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);letter-spacing:0.16em;text-transform:uppercase;}
+.mss-ref-row{padding:9px 12px;border-bottom:1px solid var(--line);}
+.mss-ref-term{font-family:'Space Mono',monospace;font-size:8px;color:var(--ref-name);font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
+.mss-ref-desc{font-size:9px;color:var(--ref-txt);line-height:1.55;}
+
 .order-toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-6px);background:var(--surf2);border:1px solid rgba(224,80,80,0.4);color:#e07070;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;padding:8px 16px;border-radius:6px;opacity:0;transition:opacity 0.25s,transform 0.25s;pointer-events:none;z-index:500;white-space:nowrap;max-width:90vw;text-align:center;}
 
 @media(max-width:480px){.wrap{padding:0 13px;}.vbar-in{padding:9px 13px;}.sub-body{padding:10px 13px;}.section-hdr{padding:10px 13px;}.sub-hdr{padding:9px 13px;}.df-filter-row{grid-template-columns:repeat(2,1fr);}.df-compare{grid-template-columns:1fr;}}
@@ -452,10 +459,52 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     <span class="section-tag st-zone">Hard / Medium Filter</span>
   </div>
 
+  <!-- S2 · Sub 0 — MSS Quality -->
+  <div class="sub" id="c-mss">
+    <div class="sub-hdr">
+      <span class="sub-num">04</span>
+      <span class="sub-title">MSS Quality</span>
+      <span class="sub-stat" id="st-mss" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">What was the condition of the MSS that created this zone? Evaluate the break candle and the candle immediately following it.</div>
+      <div class="opts">
+        <input type="radio" name="mss" id="mss-clean" value="pass" onchange="run()">
+        <label for="mss-clean" class="opt opt-g">Clean — no D1 FVG interaction at MSS formation</label>
+        <input type="radio" name="mss" id="mss-fvg" value="med" onchange="run()">
+        <label for="mss-fvg" class="opt opt-a">D1 FVG Rejection — FVG present in D1 impulse or pullback leg, rejection within the first three candles after MSS, DBI sweep absent</label>
+        <input type="radio" name="mss" id="mss-compound" value="kill" onchange="run()">
+        <label for="mss-compound" class="opt opt-r">Compound Signature — D1 FVG rejection within three candles of MSS, broker inconsistency on MSS close, and DBI or 2–3 day level swept by the rejecting leg — all three present</label>
+      </div>
+
+      <!-- Reference panel -->
+      <div class="mss-ref">
+        <div class="mss-ref-hdr">Reference</div>
+        <div class="mss-ref-row">
+          <div class="mss-ref-term">Broker inconsistency</div>
+          <div class="mss-ref-desc">The MSS candle's close beyond the swing high or low reads as a genuine body close on a minority of platforms and a wick sweep on the majority. Indicates structural acceptance was thin at the point of break.</div>
+        </div>
+        <div class="mss-ref-row">
+          <div class="mss-ref-term">D1 FVG</div>
+          <div class="mss-ref-desc">A fair value gap on the Daily timeframe found within either the Daily impulse leg or the Daily pullback leg. Not the same as a D1 Decisional or Extreme zone. A rejecting candle within three candles of the MSS taps this level and turns — confirming non-acceptance from a higher timeframe inefficiency.</div>
+        </div>
+        <div class="mss-ref-row">
+          <div class="mss-ref-term">DBI or 2–3 day sweep</div>
+          <div class="mss-ref-desc">The rejecting leg clears the Day-Before-It's high or low, or a high or low from 2 to 3 days prior, during the rejection. Adds directional momentum to the reversal and compounds the non-acceptance signal.</div>
+        </div>
+        <div class="mss-ref-row" style="border-bottom:none;">
+          <div class="mss-ref-term">Compound rule</div>
+          <div class="mss-ref-desc">All three present — hard kill. D1 FVG rejection within three candles of MSS, broker inconsistency on the MSS close, DBI or 2–3 day level swept. Five observations, zero wins. D1 FVG rejection alone without the other two — medium flag. Under active monitoring.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- S2 · Sub 1 — Zone Condition -->
   <div class="sub" id="c-zone">
     <div class="sub-hdr">
-      <span class="sub-num">04</span>
+      <span class="sub-num">05</span>
       <span class="sub-title">Zone Condition</span>
       <span class="sub-stat" id="st-zone" style="color:var(--dim)">—</span>
     </div>
@@ -501,7 +550,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 3 — 5a Asian -->
   <div class="sub" id="c-asian" style="border-top:1px solid var(--line);">
     <div class="sub-hdr">
-      <span class="sub-num">05a</span>
+      <span class="sub-num">06a</span>
       <span class="sub-title">PD Asian Range Coincidence</span>
       <span class="sub-stat" id="st-asian" style="color:var(--dim)">—</span>
     </div>
@@ -526,7 +575,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 4 — 5b DBI Asian -->
   <div class="sub" id="c-dba">
     <div class="sub-hdr">
-      <span class="sub-num">05b</span>
+      <span class="sub-num">06b</span>
       <span class="sub-title">Prior Failure at DBI Asian Range</span>
       <span class="sub-stat" id="st-dba" style="color:var(--dim)">—</span>
     </div>
@@ -544,7 +593,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 5 — 5c DBI High/Low -->
   <div class="sub" id="c-dbh">
     <div class="sub-hdr">
-      <span class="sub-num">05c</span>
+      <span class="sub-num">06c</span>
       <span class="sub-title">Prior Failure at DBI High / Low</span>
       <span class="sub-stat" id="st-dbh" style="color:var(--dim)">—</span>
     </div>
@@ -562,7 +611,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 6 — 5d Historical ref -->
   <div class="sub" id="c-hist">
     <div class="sub-hdr">
-      <span class="sub-num">05d</span>
+      <span class="sub-num">06d</span>
       <span class="sub-title">Historical Reference Location</span>
       <span class="sub-stat" id="st-hist" style="color:var(--dim)">—</span>
     </div>
@@ -592,7 +641,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S3 · Sub 1 — Impulse -->
   <div class="sub" id="c-imp">
     <div class="sub-hdr">
-      <span class="sub-num">06</span>
+      <span class="sub-num">07</span>
       <span class="sub-title">Impulse Ratio</span>
       <span class="sub-stat" id="st-imp" style="color:var(--dim)">—</span>
     </div>
@@ -611,7 +660,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S3 · Sub 2 — ADR -->
   <div class="sub" id="c-adr">
     <div class="sub-hdr">
-      <span class="sub-num">07</span>
+      <span class="sub-num">08</span>
       <span class="sub-title">ADR Ratio</span>
       <span class="sub-stat" id="st-adr" style="color:var(--dim)">—</span>
     </div>
@@ -642,7 +691,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S4 · Sub 1 — Location -->
   <div class="sub" id="c-loc">
     <div class="sub-hdr">
-      <span class="sub-num">08</span>
+      <span class="sub-num">09</span>
       <span class="sub-title">Zone's Location in PD Range</span>
       <span class="sub-stat" id="st-loc" style="color:var(--dim)">—</span>
     </div>
@@ -670,7 +719,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S4 · Sub 2 — Candle -->
   <div class="sub" id="c-candle">
     <div class="sub-hdr">
-      <span class="sub-num">09</span>
+      <span class="sub-num">10</span>
       <span class="sub-title">Previous Day Candle Type</span>
       <span class="sub-stat" id="st-candle" style="color:var(--dim)">—</span>
     </div>
@@ -951,7 +1000,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 // Unified system — no mode separation
 function g(id){return document.getElementById(id);}
 function rv(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:null;}
-var STEPS=['news','gap','htf','zone','asian','dba','dbh','hist','imp','adr','loc','candle'];
+var STEPS=['news','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'];
 
 // Returns the index of the first incomplete step (0-based)
 function firstIncomplete(){
@@ -984,6 +1033,7 @@ document.addEventListener('change',function(e){
   var stepMap={
     news:'news',gap:'gap',gpos:'gap',
     htf:'htf',
+    mss:'mss',
     zdepth:'zone',zliq:'zone',
     asian:'asian',dba:'dba',dbh:'dbh',hist:'hist',
     imp:'imp',adr:'adr',
@@ -1021,15 +1071,16 @@ function showOrderError(requiredStep){
     news:'Step 01 — Post News Whipsaw Day',
     gap:'Step 02 — Gap Day',
     htf:'Step 03 — HTF Opposing Zone',
-    zone:'Step 04 — Zone Condition',
-    asian:'Step 05a — PD Asian Range Coincidence',
-    dba:'Step 05b — Prior Failure at DBI Asian Range',
-    dbh:'Step 05c — Prior Failure at DBI High / Low',
-    hist:'Step 05d — Historical Reference Location',
-    imp:'Step 06 — Impulse Ratio',
-    adr:'Step 07 — ADR Ratio',
-    loc:'Step 08 — Zone Location',
-    candle:'Step 09 — Previous Day Candle Type'
+    mss:'Step 04 — MSS Quality',
+    zone:'Step 05 — Zone Condition',
+    asian:'Step 06a — PD Asian Range Coincidence',
+    dba:'Step 06b — Prior Failure at DBI Asian Range',
+    dbh:'Step 06c — Prior Failure at DBI High / Low',
+    hist:'Step 06d — Historical Reference Location',
+    imp:'Step 07 — Impulse Ratio',
+    adr:'Step 08 — ADR Ratio',
+    loc:'Step 09 — Zone Location',
+    candle:'Step 10 — Previous Day Candle Type'
   };
   var toast=g('order-toast');
   if(!toast)return;
@@ -1065,6 +1116,7 @@ function onDepth(){
 function stepDone(s){
   if(s==='news') return !!rv('news');
   if(s==='gap'){var gv=rv('gap');if(!gv)return false;if(gv==='no')return true;return !!rv('gpos');}
+  if(s==='mss') return !!rv('mss');
   if(s==='htf') return !!rv('htf');
   if(s==='zone'){
     var dv=rv('zdepth');if(!dv)return false;
@@ -1087,7 +1139,7 @@ function stepDone(s){
 }
 
 function allDone(){
-  return['news','gap','htf','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].every(stepDone);
+  return['news','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].every(stepDone);
 }
 
 function run(){
@@ -1098,7 +1150,7 @@ function run(){
   var hasOv=(liqV==='overlap');
   var impFlag=hasI&&impV>3.0,adrFlag=hasA&&adrV>1.5;
 
-    // ── Step 1 News ──────────────────────────────────────────────
+  // ── Step 1 News ──────────────────────────────────────────────
   var nv=rv('news');
   if(!nv){sc('news','');ss('news','—','var(--dim)');}
   else if(nv==='kill'){kills++;kr.push('Post news whipsaw day');sc('news','sk');ss('news','Skip','var(--red)');}
@@ -1121,6 +1173,13 @@ function run(){
   else if(hv==='kill'){kills++;kr.push('D1 HTF opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
   else if(hv==='med'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
   else{sc('htf','pa');ss('htf','Clear','var(--green)');}
+
+  // ── Step 4 MSS Quality ───────────────────────────────────────
+  var mssV=rv('mss');
+  if(!mssV){sc('mss','');ss('mss','—','var(--dim)');}
+  else if(mssV==='kill'){kills++;kr.push('Compound MSS signature — D1 FVG, broker inconsistency, DBI sweep');sc('mss','sk');ss('mss','Skip','var(--red)');}
+  else if(mssV==='med'){mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');}
+  else{sc('mss','pa');ss('mss','Clear','var(--green)');}
 
   // ── Step 4 Zone ──────────────────────────────────────────────
   var isForexShNone=(depthV==='shallow-none');
@@ -1284,7 +1343,7 @@ function run(){
 function resetAll(){
   document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
   document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
-  ['news','gap','htf','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
+  ['news','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
   g('gap-cond').className='cond';
   g('zone-l2').className='layer-div';
   g('asian-cond').className='cond';
