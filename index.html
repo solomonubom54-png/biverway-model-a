@@ -334,6 +334,22 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 .mss-ref-term{font-family:'Space Mono',monospace;font-size:8px;color:var(--ref-name);font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
 .mss-ref-desc{font-size:9px;color:var(--ref-txt);line-height:1.55;}
 
+/* ── SAVE PROMPT ── */
+.save-prompt{display:none;margin-top:10px;padding:14px 16px;background:rgba(201,151,58,0.04);border:1px solid rgba(201,151,58,0.18);border-radius:10px;}
+.save-prompt.show{display:block;}
+.sp-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:10px;}
+.sp-inst{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:0;}
+.sp-inst-btn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.08em;padding:6px 12px;border-radius:6px;border:1px solid var(--line2);background:var(--bg);color:var(--dim);cursor:pointer;transition:all 0.2s;}
+.sp-inst-btn.sel{background:rgba(201,151,58,0.1);border-color:rgba(201,151,58,0.4);color:var(--gold);}
+.upload-zone{border:1px dashed var(--line2);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);}
+.upload-zone:hover{border-color:var(--gold-lo);}
+.upload-zone input{display:none;}
+.upload-zone-txt{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;}
+.upload-preview{width:100%;border-radius:6px;margin-top:8px;max-height:140px;object-fit:cover;display:none;}
+.sp-save{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:9px 16px;border-radius:7px;border:1px solid rgba(201,151,58,0.3);background:rgba(201,151,58,0.08);color:var(--gold);cursor:pointer;transition:all 0.2s;margin-top:10px;width:100%;}
+.sp-save:hover{background:rgba(201,151,58,0.15);}
+.sp-saved{font-family:'Space Mono',monospace;font-size:8px;color:var(--green);margin-top:6px;display:none;letter-spacing:0.06em;}
+
 .order-toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-6px);background:var(--surf2);border:1px solid rgba(224,80,80,0.4);color:#e07070;font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;padding:8px 16px;border-radius:6px;opacity:0;transition:opacity 0.25s,transform 0.25s;pointer-events:none;z-index:500;white-space:nowrap;max-width:90vw;text-align:center;}
 
 @media(max-width:480px){.wrap{padding:0 13px;}.vbar-in{padding:9px 13px;}.sub-body{padding:10px 13px;}.section-hdr{padding:10px 13px;}.sub-hdr{padding:9px 13px;}.df-filter-row{grid-template-columns:repeat(2,1fr);}.df-compare{grid-template-columns:1fr;}}
@@ -818,6 +834,29 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <button class="rbtn" onclick="resetAll()">Clear All &amp; Start Over</button>
 </div>
 
+<!-- ── SAVE TO TRACKER ── -->
+<div class="save-prompt" id="save-prompt">
+  <div class="sp-title">Save to Trade Tracker</div>
+  <div class="sp-row">
+    <div class="sp-inst">
+      <button class="sp-inst-btn" id="si-EU" onclick="selectInst('EU')">EU</button>
+      <button class="sp-inst-btn" id="si-GU" onclick="selectInst('GU')">GU</button>
+      <button class="sp-inst-btn" id="si-UC" onclick="selectInst('UC')">UC</button>
+      <button class="sp-inst-btn" id="si-XU" onclick="selectInst('XU')">XU</button>
+    </div>
+  </div>
+  <div style="margin-top:10px;">
+    <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Before Chart Image</div>
+    <div class="upload-zone" id="before-upload-zone" onclick="document.getElementById('before-img-input').click()">
+      <input type="file" id="before-img-input" accept="image/*" onchange="previewBefore(this)">
+      <div class="upload-zone-txt">Tap to attach before chart screenshot</div>
+      <img id="before-img-preview" class="upload-preview">
+    </div>
+  </div>
+  <button class="sp-save" id="sp-save-btn" onclick="saveToTracker()">Save Record &amp; Open Tracker</button>
+  <div class="sp-saved" id="sp-saved">Record saved. Opening tracker...</div>
+</div>
+
 
 <!-- ══════════════════════════════════════════════
      DATASET FOUNDATION
@@ -973,7 +1012,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">5</div></div>
         <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">84.4%</div></div>
       </div>
-      <button class="df-detail-trigger" id="dft-all" aria-expanded="false" onclick="toggleDetail('all')">
+            <button class="df-detail-trigger" id="dft-all" aria-expanded="false" onclick="toggleDetail('all')">
         <div class="df-chevron">&#8964;</div><span>View Detailed Metrics</span>
       </button>
       <div class="df-detail" id="dfd-all">
@@ -1392,6 +1431,7 @@ function run(){
     setVBar('','Complete all steps to receive verdict','—','var(--dim)','var(--line2)');
   }
   updateLocks();
+  refreshPrompt();
 }
 
 function resetAll(){
@@ -1420,9 +1460,143 @@ function resetAll(){
   g('vps-g').textContent='—';g('vps-g').style.color='var(--dim)';
   setVBar('','Complete all steps to receive verdict','—','var(--dim)','var(--line2)');
   updateLocks();
+  refreshPrompt();
+  _selectedInst = null;
+  _beforeImgFile = null;
+  ['EU','GU','UC','XU'].forEach(function(i){var el=document.getElementById('si-'+i);if(el)el.className='sp-inst-btn';});
+  var prev=document.getElementById('before-img-preview');if(prev){prev.src='';prev.style.display='none';}
+  var saved=document.getElementById('sp-saved');if(saved)saved.style.display='none';
+  var btn=document.getElementById('sp-save-btn');if(btn){btn.textContent='Save Record & Open Tracker';btn.disabled=false;}
 }
 // Initial lock state on page load
 updateLocks();
+
+// ── TRACKER INTEGRATION ───────────────────────────────────────────
+var _selectedInst = null;
+var _beforeImgFile = null;
+
+window.selectInst = function(inst) {
+  _selectedInst = inst;
+  ['EU','GU','UC','XU'].forEach(function(i){
+    var el = document.getElementById('si-'+i);
+    if(el) el.className = 'sp-inst-btn' + (i===inst?' sel':'');
+  });
+};
+
+window.previewBefore = function(input) {
+  var file = input.files[0];
+  if (!file) return;
+  _beforeImgFile = file;
+  var preview = document.getElementById('before-img-preview');
+  preview.src = URL.createObjectURL(file);
+  preview.style.display = 'block';
+};
+
+function captureSteps() {
+  function rv2(n){ var e=document.querySelector('input[name="'+n+'"]:checked'); return e?e.value:null; }
+  return {
+    news:   rv2('news'),
+    gap:    rv2('gap'),
+    gpos:   rv2('gpos'),
+    htf:    rv2('htf'),
+    mssq1:  rv2('mssq1'),
+    mssq2:  rv2('mssq2'),
+    mssq3:  rv2('mssq3'),
+    zdepth: rv2('zdepth'),
+    zliq:   rv2('zliq'),
+    asian:  rv2('asian'),
+    dba:    rv2('dba'),
+    dbh:    rv2('dbh'),
+    hist:   rv2('hist'),
+    imp:    document.getElementById('imp').value || null,
+    adr:    document.getElementById('adr').value || null,
+    loc:    rv2('loc'),
+    candle: rv2('candle')
+  };
+}
+
+// Show/hide save prompt based on verdict state
+function refreshPrompt() {
+  var vp = document.getElementById('vp-dec');
+  var verdict = vp ? vp.textContent.trim() : '';
+  var prompt = document.getElementById('save-prompt');
+  if (!prompt) return;
+  prompt.className = (verdict && verdict !== '—') ? 'save-prompt show' : 'save-prompt';
+}
+
+window.saveToTracker = async function() {
+  if (!_selectedInst) { alert('Please select an instrument first.'); return; }
+  var vp = document.getElementById('vp-dec');
+  var verdict = vp ? vp.textContent.trim() : '';
+  if (!verdict || verdict === '—') return;
+
+  var steps = captureSteps();
+  var flags = [];
+  if (steps.htf === 'med') flags.push('H4 HTF');
+  if (steps.zliq === 'overlap') flags.push('Overlap');
+  if (steps.hist === 'med') flags.push('Historical Ref');
+  if (steps.candle === 'med') flags.push('DBI Sweep Candle');
+  if (steps.imp && parseFloat(steps.imp) > 3.0) flags.push('Impulse >3.0');
+  if (steps.adr && parseFloat(steps.adr) > 1.5) flags.push('ADR >1.5');
+  if (steps.mssq2 === 'yes' && steps.mssq3 !== 'yes') flags.push('D1 FVG Rejection');
+
+  var btn = document.getElementById('sp-save-btn');
+  if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
+
+  var tradeData = { instrument: _selectedInst, verdict: verdict, steps: steps, flags: flags, notes: '' };
+
+  try {
+    var [fb, fbAuth, fbFs, fbSt] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js'),
+      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js')
+    ]);
+    var firebaseConfig = {
+      apiKey:"AIzaSyD7-KdudvuKAuquuWz94ZYwr6U1b0lBIbk",
+      authDomain:"biverway-model-a.firebaseapp.com",
+      projectId:"biverway-model-a",
+      storageBucket:"biverway-model-a.firebasestorage.app",
+      messagingSenderId:"97466390074",
+      appId:"1:97466390074:web:fe3e45409b5e35111e8703"
+    };
+    var existingApp; try { existingApp = fb.getApp(); } catch(e){}
+    var app2 = existingApp || fb.initializeApp(firebaseConfig);
+    var auth2 = fbAuth.getAuth(app2);
+    var db2   = fbFs.getFirestore(app2);
+    var st2   = fbSt.getStorage(app2);
+
+    if (!auth2.currentUser) {
+      sessionStorage.setItem('pendingTrade', JSON.stringify(tradeData));
+      window.open('biverway-tracker.html', '_blank');
+      if (btn) { btn.textContent = 'Save Record & Open Tracker'; btn.disabled = false; }
+      return;
+    }
+
+    var beforeUrl = null;
+    if (_beforeImgFile) {
+      var tmpRef = fbSt.ref(st2, 'trades/tmp_' + Date.now() + '/before');
+      var snap1 = await fbSt.uploadBytes(tmpRef, _beforeImgFile);
+      beforeUrl = await fbSt.getDownloadURL(snap1.ref);
+    }
+
+    var docRef = await fbFs.addDoc(fbFs.collection(db2, 'trades'), {
+      ...tradeData,
+      beforeImage: beforeUrl,
+      createdAt: fbFs.Timestamp.now(),
+      status: 'pending'
+    });
+
+    var saved = document.getElementById('sp-saved');
+    if (saved) saved.style.display = 'block';
+    if (btn) { btn.textContent = 'Saved'; }
+    setTimeout(function(){ window.open('biverway-tracker.html', '_blank'); }, 700);
+  } catch(err) {
+    console.error('Save error:', err);
+    if (btn) { btn.textContent = 'Save Record & Open Tracker'; btn.disabled = false; }
+    alert('Save failed. Open the tracker, sign in, then retry.');
+  }
+};
 
 function toggleDF() {
   var trigger = document.getElementById('df-trigger');
