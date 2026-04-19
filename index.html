@@ -389,7 +389,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <span class="sub-stat" id="st-news" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">Was yesterday a high-impact news day that closed as a DBI Sweep Candle — large range, body under 30%, both wicks dominant on each side, sweeping both the DBI high and DBI low?</div>
+      <div class="sq">Was yesterday a high-impact news day that closed as a DBI Sweep Candle — large range, body under 35%, both wicks dominant on each side, sweeping both the DBI high and DBI low?</div>
       <div class="opts">
         <input type="radio" name="news" id="news-y" value="kill" onchange="run()">
         <label for="news-y" class="opt opt-r">Yes — whipsaw day confirmed</label>
@@ -467,34 +467,58 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <span class="sub-stat" id="st-mss" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">What was the condition of the MSS that created this zone? Evaluate the break candle and the candle immediately following it.</div>
-      <div class="opts">
-        <input type="radio" name="mss" id="mss-clean" value="pass" onchange="run()">
-        <label for="mss-clean" class="opt opt-g">Clean — no D1 FVG interaction at MSS formation</label>
-        <input type="radio" name="mss" id="mss-fvg" value="med" onchange="run()">
-        <label for="mss-fvg" class="opt opt-a">D1 FVG Rejection — FVG present in D1 impulse or pullback leg, rejection within the first three candles after MSS, DBI sweep absent</label>
-        <input type="radio" name="mss" id="mss-compound" value="kill" onchange="run()">
-        <label for="mss-compound" class="opt opt-r">Compound Signature — D1 FVG rejection within three candles of MSS, broker inconsistency on MSS close, and DBI or 2–3 day level swept by the rejecting leg — all three present</label>
+
+      <!-- Q1 — Broker inconsistency (always shown first) -->
+      <div class="mss-q" id="mss-q1">
+        <div class="sq">Q1 — On the MSS candle close beyond the swing high or low: does Pepperstone show a confirmed body close while IC Markets shows a wick sweep, or vice versa — the two platforms disagree?</div>
+        <div class="opts">
+          <input type="radio" name="mssq1" id="mssq1-y" value="yes" onchange="onMSS(1,'yes')">
+          <label for="mssq1-y" class="opt opt-a">Yes — Pepperstone and IC Markets disagree on the close</label>
+          <input type="radio" name="mssq1" id="mssq1-n" value="no" onchange="onMSS(1,'no')">
+          <label for="mssq1-n" class="opt opt-g">No — both platforms confirm the same close</label>
+        </div>
+      </div>
+
+      <!-- Q2 — D1 FVG (always shown after Q1 answered) -->
+      <div class="mss-q" id="mss-q2" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
+        <div class="sq">Q2 — Did the M15 impulse leg tap into a D1 Fair Value Gap within the Daily impulse leg or Daily pullback leg, and reject from it?</div>
+        <div class="opts">
+          <input type="radio" name="mssq2" id="mssq2-y" value="yes" onchange="onMSS(2,'yes')">
+          <label for="mssq2-y" class="opt opt-a">Yes</label>
+          <input type="radio" name="mssq2" id="mssq2-n" value="no" onchange="onMSS(2,'no')">
+          <label for="mssq2-n" class="opt opt-g">No</label>
+        </div>
+      </div>
+
+      <!-- Q3 — DBI sweep (only shown when Q2 = yes) -->
+      <div class="mss-q" id="mss-q3" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
+        <div class="sq">Q3 — Did the rejecting leg sweep the DBI high or low, or a high or low from 2 to 3 days prior, in the process of that rejection?</div>
+        <div class="opts">
+          <input type="radio" name="mssq3" id="mssq3-y" value="yes" onchange="onMSS(3,'yes')">
+          <label for="mssq3-y" class="opt opt-a">Yes — structural level swept</label>
+          <input type="radio" name="mssq3" id="mssq3-n" value="no" onchange="onMSS(3,'no')">
+          <label for="mssq3-n" class="opt opt-g">No — no structural sweep</label>
+        </div>
       </div>
 
       <!-- Reference panel -->
-      <div class="mss-ref">
+      <div class="mss-ref" style="margin-top:14px;">
         <div class="mss-ref-hdr">Reference</div>
         <div class="mss-ref-row">
-          <div class="mss-ref-term">Broker inconsistency</div>
-          <div class="mss-ref-desc">The MSS candle's close beyond the swing high or low reads as a genuine body close on a minority of platforms and a wick sweep on the majority. Indicates structural acceptance was thin at the point of break.</div>
+          <div class="mss-ref-term">Broker inconsistency (Q1)</div>
+          <div class="mss-ref-desc">Pepperstone and IC Markets disagree on whether the MSS candle closed as a body beyond the swing high or low, or swept it as a wick. One confirms the body close, the other reads it as a wick. Both platforms are already open during analysis — this check is instantaneous.</div>
         </div>
         <div class="mss-ref-row">
-          <div class="mss-ref-term">D1 FVG</div>
-          <div class="mss-ref-desc">A fair value gap on the Daily timeframe found within either the Daily impulse leg or the Daily pullback leg. Not the same as a D1 Decisional or Extreme zone. A rejecting candle within three candles of the MSS taps this level and turns — confirming non-acceptance from a higher timeframe inefficiency.</div>
+          <div class="mss-ref-term">D1 FVG (Q2)</div>
+          <div class="mss-ref-desc">A fair value gap on the Daily timeframe within the Daily impulse leg or Daily pullback leg. Not the same as a D1 Decisional or Extreme zone. The M15 impulse leg taps this gap and the market turns — confirming non-acceptance from a higher timeframe inefficiency.</div>
         </div>
         <div class="mss-ref-row">
-          <div class="mss-ref-term">DBI or 2–3 day sweep</div>
-          <div class="mss-ref-desc">The rejecting leg clears the Day-Before-It's high or low, or a high or low from 2 to 3 days prior, during the rejection. Adds directional momentum to the reversal and compounds the non-acceptance signal.</div>
+          <div class="mss-ref-term">DBI or 2–3 day sweep (Q3)</div>
+          <div class="mss-ref-desc">The rejecting leg clears the Day-Before-It's high or low, or a high or low from 2 to 3 days prior. Only checked when Q2 is confirmed. Determines whether the condition escalates from medium flag to hard kill.</div>
         </div>
         <div class="mss-ref-row" style="border-bottom:none;">
-          <div class="mss-ref-term">Compound rule</div>
-          <div class="mss-ref-desc">All three present — hard kill. D1 FVG rejection within three candles of MSS, broker inconsistency on the MSS close, DBI or 2–3 day level swept. Five observations, zero wins. D1 FVG rejection alone without the other two — medium flag. Under active monitoring.</div>
+          <div class="mss-ref-term">Outcome map</div>
+          <div class="mss-ref-desc">Q1 No, Q2 No → clean pass. Q1 Yes, Q2 No → medium flag. Q1 No, Q2 Yes, Q3 No → medium flag. Q1 Yes, Q2 Yes, Q3 No → medium flag. Q2 Yes, Q3 Yes (either Q1) → hard kill. Five observations, zero wins on hard kill. Under active monitoring.</div>
         </div>
       </div>
 
@@ -744,15 +768,15 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="cref-grid">
           <div class="cref-row">
             <div class="cref-name">Pin Bar</div>
-            <div class="cref-desc">Body 30% or less. One wick at least 2× body. Opposing wick under 50% of body.</div>
+            <div class="cref-desc">Body under 35% of total range. One wick at least 2× the body. Opposing wick under 50% of body.</div>
           </div>
           <div class="cref-row">
             <div class="cref-name">Balanced</div>
-            <div class="cref-desc">Body 40% or less of range. No single dominant wick.</div>
+            <div class="cref-desc">Body between 40% and 50% of total range. No single dominant wick.</div>
           </div>
           <div class="cref-row">
             <div class="cref-name">Strong Directional</div>
-            <div class="cref-desc">Body above 40%. Closes near candle extreme.</div>
+            <div class="cref-desc">Body above 60% of total range. Closes near candle extreme with clear directional intent.</div>
           </div>
           <div class="cref-row">
             <div class="cref-name">Indecisive</div>
@@ -760,7 +784,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           </div>
           <div class="cref-row full">
             <div class="cref-name">DBI Sweep Candle <span style="color:var(--amber);font-size:7px;letter-spacing:0.08em;font-weight:400;margin-left:6px;">MEDIUM FLAG</span></div>
-            <div class="cref-desc">Large range, body under 30%, both wicks each 70%+ of body. Swept DBI high and low.</div>
+            <div class="cref-desc">Large range, body under 35%, both wicks each 70%+ of body. Swept DBI high and low.</div>
           </div>
         </div>
       </div>
@@ -809,12 +833,11 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <div class="df-panel" id="df-panel" role="region">
     <div class="df-hdr">
       <div class="df-hdr-left">
-        <div class="df-eyebrow">71 Trades</div>
-        <div class="df-title">Dataset Foundation</div>
+        <div class="df-title">71 Trades Dataset</div>
       </div>
       <div class="df-size">
-        Dec 2024 – Mar 2025 &nbsp;·&nbsp; Nov 2025 – Mar 2026<br>
-        EU &nbsp;·&nbsp; GU &nbsp;·&nbsp; UC &nbsp;·&nbsp; XU
+        Dec 2024 – Mar 2025<br>
+        Nov 2025 – Mar 2026
       </div>
     </div>
 
@@ -833,6 +856,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">30</span></div>
           <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">49.2%</span></div>
           <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+57R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">5</span></div>
         </div>
         <div class="df-block">
           <div class="df-block-label">Filtered — 31 trades taken</div>
@@ -840,6 +864,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">6</span></div>
           <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">80.6%</span></div>
           <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+69R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
         </div>
       </div>
       <div class="df-filter-row">
@@ -868,13 +893,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">71.4%</span></div>
           </div>
         </div>
-        <div class="df-grade-grid">
-          <div class="df-grade-block">
-            <div class="df-grade-eye">Drawdown</div>
-            <div class="df-stat-row" style="margin-top:6px;"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Max Drawdown</span><span class="df-stat-val neg">2R</span></div>
-          </div>
-        </div>
         <div class="df-note">PRIME = zero medium flags. 10 trades, 10 wins, 0 losses. The cleanest signal the system produces.<br>TAKE = one medium flag. 21 trades, 15W / 6L at 71.4% win rate.<br>28 skipped — 24 were losses. The filter protects more than it costs.</div>
       </div>
     </div>
@@ -888,6 +906,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">7</span></div>
           <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">41.7%</span></div>
           <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+8R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
         </div>
         <div class="df-block">
           <div class="df-block-label">Filtered — 8 trades taken</div>
@@ -895,6 +914,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">4</span></div>
           <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">50.0%</span></div>
           <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+8R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
         </div>
       </div>
       <div class="df-filter-row">
@@ -923,13 +943,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">33.3%</span></div>
           </div>
         </div>
-        <div class="df-grade-grid">
-          <div class="df-grade-block">
-            <div class="df-grade-eye">Drawdown</div>
-            <div class="df-stat-row" style="margin-top:6px;"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Max Drawdown</span><span class="df-stat-val neg">3R</span></div>
-          </div>
-        </div>
         <div class="df-note">12 trades. Smaller sample — interpret with weight proportional to size.<br>PRIME held clean: both trades resolved as wins. TAKE carries the dataset variance.<br>Gold operates under the same unified rules as forex. No separate filter set.</div>
       </div>
     </div>
@@ -943,6 +956,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">37</span></div>
           <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">47.9%</span></div>
           <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+65R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">5</span></div>
         </div>
         <div class="df-block">
           <div class="df-block-label">Filtered — 39 trades taken</div>
@@ -950,6 +964,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">10</span></div>
           <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">74.4%</span></div>
           <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+77R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
         </div>
       </div>
       <div class="df-filter-row">
@@ -976,13 +991,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
             <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">17</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">10</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">63.0%</span></div>
-          </div>
-        </div>
-        <div class="df-grade-grid">
-          <div class="df-grade-block">
-            <div class="df-grade-eye">Drawdown</div>
-            <div class="df-stat-row" style="margin-top:6px;"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Max Drawdown</span><span class="df-stat-val neg">3R</span></div>
           </div>
         </div>
         <div class="df-note">12 PRIME trades across all instruments. Zero losses. When every filter clears, the dataset has held 100%.<br>32 trades skipped — 27 were losses. The system removes noise, not opportunity.<br>47.9% baseline becomes 74.4% filtered. The edge is in the selection, not the setup.</div>
@@ -1033,7 +1041,7 @@ document.addEventListener('change',function(e){
   var stepMap={
     news:'news',gap:'gap',gpos:'gap',
     htf:'htf',
-    mss:'mss',
+    mssq1:'mss',mssq2:'mss',mssq3:'mss',
     zdepth:'zone',zliq:'zone',
     asian:'asian',dba:'dba',dbh:'dbh',hist:'hist',
     imp:'imp',adr:'adr',
@@ -1094,6 +1102,25 @@ function showOrderError(requiredStep){
   },2200);
 }
 
+function onMSS(q, val){
+  // Q1=broker inconsistency (always), Q2=D1 FVG (always after Q1), Q3=DBI sweep (only if Q2=yes)
+  var q2el=document.getElementById('mss-q2');
+  var q3el=document.getElementById('mss-q3');
+  if(q===1){
+    // Q1 answered — always reveal Q2, reset Q2+Q3
+    document.querySelectorAll('input[name="mssq2"],input[name="mssq3"]').forEach(function(r){r.checked=false;});
+    q2el.style.display='block';
+    q3el.style.display='none';
+  }
+  if(q===2){
+    // Q2 answered — reset Q3, only reveal if yes
+    document.querySelectorAll('input[name="mssq3"]').forEach(function(r){r.checked=false;});
+    q3el.style.display= val==='yes' ? 'block' : 'none';
+  }
+  run();
+  updateLocks();
+}
+
 function sc(id,cls){var el=g('c-'+id);if(el)el.className='sub'+(cls?' '+cls:'');}
 function ss(id,t,c){var el=g('st-'+id);if(el){el.textContent=t;el.style.color=c;}}
 function setVBar(dc,t,b,bc,bb){
@@ -1116,7 +1143,18 @@ function onDepth(){
 function stepDone(s){
   if(s==='news') return !!rv('news');
   if(s==='gap'){var gv=rv('gap');if(!gv)return false;if(gv==='no')return true;return !!rv('gpos');}
-  if(s==='mss') return !!rv('mss');
+  if(s==='mss'){
+    // Q1 (broker) always required
+    var q1=rv('mssq1');
+    if(!q1) return false;
+    // Q2 (FVG) always required once Q1 answered
+    var q2=rv('mssq2');
+    if(!q2) return false;
+    // Q3 (DBI sweep) only required if Q2=yes
+    if(q2==='no') return true;
+    var q3=rv('mssq3');
+    return !!q3;
+  }
   if(s==='htf') return !!rv('htf');
   if(s==='zone'){
     var dv=rv('zdepth');if(!dv)return false;
@@ -1175,11 +1213,27 @@ function run(){
   else{sc('htf','pa');ss('htf','Clear','var(--green)');}
 
   // ── Step 4 MSS Quality ───────────────────────────────────────
-  var mssV=rv('mss');
-  if(!mssV){sc('mss','');ss('mss','—','var(--dim)');}
-  else if(mssV==='kill'){kills++;kr.push('Compound MSS signature — D1 FVG, broker inconsistency, DBI sweep');sc('mss','sk');ss('mss','Skip','var(--red)');}
-  else if(mssV==='med'){mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');}
-  else{sc('mss','pa');ss('mss','Clear','var(--green)');}
+  // Q1=broker inconsistency, Q2=D1 FVG, Q3=DBI sweep
+  var mssQ1=rv('mssq1'),mssQ2=rv('mssq2'),mssQ3=rv('mssq3');
+  if(!mssQ1){sc('mss','');ss('mss','—','var(--dim)');}
+  else if(!mssQ2){sc('mss','');ss('mss','Select','var(--amber)');}
+  else if(mssQ1==='no'&&mssQ2==='no'){
+    // Both clean — pass
+    sc('mss','pa');ss('mss','Clear','var(--green)');
+  } else if(mssQ2==='no'){
+    // Q1 yes (broker inconsistency), Q2 no (no FVG) — medium flag
+    mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');
+  } else {
+    // Q2 yes (FVG confirmed) — check DBI sweep
+    if(!mssQ3){mf++;sc('mss','wa');ss('mss','Select','var(--amber)');}
+    else if(mssQ3==='no'){
+      // FVG confirmed, no DBI sweep — medium flag (regardless of Q1)
+      mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');
+    } else {
+      // Q2 yes + Q3 yes — hard kill (regardless of Q1)
+      kills++;kr.push('Compound MSS signature — D1 FVG confirmed, DBI structural sweep');sc('mss','sk');ss('mss','Skip','var(--red)');
+    }
+  }
 
   // ── Step 4 Zone ──────────────────────────────────────────────
   var isForexShNone=(depthV==='shallow-none');
@@ -1347,6 +1401,8 @@ function resetAll(){
   g('gap-cond').className='cond';
   g('zone-l2').className='layer-div';
   g('asian-cond').className='cond';
+  ['mssq1','mssq2','mssq3'].forEach(function(n){document.querySelectorAll('input[name="'+n+'"]').forEach(function(r){r.checked=false;});});
+  ['mss-q2','mss-q3'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   ['exc-ov-dot','exc-adr-dot','exc-imp-dot'].forEach(function(id){var el=g(id);if(el)el.className='cdot';});
   g('exc-ov-lbl').textContent='Overlap — reading from Zone Condition';g('exc-ov-lbl').style.color='var(--dim)';
   g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';
