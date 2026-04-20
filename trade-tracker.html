@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biverway — Trade Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#08090e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Biverway">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root{
   --bg:#08090e;--surf:#0d0f18;--surf2:#111420;--line:#1e2236;--line2:#262d44;
@@ -124,6 +130,9 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 .export-desc{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.7;letter-spacing:0.04em;margin-bottom:16px;}
 .export-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:10px 20px;border-radius:8px;border:1px solid rgba(45,184,130,0.3);background:rgba(45,184,130,0.07);color:var(--green);cursor:pointer;transition:all 0.2s;}
 .export-btn:hover{background:rgba(45,184,130,0.12);}
+.discard-opt{display:flex;align-items:flex-start;gap:8px;font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);letter-spacing:0.04em;line-height:1.55;cursor:pointer;padding:7px 10px;border-radius:7px;border:1px solid transparent;transition:border-color 0.15s;}
+.discard-opt:hover{border-color:var(--line2);}
+.discard-opt input{margin-top:2px;flex-shrink:0;accent-color:var(--amber);}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surf2);border:1px solid var(--line2);color:var(--text2);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;padding:9px 18px;border-radius:7px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:900;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 @media(max-width:480px){.detail-grid{grid-template-columns:1fr;}.img-pair{grid-template-columns:1fr;}.analytics-grid{grid-template-columns:1fr;}.filter-bar{gap:4px;}}
@@ -175,7 +184,7 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
       <select class="fsel" id="f-grade" onchange="renderLog()">
         <option value="">All Grades</option>
         <option value="PRIME">PRIME</option>
-        <option value="TAKE">TAKE</option>
+        <option value="VALID">VALID</option>
         <option value="SKIP">SKIP</option>
       </select>
       <select class="fsel" id="f-outcome" onchange="renderLog()">
@@ -225,6 +234,53 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="trig-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-hdr">
+      <span class="modal-title">Mark as Triggered</span>
+      <button class="modal-close" onclick="document.getElementById('trig-modal').classList.remove('open')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="trig-id">
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;margin-bottom:10px;">Confirm the date and time entry triggered.</div>
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Trigger Date &amp; Time</div>
+      <input type="datetime-local" id="trig-time" style="font-family:'Space Mono',monospace;font-size:9px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);border-radius:7px;color:var(--text2);width:100%;margin-bottom:14px;outline:none;">
+      <div style="display:flex;gap:8px;">
+        <button class="act-btn" onclick="document.getElementById('trig-modal').classList.remove('open')">Cancel</button>
+        <button class="act-btn primary" onclick="confirmTriggered()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="discard-modal" onclick="closeDiscardOutside(event)">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-hdr">
+      <span class="modal-title">Discard Setup</span>
+      <button class="modal-close" onclick="document.getElementById('discard-modal').classList.remove('open')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="discard-trade-id">
+      <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;margin-bottom:14px;line-height:1.65;">Select the reason this setup is being discarded. Stored with the record.</div>
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Setup invalidated before entry"> Setup invalidated before entry &mdash; structure broke</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Entry missed"> Entry missed &mdash; price moved without triggering</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Near miss"> Near miss &mdash; price reversed before triggering</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="News or external event"> News or external event</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Personal decision"> Personal decision &mdash; chose not to take</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Other" onchange="document.getElementById('discard-other-row').style.display='block'"> Other</label>
+      </div>
+      <div id="discard-other-row" style="display:none;margin-bottom:14px;">
+        <textarea id="discard-other-note" class="modal-notes" placeholder="Brief note (optional)..." style="min-height:52px;"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button class="act-btn" onclick="document.getElementById('discard-modal').classList.remove('open')">Cancel</button>
+        <button class="act-btn danger" onclick="confirmDiscard()">Confirm Discard</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 var SUPA_URL = 'https://wqmtdotsdedlblqucagn.supabase.co';
@@ -277,7 +333,7 @@ async function loadTrades() {
 function fmtDate(ts) {
   if (!ts) return '—';
   var d = new Date(ts);
-  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric', year:'numeric' });
 }
 
 function instFull(i) {
@@ -372,6 +428,7 @@ function openTrade(id) {
 
   var flagHtml = (t.flags||[]).map(function(f){ return '<span class="tc-flag" style="margin-right:4px;">'+f+'</span>'; }).join('') || '<span style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim)">None</span>';
   var killHtml = t.kill_reason ? '<div class="detail-item full"><div class="di-label">Kill Reason</div><div class="di-val" style="color:var(--red)">'+t.kill_reason+'</div></div>' : '';
+  var discardHtml = t.discard_reason ? '<div class="detail-item full"><div class="di-label">Discard Reason</div><div class="di-val" style="color:var(--amber)">'+t.discard_reason+'</div></div>' : '';
 
   var beforeHtml = t.before_image ? '<img src="'+t.before_image+'" style="width:100%;height:100%;object-fit:cover;"><span class="img-slot-label">Before</span>' : '<span class="img-placeholder">No before image</span>';
   var afterHtml  = t.after_image  ? '<img src="'+t.after_image+'"  style="width:100%;height:100%;object-fit:cover;"><span class="img-slot-label">After</span>'  : '<span class="img-placeholder">No after image</span>';
@@ -380,15 +437,30 @@ function openTrade(id) {
   var tid = String(t.id);
 
   if (t.status === 'pending') {
-    actionsHtml = '<div class="action-row"><button class="act-btn primary" onclick="markTriggered(\''+tid+'\')">Mark as Triggered</button><button class="act-btn danger" onclick="markDiscarded(\''+tid+'\')">Discard</button></div>';
+    actionsHtml = '<div class="action-row"><button class="act-btn primary" onclick="markTriggered(\''+tid+'\')">' + 'Mark as Triggered</button><button class="act-btn danger" onclick="markDiscarded(\''+tid+'\')">' + 'Discard</button></div>';
   } else if (t.status === 'triggered') {
-    actionsHtml = '<div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Record Outcome</div><div class="action-row" style="margin-top:0;margin-bottom:12px;"><button class="act-btn primary" onclick="markComplete(\''+tid+'\',\'Win\')">Win</button><button class="act-btn loss-btn" onclick="markComplete(\''+tid+'\',\'Loss\')">Loss</button></div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">After Chart</div><div class="upload-zone" onclick="document.getElementById(\'after-inp-'+tid+'\').click()"><input type="file" id="after-inp-'+tid+'" accept="image/*" onchange="previewAfterImg(this,\''+tid+'\')"><div class="upload-zone-txt">Tap to attach after chart</div><img id="after-prev-'+tid+'" class="upload-preview"></div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin:10px 0 6px;">Notes</div><textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea></div>';
+        var nowLocal = new Date(); var localISO = new Date(nowLocal.getTime() - nowLocal.getTimezoneOffset()*60000).toISOString().slice(0,16);
+    var nowLocal = new Date(); var localISO = new Date(nowLocal.getTime() - nowLocal.getTimezoneOffset()*60000).toISOString().slice(0,16);
+    actionsHtml = '<div>'
+      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Completion Date &amp; Time</div>'
+      +'<input type="datetime-local" id="complete-time-'+tid+'" value="'+localISO+'" style="font-family:\'Space Mono\',monospace;font-size:9px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);border-radius:7px;color:var(--text2);width:100%;margin-bottom:12px;outline:none;">'
+      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Record Outcome</div>'
+      +'<div class="action-row" style="margin-top:0;margin-bottom:12px;">'
+      +'<button class="act-btn primary" onclick="markComplete(\''+tid+'\',\'Win\')">Win</button>'
+      +'<button class="act-btn loss-btn" onclick="markComplete(\''+tid+'\',\'Loss\')">Loss</button>'
+      +'</div>'
+      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">After Chart</div>'
+      +'<div class="upload-zone" onclick="document.getElementById(\'after-inp-'+tid+'\').click()">'
+      +'<input type="file" id="after-inp-'+tid+'" accept="image/*" onchange="previewAfterImg(this,\''+tid+'\')"><div class="upload-zone-txt">Tap to attach after chart</div><img id="after-prev-'+tid+'" class="upload-preview"></div>'
+      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin:10px 0 6px;">Notes</div>'
+      +'<textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea>'
+      +'</div>';
   } else if (t.status === 'complete') {
     actionsHtml = '<div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Notes</div><textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea><button class="act-btn" style="margin-top:8px;" onclick="saveNotes(\''+tid+'\')">Save Notes</button></div>';
   }
 
   document.getElementById('modal-body').innerHTML =
-    '<div class="modal-section"><div class="modal-sec-title">Summary</div><div class="detail-grid"><div class="detail-item"><div class="di-label">Instrument</div><div class="di-val">'+instFull(t.instrument)+'</div></div><div class="detail-item"><div class="di-label">Date</div><div class="di-val">'+fmtDate(t.created_at)+'</div></div><div class="detail-item"><div class="di-label">Verdict</div><div class="di-val" style="color:'+(t.verdict==='PRIME'?'var(--gold)':t.verdict==='TAKE'?'var(--green)':'var(--red)')+'">'+t.verdict+'</div></div><div class="detail-item"><div class="di-label">Status / Outcome</div><div class="di-val" style="color:'+(t.outcome==='Win'?'var(--green)':t.outcome==='Loss'?'var(--red)':'var(--dim)')+'">'+((t.outcome||t.status)||'—')+'</div></div><div class="detail-item full"><div class="di-label">Active Flags</div><div class="di-val" style="margin-top:3px;">'+flagHtml+'</div></div>'+killHtml+'</div></div>'+
+    '<div class="modal-section"><div class="modal-sec-title">Summary</div><div class="detail-grid"><div class="detail-item"><div class="di-label">Instrument</div><div class="di-val">'+instFull(t.instrument)+'</div></div><div class="detail-item"><div class="di-label">Date</div><div class="di-val">'+fmtDate(t.created_at)+'</div></div><div class="detail-item"><div class="di-label">Verdict</div><div class="di-val" style="color:'+(t.verdict==='PRIME'?'var(--gold)':t.verdict==='TAKE'?'var(--green)':'var(--red)')+'">'+t.verdict+'</div></div><div class="detail-item"><div class="di-label">Status / Outcome</div><div class="di-val" style="color:'+(t.outcome==='Win'?'var(--green)':t.outcome==='Loss'?'var(--red)':'var(--dim)')+'">'+((t.outcome||t.status)||'—')+'</div></div><div class="detail-item full"><div class="di-label">Active Flags</div><div class="di-val" style="margin-top:3px;">'+flagHtml+'</div></div>'+killHtml+discardHtml+'</div></div>'+
     '<div class="modal-section"><div class="modal-sec-title">Step Answers</div><div class="detail-grid">'+stepItems+'</div></div>'+
     '<div class="modal-section"><div class="modal-sec-title">Charts</div><div class="img-pair"><div class="img-slot">'+beforeHtml+'</div><div class="img-slot">'+afterHtml+'</div></div></div>'+
     (actionsHtml ? '<div class="modal-section">'+actionsHtml+'</div>' : '');
@@ -399,6 +471,18 @@ function openTrade(id) {
 window.closeModal = function() { document.getElementById('modal').classList.remove('open'); currentId = null; _afterFile = null; };
 window.closeModalOutside = function(e) { if(e.target===document.getElementById('modal')) closeModal(); };
 
+window.uploadBeforeImg = async function(input, id) {
+  var file = input.files[0]; if (!file) return;
+  showToast('Uploading...');
+  var url = await uploadImage(file, 'before_'+id);
+  if (url) {
+    await supaUpdate(id, { before_image: url });
+    allTrades = allTrades.map(function(t){ return String(t.id)===String(id)?Object.assign({},t,{before_image:url}):t; });
+    showToast('Before chart saved');
+    openTrade(id);
+  }
+};
+
 window.previewAfterImg = function(input, id) {
   var file = input.files[0]; if (!file) return;
   _afterFile = file;
@@ -407,23 +491,67 @@ window.previewAfterImg = function(input, id) {
 };
 
 // ── STATUS TRANSITIONS ────────────────────────────────────────────
-window.markTriggered = async function(id) {
-  var ok = await supaUpdate(id, { status:'triggered', triggered_at: new Date().toISOString() });
-  if (ok) { showToast('Marked as triggered'); await loadTrades(); closeModal(); }
+window.markTriggered = function(id) {
+  // Show trigger time modal
+  var now = new Date();
+  var localISO = new Date(now.getTime() - now.getTimezoneOffset()*60000).toISOString().slice(0,16);
+  document.getElementById('trig-id').value = id;
+  document.getElementById('trig-time').value = localISO;
+  document.getElementById('trig-modal').classList.add('open');
 };
 
-window.markDiscarded = async function(id) {
-  if (!confirm('Discard this setup? It will be archived and excluded from all analytics.')) return;
-  var ok = await supaUpdate(id, { status:'discarded' });
-  if (ok) { showToast('Setup discarded'); await loadTrades(); closeModal(); }
+window.confirmTriggered = async function() {
+  var id = document.getElementById('trig-id').value;
+  var timeVal = document.getElementById('trig-time').value;
+  var trigISO = timeVal ? new Date(timeVal).toISOString() : new Date().toISOString();
+  var ok = await supaUpdate(id, { status:'triggered', triggered_at: trigISO });
+  if (ok) {
+    document.getElementById('trig-modal').classList.remove('open');
+    showToast('Marked as triggered');
+    await loadTrades();
+    closeModal();
+  }
+};
+
+window.markDiscarded = function(id) {
+  document.getElementById('discard-trade-id').value = id;
+  document.querySelectorAll('input[name="discard-reason"]').forEach(function(r){r.checked=false;});
+  var otr=document.getElementById('discard-other-row'); if(otr)otr.style.display='none';
+  var otn=document.getElementById('discard-other-note'); if(otn)otn.value='';
+  document.getElementById('discard-modal').classList.add('open');
+};
+
+window.confirmDiscard = async function() {
+  var id = document.getElementById('discard-trade-id').value;
+  var checked = document.querySelector('input[name="discard-reason"]:checked');
+  if (!checked) { showToast('Please select a reason first'); return; }
+  var reason = checked.value;
+  if (reason === 'Other') {
+    var note = document.getElementById('discard-other-note').value.trim();
+    if (note) reason = 'Other: ' + note;
+  }
+  var ok = await supaUpdate(id, { status:'discarded', discard_reason: reason });
+  if (ok) {
+    document.getElementById('discard-modal').classList.remove('open');
+    showToast('Setup discarded');
+    await loadTrades();
+    closeModal();
+  }
+};
+
+window.closeDiscardOutside = function(e) {
+  if(e.target===document.getElementById('discard-modal')) document.getElementById('discard-modal').classList.remove('open');
 };
 
 window.markComplete = async function(id, outcome) {
   var notesEl = document.getElementById('notes-'+id);
   var notes = notesEl ? notesEl.value : '';
+  var timeEl = document.getElementById('complete-time-'+id);
+  var timeVal = timeEl ? timeEl.value : '';
+  var completedISO = timeVal ? new Date(timeVal).toISOString() : new Date().toISOString();
   var afterUrl = null;
   if (_afterFile) { afterUrl = await uploadImage(_afterFile, 'after_'+id); }
-  var update = { status:'complete', outcome:outcome, completed_at:new Date().toISOString(), notes:notes };
+  var update = { status:'complete', outcome:outcome, completed_at:completedISO, notes:notes };
   if (afterUrl) update.after_image = afterUrl;
   var ok = await supaUpdate(id, update);
   if (ok) { showToast(outcome + ' recorded'); await loadTrades(); closeModal(); }
@@ -453,7 +581,9 @@ function renderAnalytics() {
 
   var all   = stats(complete);
   var prime = stats(complete.filter(function(t){return t.verdict==='PRIME';}));
-  var take  = stats(complete.filter(function(t){return t.verdict==='TAKE';}));
+  var take  = stats(complete.filter(function(t){return t.verdict==='VALID'||t.verdict==='TAKE';}));
+  var filtered = complete.filter(function(t){ return t.verdict==='PRIME'||t.verdict==='VALID'||t.verdict==='TAKE'; });
+  var allFilt = stats(filtered);
 
   var aggHTML = '<div class="an-sec"><div class="an-sec-title">Aggregate Performance · '+complete.length+' complete records</div><div class="analytics-grid"><div class="stat-card"><div class="stat-eye">Win Rate</div><div class="stat-val" style="color:'+(all.wr>=70?'var(--green)':all.wr>=50?'var(--amber)':'var(--red)')+'">'+all.wr+'%</div><div class="stat-sub">'+all.w+'W / '+all.l+'L</div></div><div class="stat-card"><div class="stat-eye">Net RRR at 1:3</div><div class="stat-val" style="color:'+(all.rrr>0?'var(--gold)':'var(--red)')+'">'+( all.rrr>0?'+':'')+all.rrr+'R</div><div class="stat-sub">'+complete.length+' trades</div></div><div class="stat-card"><div class="stat-eye">PRIME</div><div class="stat-val" style="color:var(--gold)">'+(prime.n?prime.wr+'%':'—')+'</div><div class="stat-sub">'+prime.n+' trades · '+prime.w+'W / '+prime.l+'L</div></div><div class="stat-card"><div class="stat-eye">TAKE</div><div class="stat-val" style="color:var(--green)">'+(take.n?take.wr+'%':'—')+'</div><div class="stat-sub">'+take.n+' trades · '+take.w+'W / '+take.l+'L</div></div><div class="stat-card"><div class="stat-eye">Max Losing Streak</div><div class="stat-val" style="color:var(--text3)">'+all.ms+'</div><div class="stat-sub">Complete records</div></div></div></div>';
 
@@ -503,7 +633,12 @@ function renderAnalytics() {
     ? '<div class="an-sec"><div class="an-sec-title">Pattern Alerts</div>'+alerts.map(function(a){ return '<div class="alert-card"><div class="alert-title">'+a.title+'</div><div class="alert-body">'+a.body+'</div><div class="sample-note">Sample: '+a.n+' trades</div></div>'; }).join('')+'</div>'
     : '<div class="an-sec"><div class="an-sec-title">Pattern Alerts</div><div class="empty-state" style="padding:16px 0;text-align:left;">No patterns flagged. Threshold: '+MIN_SAMPLE+' trades, '+DEV+'pt deviation.</div></div>';
 
-  el.innerHTML = aggHTML + instHTML + filterHTML + alertsHTML;
+  var compBlock = (function(){
+    var s = all; var sf = allFilt;
+    function sRow(lbl,bv,fv,c){ return '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;"><span style="font-family:Space Mono,monospace;font-size:8px;color:#5a6a84;">'+lbl+'</span><span style="display:flex;gap:14px;"><span style="font-family:Space Mono,monospace;font-size:8px;color:var(--text2);">'+bv+'</span><span style="font-family:Space Mono,monospace;font-size:9px;font-weight:700;color:'+c+';">'+fv+'</span></span></div>'; }
+    return '<div class="an-sec"><div class="an-sec-title">Live Performance &mdash; Baseline vs Filtered</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;"><div style="background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:12px 14px;"><div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Baseline &mdash; '+s.n+' total</div>'+sRow('Win Rate',s.wr+'%','','')+sRow('W / L',s.w+' / '+s.l,'','').replace('<span style="font-family:Space Mono,monospace;font-size:9px;font-weight:700;color:;"></span>','')+sRow('RRR',(s.rrr>0?'+':'')+s.rrr+'R','','')+sRow('Streak',s.ms,'','')+'</div><div style="background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:12px 14px;"><div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Filtered &mdash; '+sf.n+' taken</div>'+sRow('Win Rate','',sf.wr+'%',(sf.wr>=65?'var(--green)':'var(--text3)'))+sRow('W / L','',sf.w+' / '+sf.l,'var(--text3)')+sRow('RRR','',(sf.rrr>0?'+':'')+sf.rrr+'R',(sf.rrr>0?'var(--gold)':'var(--red)'))+sRow('Streak','',sf.ms,'var(--text3)')+'</div></div></div>';
+  })();
+  el.innerHTML = compBlock + aggHTML + instHTML + filterHTML + alertsHTML;
 }
 
 // ── EXPORT ────────────────────────────────────────────────────────
