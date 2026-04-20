@@ -17,62 +17,40 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .top-rule{height:1px;background:linear-gradient(90deg,transparent 0%,var(--gold-lo) 20%,var(--gold) 50%,var(--gold-lo) 80%,transparent 100%);}
 .wrap{max-width:760px;margin:0 auto;padding:0 18px;}
 
-/* ── AUTH ── */
-#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
-.auth-box{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:32px 28px;width:100%;max-width:360px;}
-.auth-logo{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;}
-.auth-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;color:#fff;margin-bottom:24px;}
-.auth-field{margin-bottom:14px;}
-.auth-field label{display:block;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:5px;}
-.auth-field input{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:8px;color:var(--text);font-family:'Space Mono',monospace;font-size:12px;padding:10px 12px;outline:none;}
-.auth-field input:focus{border-color:var(--gold-lo);}
-.auth-btn{width:100%;padding:11px;background:rgba(201,151,58,0.12);border:1px solid rgba(201,151,58,0.3);border-radius:8px;color:var(--gold);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:6px;}
-.auth-btn:hover{background:rgba(201,151,58,0.2);}
-.auth-err{font-family:'Space Mono',monospace;font-size:8px;color:var(--red);margin-top:10px;display:none;}
-
-/* ── HEADER ── */
-#app-screen{display:none;}
 header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 .hdr{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
 .brand-eye{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;}
 .brand-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,5vw,32px);letter-spacing:0.05em;line-height:1;color:#fff;}
 .brand-name span{color:var(--gold);}
 .hdr-right{display:flex;gap:8px;align-items:center;}
-.back-btn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--dim);cursor:pointer;text-decoration:none;transition:all 0.2s;}
-.back-btn:hover{color:var(--text2);border-color:var(--dim);}
-.signout-btn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--dim);cursor:pointer;transition:all 0.2s;}
-.signout-btn:hover{color:var(--red);border-color:rgba(224,80,80,0.4);}
+.hdr-btn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;border-radius:6px;border:1px solid var(--line2);background:transparent;color:var(--dim);cursor:pointer;text-decoration:none;transition:all 0.2s;display:inline-block;}
+.hdr-btn:hover{color:var(--text2);border-color:var(--dim);}
 
-/* ── NAV ── */
-.nav{display:flex;border-bottom:1px solid var(--line);background:var(--surf2);margin-bottom:0;}
+.nav{display:flex;border-bottom:1px solid var(--line);background:var(--surf2);}
 .nav-tab{flex:1;padding:10px 0;text-align:center;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);cursor:pointer;border:none;background:transparent;border-right:1px solid var(--line);transition:all 0.18s;position:relative;}
 .nav-tab:last-child{border-right:none;}
 .nav-tab::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:var(--gold);transform:scaleX(0);transition:transform 0.2s;}
 .nav-tab.active{color:var(--gold);}
 .nav-tab.active::after{transform:scaleX(1);}
 
-/* ── PANELS ── */
 .panel{display:none;padding:16px 0 60px;}
 .panel.active{display:block;}
 
-/* ── SECTION HEADER ── */
 .sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px;}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.08em;color:var(--text3);}
+.count-badge{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);}
 
-/* ── FILTER BAR ── */
 .filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
 .fsel{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.06em;padding:6px 10px;border-radius:6px;border:1px solid var(--line2);background:var(--bg);color:var(--text2);cursor:pointer;outline:none;}
-.fsel option{background:var(--surf);}
 
-/* ── TRADE CARDS ── */
 .trade-list{display:flex;flex-direction:column;gap:6px;}
 .trade-card{background:var(--surf);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
 .trade-card:hover{border-color:var(--line2);}
 .trade-card.win{border-left:3px solid rgba(45,184,130,0.5);}
 .trade-card.loss{border-left:3px solid rgba(224,80,80,0.5);}
-.trade-card.pending{border-left:3px solid rgba(201,151,58,0.5);}
+.trade-card.pending{border-left:3px solid rgba(201,151,58,0.4);}
 .trade-card.triggered{border-left:3px solid rgba(212,130,26,0.5);}
-.trade-card.discarded{border-left:3px solid rgba(74,88,120,0.4);opacity:0.6;}
+.trade-card.discarded{border-left:3px solid rgba(74,88,120,0.3);opacity:0.55;}
 .tc-top{display:flex;align-items:center;gap:10px;padding:10px 14px;}
 .tc-inst{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:0.06em;color:var(--text3);min-width:32px;}
 .tc-date{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);flex:1;}
@@ -80,23 +58,20 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 .tc-grade.prime{background:rgba(201,151,58,0.1);color:var(--gold);border:1px solid rgba(201,151,58,0.2);}
 .tc-grade.take{background:rgba(45,184,130,0.08);color:var(--green);border:1px solid rgba(45,184,130,0.2);}
 .tc-grade.skip{background:rgba(224,80,80,0.08);color:var(--red);border:1px solid rgba(224,80,80,0.2);}
-.tc-outcome{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;min-width:36px;text-align:right;}
-.tc-outcome.w{color:var(--green);}
-.tc-outcome.l{color:var(--red);}
-.tc-outcome.p{color:var(--gold);}
-.tc-outcome.t{color:var(--amber);}
-.tc-outcome.d{color:var(--dim);}
+.tc-outcome{font-family:'Space Mono',monospace;font-size:9px;font-weight:700;min-width:52px;text-align:right;}
 .tc-flags{padding:0 14px 10px;display:flex;gap:5px;flex-wrap:wrap;}
-.tc-flag{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.06em;padding:1px 6px;border-radius:3px;background:rgba(212,130,26,0.08);color:var(--amber);border:1px solid rgba(212,130,26,0.15);}
-.empty-state{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);text-align:center;padding:40px 0;letter-spacing:0.08em;}
+.tc-flag{font-family:'Space Mono',monospace;font-size:7px;padding:1px 6px;border-radius:3px;background:rgba(212,130,26,0.08);color:var(--amber);border:1px solid rgba(212,130,26,0.15);}
 
-/* ── DETAIL MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:300;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px;}
+.empty-state{font-family:'Space Mono',monospace;font-size:9px;color:var(--dim);text-align:center;padding:40px 0;letter-spacing:0.08em;}
+.loading{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);text-align:center;padding:30px;letter-spacing:0.1em;}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:300;display:none;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--surf);border:1px solid var(--line);border-radius:14px;width:100%;max-width:680px;margin:auto;overflow:hidden;}
 .modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--surf2);}
 .modal-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.08em;color:var(--text3);}
-.modal-close{font-family:'Space Mono',monospace;font-size:16px;color:var(--dim);background:none;border:none;cursor:pointer;padding:2px 6px;}
+.modal-close{font-size:16px;color:var(--dim);background:none;border:none;cursor:pointer;padding:2px 6px;}
 .modal-close:hover{color:var(--text);}
 .modal-body{padding:18px;}
 .modal-section{margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line);}
@@ -110,195 +85,135 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 .img-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .img-slot{background:var(--bg);border:1px solid var(--line);border-radius:8px;aspect-ratio:16/9;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;}
 .img-slot img{width:100%;height:100%;object-fit:cover;}
-.img-slot-label{position:absolute;bottom:6px;left:8px;font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.1em;color:#fff;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:3px;}
-.img-placeholder{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);letter-spacing:0.08em;}
-.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.img-slot-label{position:absolute;bottom:6px;left:8px;font-family:'Space Mono',monospace;font-size:7px;color:#fff;background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:3px;}
+.img-placeholder{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);letter-spacing:0.06em;}
 .act-btn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;border-radius:7px;border:1px solid var(--line2);background:var(--bg);color:var(--dim);cursor:pointer;transition:all 0.2s;}
 .act-btn:hover{color:var(--text2);border-color:var(--dim);}
 .act-btn.primary{background:rgba(45,184,130,0.08);border-color:rgba(45,184,130,0.3);color:var(--green);}
 .act-btn.danger{background:rgba(224,80,80,0.06);border-color:rgba(224,80,80,0.25);color:#c06060;}
-.act-btn.gold{background:rgba(201,151,58,0.08);border-color:rgba(201,151,58,0.25);color:var(--gold);}
+.act-btn.loss-btn{background:rgba(224,80,80,0.08);border-color:rgba(224,80,80,0.3);color:var(--red);}
+.action-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
 textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line2);border-radius:7px;color:var(--text2);font-family:'Space Mono',monospace;font-size:9px;padding:10px 12px;outline:none;resize:vertical;min-height:72px;margin-top:6px;}
-
-/* ── UPLOAD ZONE ── */
-.upload-zone{border:1px dashed var(--line2);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);}
-.upload-zone:hover,.upload-zone.drag{border-color:var(--gold-lo);background:rgba(201,151,58,0.03);}
+.upload-zone{border:1px dashed var(--line2);border-radius:8px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);margin-top:6px;}
+.upload-zone:hover{border-color:var(--gold-lo);}
 .upload-zone input{display:none;}
-.upload-zone-txt{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;}
+.upload-zone-txt{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;}
 .upload-preview{width:100%;border-radius:6px;margin-top:8px;max-height:160px;object-fit:cover;display:none;}
 
-/* ── ANALYTICS ── */
+/* Analytics */
 .analytics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
 .stat-card{background:var(--surf2);border:1px solid var(--line);border-radius:9px;padding:12px 14px;}
-.stat-card.full{grid-column:1/-1;}
 .stat-eye{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:4px;}
 .stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.05em;line-height:1;}
 .stat-sub{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);margin-top:2px;}
+.an-sec{margin-bottom:20px;}
+.an-sec-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--line);}
 .breakdown-table{width:100%;border-collapse:collapse;font-family:'Space Mono',monospace;font-size:8px;}
 .breakdown-table th{color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;padding:6px 10px;border-bottom:1px solid var(--line);text-align:left;}
 .breakdown-table td{color:var(--text2);padding:7px 10px;border-bottom:1px solid var(--line);}
 .breakdown-table tr:last-child td{border-bottom:none;}
-.breakdown-table .val-pos{color:var(--green);}
-.breakdown-table .val-neg{color:var(--red);}
-.breakdown-table .val-neu{color:var(--text3);}
-.breakdown-table .val-gld{color:var(--gold);}
-.an-sec{margin-bottom:20px;}
-.an-sec-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--line);}
+.val-pos{color:var(--green);}
+.val-neg{color:var(--red);}
+.val-neu{color:var(--text3);}
+.val-gld{color:var(--gold);}
 .alert-card{background:rgba(212,130,26,0.04);border:1px solid rgba(212,130,26,0.2);border-radius:8px;padding:11px 13px;margin-bottom:6px;}
 .alert-title{font-family:'Space Mono',monospace;font-size:8px;color:var(--amber);font-weight:700;letter-spacing:0.04em;margin-bottom:4px;}
 .alert-body{font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);line-height:1.6;}
 .sample-note{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);margin-top:3px;}
-
-/* ── EXPORT ── */
 .export-section{background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:18px;}
 .export-desc{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.7;letter-spacing:0.04em;margin-bottom:16px;}
 .export-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:10px 20px;border-radius:8px;border:1px solid rgba(45,184,130,0.3);background:rgba(45,184,130,0.07);color:var(--green);cursor:pointer;transition:all 0.2s;}
 .export-btn:hover{background:rgba(45,184,130,0.12);}
-
-/* ── SAVE PROMPT (in decision engine) ── */
-.save-prompt{display:none;margin-top:10px;padding:14px 16px;background:rgba(201,151,58,0.04);border:1px solid rgba(201,151,58,0.2);border-radius:10px;}
-.save-prompt.show{display:block;}
-.sp-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:10px;}
-.sp-row{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;}
-.sp-inst{display:flex;gap:5px;flex-wrap:wrap;flex:1;}
-.sp-inst-btn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.08em;padding:6px 12px;border-radius:6px;border:1px solid var(--line2);background:var(--bg);color:var(--dim);cursor:pointer;transition:all 0.2s;}
-.sp-inst-btn.sel{background:rgba(201,151,58,0.1);border-color:rgba(201,151,58,0.4);color:var(--gold);}
-.sp-upload{flex:1;min-width:160px;}
-.sp-save{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:8px 16px;border-radius:7px;border:1px solid rgba(201,151,58,0.3);background:rgba(201,151,58,0.08);color:var(--gold);cursor:pointer;transition:all 0.2s;margin-top:8px;width:100%;}
-.sp-save:hover{background:rgba(201,151,58,0.15);}
-.sp-saved{font-family:'Space Mono',monospace;font-size:8px;color:var(--green);margin-top:6px;display:none;}
-
-.loading{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);text-align:center;padding:30px;letter-spacing:0.1em;}
-
-@media(max-width:480px){
-  .detail-grid{grid-template-columns:1fr;}
-  .img-pair{grid-template-columns:1fr;}
-  .analytics-grid{grid-template-columns:1fr;}
-  .filter-bar{gap:4px;}
-  .fsel{font-size:7px;padding:5px 8px;}
-}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surf2);border:1px solid var(--line2);color:var(--text2);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;padding:9px 18px;border-radius:7px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:900;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+@media(max-width:480px){.detail-grid{grid-template-columns:1fr;}.img-pair{grid-template-columns:1fr;}.analytics-grid{grid-template-columns:1fr;}.filter-bar{gap:4px;}}
 </style>
 </head>
 <body>
 <div class="top-rule"></div>
+<div class="wrap">
+<header>
+  <div class="hdr">
+    <div>
+      <div class="brand-eye">Biverway · Trade Tracker</div>
+      <div class="brand-name">Model <span>A</span></div>
+    </div>
+    <div class="hdr-right">
+      <a href="https://solomonubom54-png.github.io/biverway-model-a/" class="hdr-btn">← Decision Engine</a>
+    </div>
+  </div>
+</header>
 
-<!-- ── AUTH SCREEN ── -->
-<div id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-logo">Biverway Trading System</div>
-    <div class="auth-title">Trade Tracker</div>
-    <div class="auth-field">
-      <label>Email</label>
-      <input type="email" id="auth-email" placeholder="your@email.com" autocomplete="email">
+<nav class="nav">
+  <button class="nav-tab active" onclick="showPanel('log',this)">Log</button>
+  <button class="nav-tab" onclick="showPanel('analytics',this)">Analytics</button>
+  <button class="nav-tab" onclick="showPanel('archive',this)">Archive</button>
+  <button class="nav-tab" onclick="showPanel('export',this)">Export</button>
+</nav>
+
+<!-- LOG -->
+<div class="panel active" id="panel-log">
+  <div style="padding-top:14px;">
+    <div class="sec-hdr">
+      <span class="sec-title">Trade Log</span>
+      <span class="count-badge" id="log-count">—</span>
     </div>
-    <div class="auth-field">
-      <label>Password</label>
-      <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
+    <div class="filter-bar">
+      <select class="fsel" id="f-status" onchange="renderLog()">
+        <option value="active">All Active</option>
+        <option value="complete">Complete</option>
+        <option value="pending">Pending</option>
+        <option value="triggered">Triggered</option>
+      </select>
+      <select class="fsel" id="f-inst" onchange="renderLog()">
+        <option value="">All Instruments</option>
+        <option value="EU">EURUSD</option>
+        <option value="GU">GBPUSD</option>
+        <option value="UC">USDCHF</option>
+        <option value="XU">XAUUSD</option>
+      </select>
+      <select class="fsel" id="f-grade" onchange="renderLog()">
+        <option value="">All Grades</option>
+        <option value="PRIME">PRIME</option>
+        <option value="TAKE">TAKE</option>
+        <option value="SKIP">SKIP</option>
+      </select>
+      <select class="fsel" id="f-outcome" onchange="renderLog()">
+        <option value="">All Outcomes</option>
+        <option value="Win">Win</option>
+        <option value="Loss">Loss</option>
+      </select>
     </div>
-    <button class="auth-btn" onclick="doSignIn()">Sign In</button>
-    <div class="auth-err" id="auth-err"></div>
+    <div class="trade-list" id="trade-list"><div class="loading">Loading...</div></div>
   </div>
 </div>
 
-<!-- ── APP SCREEN ── -->
-<div id="app-screen">
-  <div class="top-rule"></div>
-  <div class="wrap">
-    <header>
-      <div class="hdr">
-        <div>
-          <div class="brand-eye">Biverway · Trade Tracker</div>
-          <div class="brand-name">Model <span>A</span></div>
-        </div>
-        <div class="hdr-right">
-          <a href="biverway-model-a.html" class="back-btn">← Decision Engine</a>
-          <button class="signout-btn" onclick="doSignOut()">Sign Out</button>
-        </div>
-      </div>
-    </header>
+<!-- ANALYTICS -->
+<div class="panel" id="panel-analytics">
+  <div style="padding-top:14px;" id="analytics-content"><div class="loading">Loading...</div></div>
+</div>
 
-    <nav class="nav">
-      <button class="nav-tab active" onclick="showPanel('log',this)">Log</button>
-      <button class="nav-tab" onclick="showPanel('analytics',this)">Analytics</button>
-      <button class="nav-tab" onclick="showPanel('archive',this)">Archive</button>
-      <button class="nav-tab" onclick="showPanel('export',this)">Export</button>
-    </nav>
-
-    <!-- LOG PANEL -->
-    <div class="panel active" id="panel-log">
-      <div style="padding-top:14px;">
-        <div class="sec-hdr">
-          <span class="sec-title">Trade Log</span>
-          <span id="log-count" style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);">—</span>
-        </div>
-        <div class="filter-bar">
-          <select class="fsel" id="f-status" onchange="renderLog()">
-            <option value="all-active">All Active</option>
-            <option value="complete">Complete</option>
-            <option value="pending">Pending</option>
-            <option value="triggered">Triggered</option>
-          </select>
-          <select class="fsel" id="f-inst" onchange="renderLog()">
-            <option value="">All Instruments</option>
-            <option value="EU">EURUSD</option>
-            <option value="GU">GBPUSD</option>
-            <option value="UC">USDCHF</option>
-            <option value="XU">XAUUSD</option>
-          </select>
-          <select class="fsel" id="f-grade" onchange="renderLog()">
-            <option value="">All Grades</option>
-            <option value="PRIME">PRIME</option>
-            <option value="TAKE">TAKE</option>
-            <option value="SKIP">SKIP</option>
-          </select>
-          <select class="fsel" id="f-outcome" onchange="renderLog()">
-            <option value="">All Outcomes</option>
-            <option value="Win">Win</option>
-            <option value="Loss">Loss</option>
-          </select>
-        </div>
-        <div class="trade-list" id="trade-list">
-          <div class="loading">Loading trades...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ANALYTICS PANEL -->
-    <div class="panel" id="panel-analytics">
-      <div style="padding-top:14px;" id="analytics-content">
-        <div class="loading">Loading analytics...</div>
-      </div>
-    </div>
-
-    <!-- ARCHIVE PANEL -->
-    <div class="panel" id="panel-archive">
-      <div style="padding-top:14px;">
-        <div class="sec-hdr">
-          <span class="sec-title">Discarded Archive</span>
-        </div>
-        <div class="trade-list" id="archive-list">
-          <div class="loading">Loading archive...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- EXPORT PANEL -->
-    <div class="panel" id="panel-export">
-      <div style="padding-top:14px;">
-        <div class="sec-hdr"><span class="sec-title">Export</span></div>
-        <div class="export-section">
-          <div class="export-desc">
-            Exports all Complete trade records as a CSV file. Every field is included — all step answers, verdict, outcome, timestamps, and notes. Before and after image URLs are included as links. Pending, Triggered, and Discarded records are excluded.
-          </div>
-          <button class="export-btn" onclick="doExport()">Export Complete Records as CSV</button>
-        </div>
-      </div>
-    </div>
-
+<!-- ARCHIVE -->
+<div class="panel" id="panel-archive">
+  <div style="padding-top:14px;">
+    <div class="sec-hdr"><span class="sec-title">Discarded Archive</span></div>
+    <div class="trade-list" id="archive-list"><div class="loading">Loading...</div></div>
   </div>
 </div>
 
-<!-- ── DETAIL MODAL ── -->
+<!-- EXPORT -->
+<div class="panel" id="panel-export">
+  <div style="padding-top:14px;">
+    <div class="sec-hdr"><span class="sec-title">Export</span></div>
+    <div class="export-section">
+      <div class="export-desc">Exports all Complete records as CSV. Every field included. Before/after image URLs included as links. Pending, Triggered, and Discarded records are excluded.</div>
+      <button class="export-btn" onclick="doExport()">Export Complete Records as CSV</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
   <div class="modal" id="modal-inner">
     <div class="modal-hdr">
@@ -309,562 +224,328 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
   </div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, query, orderBy, Timestamp, where } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js";
+<div class="toast" id="toast"></div>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD7-KdudvuKAuquuWz94ZYwr6U1b0lBIbk",
-  authDomain: "biverway-model-a.firebaseapp.com",
-  projectId: "biverway-model-a",
-  storageBucket: "biverway-model-a.firebasestorage.app",
-  messagingSenderId: "97466390074",
-  appId: "1:97466390074:web:fe3e45409b5e35111e8703"
-};
+<script>
+var SUPA_URL = 'https://wqmtdotsdedlblqucagn.supabase.co';
+var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxbXRkb3RzZGVkbGJscXVjYWduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTE3NjksImV4cCI6MjA5MjIyNzc2OX0.bgOYJHxLGi6cTKWiGQgYpLGPbR8XjLd1VTN0YW18h1I';
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
+var allTrades = [];
+var currentId = null;
+var _afterFile = null;
 
-// ── STATE ──────────────────────────────────────────────────────────
-let allTrades = [];
-let currentTradeId = null;
-window._fbUpdate = updateDoc;
-window._fbDoc = doc;
-window._db = db;
-window._storage = storage;
-window._storageRef = ref;
-window._uploadBytes = uploadBytes;
-window._getDownloadURL = getDownloadURL;
-
-// ── AUTH ───────────────────────────────────────────────────────────
-onAuthStateChanged(auth, user => {
-  if (user) {
-    document.getElementById('auth-screen').style.display = 'none';
-    document.getElementById('app-screen').style.display = 'block';
-    loadTrades();
-  } else {
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('app-screen').style.display = 'none';
-  }
-});
-
-window.doSignIn = async function() {
-  const email = document.getElementById('auth-email').value.trim();
-  const pass  = document.getElementById('auth-pass').value;
-  const errEl = document.getElementById('auth-err');
-  errEl.style.display = 'none';
-  try {
-    await signInWithEmailAndPassword(auth, email, pass);
-  } catch(e) {
-    errEl.textContent = 'Sign in failed — check credentials.';
-    errEl.style.display = 'block';
-  }
-};
-
-window.doSignOut = async function() {
-  await signOut(auth);
-};
-
-// Enter key on auth
-document.getElementById('auth-pass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') window.doSignIn();
-});
-
-// ── LOAD TRADES ────────────────────────────────────────────────────
-async function loadTrades() {
-  try {
-    const q = query(collection(db, 'trades'), orderBy('createdAt', 'desc'));
-    const snap = await getDocs(q);
-    allTrades = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderLog();
-    renderArchive();
-    renderAnalytics();
-  } catch(e) {
-    console.error(e);
-  }
+// ── SUPABASE HELPERS ─────────────────────────────────────────────
+function supaHeaders() {
+  return { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json' };
 }
 
-// ── HELPERS ────────────────────────────────────────────────────────
+async function supaGet(filter) {
+  var url = SUPA_URL + '/rest/v1/trades?order=created_at.desc' + (filter||'');
+  var r = await fetch(url, { headers: supaHeaders() });
+  return r.ok ? await r.json() : [];
+}
+
+async function supaUpdate(id, data) {
+  var r = await fetch(SUPA_URL + '/rest/v1/trades?id=eq.' + id, {
+    method: 'PATCH',
+    headers: { ...supaHeaders(), 'Prefer': 'return=minimal' },
+    body: JSON.stringify(data)
+  });
+  return r.ok;
+}
+
+async function uploadImage(file, prefix) {
+  var ext = (file.name || 'img').split('.').pop() || 'jpg';
+  var path = prefix + '_' + Date.now() + '.' + ext;
+  var r = await fetch(SUPA_URL + '/storage/v1/object/trade-images/' + path, {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': file.type || 'image/jpeg' },
+    body: file
+  });
+  return r.ok ? SUPA_URL + '/storage/v1/object/public/trade-images/' + path : null;
+}
+
+// ── LOAD ─────────────────────────────────────────────────────────
+async function loadTrades() {
+  allTrades = await supaGet();
+  renderLog();
+  renderArchive();
+  renderAnalytics();
+}
+
+// ── RENDER HELPERS ────────────────────────────────────────────────
 function fmtDate(ts) {
   if (!ts) return '—';
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  var d = new Date(ts);
   return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
 }
 
-function instLabel(i) {
-  return {EU:'EURUSD',GU:'GBPUSD',UC:'USDCHF',XU:'XAUUSD'}[i] || i;
+function instFull(i) {
+  return {EU:'EURUSD',GU:'GBPUSD',UC:'USDCHF',XU:'XAUUSD'}[i] || i || '—';
 }
 
 function stepLabel(key, val) {
-  const labels = {
-    news: { kill:'Yes — whipsaw', pass:'No — normal day' },
-    gap:  { yes:'Gap present', no:'No gap' },
-    gpos: { before:'Post-Gap Organic', after:'Gap-Driven Structure' },
-    htf:  { pass:'No HTF zone', med:'H4 only', kill:'D1 involved' },
-    mssq1:{ yes:'Broker disagree', no:'Brokers agree' },
-    mssq2:{ yes:'D1 FVG tap yes', no:'D1 FVG tap no' },
-    mssq3:{ yes:'DBI sweep yes', no:'DBI sweep no' },
-    zdepth:{ 'deep-h1':'Deep H1','deep-sw':'Deep H1 + Sideways Base','shallow-m45':'Shallow M45','shallow-none':'Shallow No Validation' },
-    zliq:  { clean:'Clean',overlap:'Overlapping' },
-    asian: { yes:'Coincides with PD Asian range', no:'Independent' },
-    dba:   { kill:'Prior failure at DBI Asian range', pass:'No failure' },
-    dbh:   { kill:'Prior failure at DBI H/L', pass:'No failure' },
-    hist:  { med:'Historical reference level', pass:'Fresh level' },
-    loc:   { prime:'PDH/PDL', good:'Near PDH/PDL or 50–79%', mid:'40–50%', weak:'20–40%' },
-    candle:{ pos:'Pin Bar / Balanced', neu:'Strong Directional', neg:'Indecisive', med:'DBI Sweep Candle' }
+  if (!val) return null;
+  var map = {
+    news:{kill:'Yes — whipsaw',pass:'No — normal'},
+    gap:{yes:'Gap present',no:'No gap'},
+    gpos:{before:'Post-Gap Organic',after:'Gap-Driven Structure'},
+    htf:{pass:'No HTF zone',med:'H4 only',kill:'D1 involved'},
+    mssq1:{yes:'Brokers disagree',no:'Brokers agree'},
+    mssq2:{yes:'D1 FVG: Yes',no:'D1 FVG: No'},
+    mssq3:{yes:'DBI sweep: Yes',no:'DBI sweep: No'},
+    zdepth:{'deep-h1':'Deep H1','deep-sw':'Deep H1 + Sideways','shallow-m45':'Shallow M45','shallow-none':'Shallow — No validation'},
+    zliq:{clean:'Clean',overlap:'Overlapping'},
+    asian:{yes:'Coincides with Asian range',no:'Independent'},
+    dba:{kill:'Prior failure — DBI Asian',pass:'No failure'},
+    dbh:{kill:'Prior failure — DBI H/L',pass:'No failure'},
+    hist:{med:'Historical reference level',pass:'Fresh level'},
+    loc:{prime:'PDH / PDL',good:'Near PDH or 50–79%',mid:'40–50%',weak:'20–40%'},
+    candle:{pos:'Pin Bar / Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle'}
   };
-  return (labels[key] && labels[key][val]) || val || '—';
+  return (map[key] && map[key][val]) || val;
 }
 
-// ── RENDER LOG ─────────────────────────────────────────────────────
-window.renderLog = function() {
-  const statusF  = document.getElementById('f-status').value;
-  const instF    = document.getElementById('f-inst').value;
-  const gradeF   = document.getElementById('f-grade').value;
-  const outcomeF = document.getElementById('f-outcome').value;
+// ── RENDER LOG ────────────────────────────────────────────────────
+function renderLog() {
+  var sf = document.getElementById('f-status').value;
+  var inst = document.getElementById('f-inst').value;
+  var grade = document.getElementById('f-grade').value;
+  var outcome = document.getElementById('f-outcome').value;
 
-  let trades = allTrades.filter(t => t.status !== 'discarded');
+  var list = allTrades.filter(function(t){ return t.status !== 'discarded'; });
+  if (sf === 'complete')  list = list.filter(function(t){ return t.status === 'complete'; });
+  if (sf === 'pending')   list = list.filter(function(t){ return t.status === 'pending'; });
+  if (sf === 'triggered') list = list.filter(function(t){ return t.status === 'triggered'; });
+  if (inst)    list = list.filter(function(t){ return t.instrument === inst; });
+  if (grade)   list = list.filter(function(t){ return t.verdict === grade; });
+  if (outcome) list = list.filter(function(t){ return t.outcome === outcome; });
 
-  if (statusF === 'complete')   trades = trades.filter(t => t.status === 'complete');
-  else if (statusF === 'pending')   trades = trades.filter(t => t.status === 'pending');
-  else if (statusF === 'triggered') trades = trades.filter(t => t.status === 'triggered');
-
-  if (instF)    trades = trades.filter(t => t.instrument === instF);
-  if (gradeF)   trades = trades.filter(t => t.verdict === gradeF);
-  if (outcomeF) trades = trades.filter(t => t.outcome === outcomeF);
-
-  const el = document.getElementById('trade-list');
-  document.getElementById('log-count').textContent = trades.length + ' records';
-
-  if (!trades.length) {
-    el.innerHTML = '<div class="empty-state">No records match the current filters</div>';
-    return;
-  }
-
-  el.innerHTML = trades.map(t => tradeCardHTML(t)).join('');
-};
-
-function tradeCardHTML(t) {
-  const statusClass = t.status === 'complete' ? (t.outcome === 'Win' ? 'win' : 'loss') : t.status;
-  const outcomeLabel = t.status === 'complete' ? t.outcome : (t.status === 'pending' ? 'Pending' : 'Triggered');
-  const outcomeClass = t.status === 'complete' ? (t.outcome === 'Win' ? 'w' : 'l') : (t.status === 'pending' ? 'p' : 't');
-  const flags = (t.flags || []).map(f => `<span class="tc-flag">${f}</span>`).join('');
-  return `<div class="trade-card ${statusClass}" onclick="openTrade('${t.id}')">
-    <div class="tc-top">
-      <span class="tc-inst">${t.instrument || '—'}</span>
-      <span class="tc-date">${fmtDate(t.createdAt)}</span>
-      <span class="tc-grade ${(t.verdict||'').toLowerCase()}">${t.verdict || '—'}</span>
-      <span class="tc-outcome ${outcomeClass}">${outcomeLabel}</span>
-    </div>
-    ${flags ? `<div class="tc-flags">${flags}</div>` : ''}
-  </div>`;
+  document.getElementById('log-count').textContent = list.length + ' records';
+  var el = document.getElementById('trade-list');
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No records match the current filters</div>'; return; }
+  el.innerHTML = list.map(cardHTML).join('');
 }
 
-// ── RENDER ARCHIVE ─────────────────────────────────────────────────
+function cardHTML(t) {
+  var sc = t.status === 'complete' ? (t.outcome === 'Win' ? 'win' : 'loss') : t.status;
+  var ol = t.status === 'complete' ? t.outcome : (t.status === 'pending' ? 'Pending' : t.status === 'triggered' ? 'Triggered' : t.status);
+  var oc = t.status === 'complete' ? (t.outcome === 'Win' ? 'color:var(--green)' : 'color:var(--red)') : (t.status==='pending'?'color:var(--gold)':'color:var(--amber)');
+  var flags = (t.flags||[]).map(function(f){ return '<span class="tc-flag">'+f+'</span>'; }).join('');
+  return '<div class="trade-card '+sc+'" onclick="openTrade(\''+t.id+'\')"><div class="tc-top"><span class="tc-inst">'+(t.instrument||'—')+'</span><span class="tc-date">'+fmtDate(t.created_at)+'</span><span class="tc-grade '+((t.verdict||'').toLowerCase())+'">'+(t.verdict||'—')+'</span><span class="tc-outcome" style="'+oc+'">'+ol+'</span></div>'+(flags?'<div class="tc-flags">'+flags+'</div>':'')+'</div>';
+}
+
+// ── RENDER ARCHIVE ────────────────────────────────────────────────
 function renderArchive() {
-  const trades = allTrades.filter(t => t.status === 'discarded');
-  const el = document.getElementById('archive-list');
-  if (!trades.length) {
-    el.innerHTML = '<div class="empty-state">No discarded records</div>';
-    return;
-  }
-  el.innerHTML = trades.map(t => tradeCardHTML(t)).join('');
+  var list = allTrades.filter(function(t){ return t.status === 'discarded'; });
+  var el = document.getElementById('archive-list');
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No discarded records</div>'; return; }
+  el.innerHTML = list.map(cardHTML).join('');
 }
 
-// ── OPEN TRADE MODAL ───────────────────────────────────────────────
-window.openTrade = function(id) {
-  const t = allTrades.find(x => x.id === id);
+// ── OPEN MODAL ────────────────────────────────────────────────────
+function openTrade(id) {
+  var t = allTrades.find(function(x){ return x.x_id === id || x.id === id; });
+  if (!t) { t = allTrades.find(function(x){ return String(x.id) === String(id); }); }
   if (!t) return;
-  currentTradeId = id;
+  currentId = t.id;
+  _afterFile = null;
 
-  document.getElementById('modal-title').textContent = `${instLabel(t.instrument)} · ${fmtDate(t.createdAt)}`;
+  document.getElementById('modal-title').textContent = instFull(t.instrument) + ' · ' + fmtDate(t.created_at);
 
-  const steps = [
-    ['01 Post News Whipsaw Day', stepLabel('news', t.steps?.news)],
-    ['02 Gap Day', stepLabel('gap', t.steps?.gap)],
-    ['02 Gap — Zone Type', stepLabel('gpos', t.steps?.gpos)],
-    ['03 HTF Opposing Zone', stepLabel('htf', t.steps?.htf)],
-    ['04 MSS Q1 Broker', stepLabel('mssq1', t.steps?.mssq1)],
-    ['04 MSS Q2 D1 FVG', stepLabel('mssq2', t.steps?.mssq2)],
-    ['04 MSS Q3 DBI Sweep', stepLabel('mssq3', t.steps?.mssq3)],
-    ['05 Zone Depth', stepLabel('zdepth', t.steps?.zdepth)],
-    ['05 Zone Liquidity', stepLabel('zliq', t.steps?.zliq)],
-    ['06a Asian Range Coincide', stepLabel('asian', t.steps?.asian)],
-    ['06b DBI Asian Range', stepLabel('dba', t.steps?.dba)],
-    ['06c DBI High / Low', stepLabel('dbh', t.steps?.dbh)],
-    ['06d Historical Reference', stepLabel('hist', t.steps?.hist)],
-    ['07 Impulse Ratio', t.steps?.imp || '—'],
-    ['08 ADR Ratio', t.steps?.adr || '—'],
-    ['09 Zone Location', stepLabel('loc', t.steps?.loc)],
-    ['10 PD Candle Type', stepLabel('candle', t.steps?.candle)],
-  ].filter(s => s[1] && s[1] !== '—');
+  var s = t.steps || {};
+  var stepDefs = [
+    ['01 Post News Whipsaw','news'],['02 Gap Day','gap'],['02 Gap Zone Type','gpos'],
+    ['03 HTF Opposing Zone','htf'],['04 MSS Q1 Broker','mssq1'],['04 MSS Q2 D1 FVG','mssq2'],
+    ['04 MSS Q3 DBI Sweep','mssq3'],['05 Zone Depth','zdepth'],['05 Zone Liquidity','zliq'],
+    ['06a Asian Coincide','asian'],['06b DBI Asian Range','dba'],['06c DBI H/L','dbh'],
+    ['06d Historical Ref','hist'],['07 Impulse Ratio','imp'],['08 ADR Ratio','adr'],
+    ['09 Zone Location','loc'],['10 PD Candle Type','candle']
+  ];
 
-  const stepItems = steps.map(s =>
-    `<div class="detail-item"><div class="di-label">${s[0]}</div><div class="di-val">${s[1]}</div></div>`
-  ).join('');
+  var stepItems = stepDefs.map(function(d){
+    var v = s[d[1]];
+    var lbl = stepLabel(d[1], v) || v;
+    if (!lbl) return '';
+    return '<div class="detail-item"><div class="di-label">'+d[0]+'</div><div class="di-val">'+lbl+'</div></div>';
+  }).filter(Boolean).join('');
 
-  const flagItems = (t.flags||[]).map(f =>
-    `<span class="tc-flag" style="margin-right:4px;">${f}</span>`
-  ).join('') || '<span style="font-family:Space Mono,monospace;font-size:8px;color:var(--dim)">None</span>';
+  var flagHtml = (t.flags||[]).map(function(f){ return '<span class="tc-flag" style="margin-right:4px;">'+f+'</span>'; }).join('') || '<span style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim)">None</span>';
+  var killHtml = t.kill_reason ? '<div class="detail-item full"><div class="di-label">Kill Reason</div><div class="di-val" style="color:var(--red)">'+t.kill_reason+'</div></div>' : '';
 
-  const killItem = t.killReason ? `<div class="detail-item full"><div class="di-label">Kill Reason</div><div class="di-val" style="color:var(--red)">${t.killReason}</div></div>` : '';
+  var beforeHtml = t.before_image ? '<img src="'+t.before_image+'" style="width:100%;height:100%;object-fit:cover;"><span class="img-slot-label">Before</span>' : '<span class="img-placeholder">No before image</span>';
+  var afterHtml  = t.after_image  ? '<img src="'+t.after_image+'"  style="width:100%;height:100%;object-fit:cover;"><span class="img-slot-label">After</span>'  : '<span class="img-placeholder">No after image</span>';
 
-  const beforeImg = t.beforeImage
-    ? `<img src="${t.beforeImage}" style="width:100%;height:100%;object-fit:cover;"><span class="img-slot-label">Before</span>`
-    : `<span class="img-placeholder">Before image</span>`;
-  const afterImg = t.afterImage
-    ? `<img src="${t.afterImage}" style="width:100%;height:100%;object-fit:cover;"><span class="img-slot-label">After</span>`
-    : `<span class="img-placeholder">No after image</span>`;
+  var actionsHtml = '';
+  var tid = String(t.id);
 
-  const isComplete = t.status === 'complete';
-  const isPending  = t.status === 'pending';
-  const isTriggered = t.status === 'triggered';
-
-  let actions = '';
-  if (isPending) {
-    actions = `
-      <div class="action-row">
-        <button class="act-btn primary" onclick="markTriggered('${id}')">Mark as Triggered</button>
-        <button class="act-btn danger" onclick="markDiscarded('${id}')">Discard Setup</button>
-      </div>`;
-  } else if (isTriggered) {
-    actions = `
-      <div style="margin-bottom:10px;">
-        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Record Outcome</div>
-        <div style="display:flex;gap:8px;margin-bottom:10px;">
-          <button class="act-btn primary" onclick="markComplete('${id}','Win')">Win</button>
-          <button class="act-btn danger" onclick="markComplete('${id}','Loss')">Loss</button>
-        </div>
-        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">After Chart Image</div>
-        <div class="upload-zone" onclick="document.getElementById('after-upload-${id}').click()">
-          <input type="file" id="after-upload-${id}" accept="image/*" onchange="previewAfter(this,'${id}')">
-          <div class="upload-zone-txt">Tap to attach after chart</div>
-          <img id="after-preview-${id}" class="upload-preview">
-        </div>
-        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin:10px 0 6px;">Notes</div>
-        <textarea class="modal-notes" id="notes-${id}" placeholder="Optional trade notes...">${t.notes||''}</textarea>
-      </div>`;
+  if (t.status === 'pending') {
+    actionsHtml = '<div class="action-row"><button class="act-btn primary" onclick="markTriggered(\''+tid+'\')">Mark as Triggered</button><button class="act-btn danger" onclick="markDiscarded(\''+tid+'\')">Discard</button></div>';
+  } else if (t.status === 'triggered') {
+    actionsHtml = '<div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Record Outcome</div><div class="action-row" style="margin-top:0;margin-bottom:12px;"><button class="act-btn primary" onclick="markComplete(\''+tid+'\',\'Win\')">Win</button><button class="act-btn loss-btn" onclick="markComplete(\''+tid+'\',\'Loss\')">Loss</button></div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">After Chart</div><div class="upload-zone" onclick="document.getElementById(\'after-inp-'+tid+'\').click()"><input type="file" id="after-inp-'+tid+'" accept="image/*" onchange="previewAfterImg(this,\''+tid+'\')"><div class="upload-zone-txt">Tap to attach after chart</div><img id="after-prev-'+tid+'" class="upload-preview"></div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin:10px 0 6px;">Notes</div><textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea></div>';
+  } else if (t.status === 'complete') {
+    actionsHtml = '<div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Notes</div><textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea><button class="act-btn" style="margin-top:8px;" onclick="saveNotes(\''+tid+'\')">Save Notes</button></div>';
   }
 
-  if (isComplete) {
-    actions = `
-      <div>
-        <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Notes</div>
-        <textarea class="modal-notes" id="notes-${id}" placeholder="Optional notes...">${t.notes||''}</textarea>
-        <button class="act-btn" style="margin-top:8px;" onclick="saveNotes('${id}')">Save Notes</button>
-      </div>`;
-  }
-
-  document.getElementById('modal-body').innerHTML = `
-    <div class="modal-section">
-      <div class="modal-sec-title">Summary</div>
-      <div class="detail-grid">
-        <div class="detail-item"><div class="di-label">Instrument</div><div class="di-val">${instLabel(t.instrument)}</div></div>
-        <div class="detail-item"><div class="di-label">Date</div><div class="di-val">${fmtDate(t.createdAt)}</div></div>
-        <div class="detail-item"><div class="di-label">Verdict</div><div class="di-val" style="color:${t.verdict==='PRIME'?'var(--gold)':t.verdict==='TAKE'?'var(--green)':'var(--red)'}">${t.verdict||'—'}</div></div>
-        <div class="detail-item"><div class="di-label">Outcome</div><div class="di-val" style="color:${t.outcome==='Win'?'var(--green)':t.outcome==='Loss'?'var(--red)':'var(--dim)'}">${t.outcome||t.status||'—'}</div></div>
-        <div class="detail-item full"><div class="di-label">Active Flags</div><div class="di-val" style="margin-top:3px;">${flagItems}</div></div>
-        ${killItem}
-      </div>
-    </div>
-    <div class="modal-section">
-      <div class="modal-sec-title">Step Answers</div>
-      <div class="detail-grid">${stepItems}</div>
-    </div>
-    <div class="modal-section">
-      <div class="modal-sec-title">Charts</div>
-      <div class="img-pair">
-        <div class="img-slot">${beforeImg}</div>
-        <div class="img-slot">${afterImg}</div>
-      </div>
-    </div>
-    ${actions ? `<div class="modal-section">${actions}</div>` : ''}
-  `;
+  document.getElementById('modal-body').innerHTML =
+    '<div class="modal-section"><div class="modal-sec-title">Summary</div><div class="detail-grid"><div class="detail-item"><div class="di-label">Instrument</div><div class="di-val">'+instFull(t.instrument)+'</div></div><div class="detail-item"><div class="di-label">Date</div><div class="di-val">'+fmtDate(t.created_at)+'</div></div><div class="detail-item"><div class="di-label">Verdict</div><div class="di-val" style="color:'+(t.verdict==='PRIME'?'var(--gold)':t.verdict==='TAKE'?'var(--green)':'var(--red)')+'">'+t.verdict+'</div></div><div class="detail-item"><div class="di-label">Status / Outcome</div><div class="di-val" style="color:'+(t.outcome==='Win'?'var(--green)':t.outcome==='Loss'?'var(--red)':'var(--dim)')+'">'+((t.outcome||t.status)||'—')+'</div></div><div class="detail-item full"><div class="di-label">Active Flags</div><div class="di-val" style="margin-top:3px;">'+flagHtml+'</div></div>'+killHtml+'</div></div>'+
+    '<div class="modal-section"><div class="modal-sec-title">Step Answers</div><div class="detail-grid">'+stepItems+'</div></div>'+
+    '<div class="modal-section"><div class="modal-sec-title">Charts</div><div class="img-pair"><div class="img-slot">'+beforeHtml+'</div><div class="img-slot">'+afterHtml+'</div></div></div>'+
+    (actionsHtml ? '<div class="modal-section">'+actionsHtml+'</div>' : '');
 
   document.getElementById('modal').classList.add('open');
+}
+
+window.closeModal = function() { document.getElementById('modal').classList.remove('open'); currentId = null; _afterFile = null; };
+window.closeModalOutside = function(e) { if(e.target===document.getElementById('modal')) closeModal(); };
+
+window.previewAfterImg = function(input, id) {
+  var file = input.files[0]; if (!file) return;
+  _afterFile = file;
+  var prev = document.getElementById('after-prev-'+id);
+  if (prev) { prev.src = URL.createObjectURL(file); prev.style.display = 'block'; }
 };
 
-window.closeModal = function() {
-  document.getElementById('modal').classList.remove('open');
-  currentTradeId = null;
-};
-window.closeModalOutside = function(e) {
-  if (e.target === document.getElementById('modal')) window.closeModal();
-};
-
-// ── STATUS TRANSITIONS ─────────────────────────────────────────────
+// ── STATUS TRANSITIONS ────────────────────────────────────────────
 window.markTriggered = async function(id) {
-  await updateDoc(doc(db, 'trades', id), { status:'triggered', triggeredAt: Timestamp.now() });
-  allTrades = allTrades.map(t => t.id===id ? {...t, status:'triggered', triggeredAt:Timestamp.now()} : t);
-  window.closeModal();
-  renderLog(); renderAnalytics();
+  var ok = await supaUpdate(id, { status:'triggered', triggered_at: new Date().toISOString() });
+  if (ok) { showToast('Marked as triggered'); await loadTrades(); closeModal(); }
 };
 
 window.markDiscarded = async function(id) {
-  if (!confirm('Discard this setup? It will be moved to the archive and excluded from all analytics.')) return;
-  await updateDoc(doc(db, 'trades', id), { status:'discarded' });
-  allTrades = allTrades.map(t => t.id===id ? {...t, status:'discarded'} : t);
-  window.closeModal();
-  renderLog(); renderArchive(); renderAnalytics();
-};
-
-window.previewAfter = function(input, id) {
-  const file = input.files[0];
-  if (!file) return;
-  const preview = document.getElementById(`after-preview-${id}`);
-  preview.src = URL.createObjectURL(file);
-  preview.style.display = 'block';
+  if (!confirm('Discard this setup? It will be archived and excluded from all analytics.')) return;
+  var ok = await supaUpdate(id, { status:'discarded' });
+  if (ok) { showToast('Setup discarded'); await loadTrades(); closeModal(); }
 };
 
 window.markComplete = async function(id, outcome) {
-  const notesEl = document.getElementById(`notes-${id}`);
-  const notes = notesEl ? notesEl.value : '';
-  const afterInput = document.getElementById(`after-upload-${id}`);
-  let afterUrl = null;
-
-  if (afterInput && afterInput.files[0]) {
-    const file = afterInput.files[0];
-    const sRef = ref(storage, `trades/${id}/after_${Date.now()}`);
-    const snap = await uploadBytes(sRef, file);
-    afterUrl = await getDownloadURL(snap.ref);
-  }
-
-  const update = {
-    status:'complete',
-    outcome,
-    completedAt: Timestamp.now(),
-    notes,
-    ...(afterUrl && { afterImage: afterUrl })
-  };
-
-  await updateDoc(doc(db, 'trades', id), update);
-  allTrades = allTrades.map(t => t.id===id ? {...t, ...update} : t);
-  window.closeModal();
-  renderLog(); renderAnalytics();
+  var notesEl = document.getElementById('notes-'+id);
+  var notes = notesEl ? notesEl.value : '';
+  var afterUrl = null;
+  if (_afterFile) { afterUrl = await uploadImage(_afterFile, 'after_'+id); }
+  var update = { status:'complete', outcome:outcome, completed_at:new Date().toISOString(), notes:notes };
+  if (afterUrl) update.after_image = afterUrl;
+  var ok = await supaUpdate(id, update);
+  if (ok) { showToast(outcome + ' recorded'); await loadTrades(); closeModal(); }
 };
 
 window.saveNotes = async function(id) {
-  const notesEl = document.getElementById(`notes-${id}`);
-  if (!notesEl) return;
-  await updateDoc(doc(db, 'trades', id), { notes: notesEl.value });
-  allTrades = allTrades.map(t => t.id===id ? {...t, notes:notesEl.value} : t);
+  var el = document.getElementById('notes-'+id); if (!el) return;
+  var ok = await supaUpdate(id, { notes: el.value });
+  if (ok) showToast('Notes saved');
 };
 
 // ── ANALYTICS ─────────────────────────────────────────────────────
 function renderAnalytics() {
-  const complete = allTrades.filter(t => t.status === 'complete');
-  const el = document.getElementById('analytics-content');
+  var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
+  var el = document.getElementById('analytics-content');
+  if (!complete.length) { el.innerHTML = '<div class="empty-state" style="padding-top:40px;">No complete records yet.</div>'; return; }
 
-  if (!complete.length) {
-    el.innerHTML = '<div class="empty-state" style="padding-top:40px;">No complete records yet. Analytics will appear as trades are completed.</div>';
-    return;
+  function stats(arr) {
+    var w = arr.filter(function(t){return t.outcome==='Win';}).length;
+    var l = arr.length - w;
+    var wr = arr.length ? Math.round(w/arr.length*100) : 0;
+    var rrr = w*3 - l;
+    var ms=0,cs=0;
+    arr.forEach(function(t){ if(t.outcome==='Loss'){cs++;ms=Math.max(ms,cs);}else cs=0; });
+    return {w:w,l:l,n:arr.length,wr:wr,rrr:rrr,ms:ms};
   }
 
-  function stats(trades) {
-    const w = trades.filter(t=>t.outcome==='Win').length;
-    const l = trades.filter(t=>t.outcome==='Loss').length;
-    const wr = trades.length ? Math.round(w/trades.length*100) : 0;
-    const rrr = w*3 - l;
-    let ms=0,cs=0;
-    trades.forEach(t=>{ if(t.outcome==='Loss'){cs++;ms=Math.max(ms,cs);}else cs=0; });
-    return {w,l,n:trades.length,wr,rrr,ms};
-  }
+  var all   = stats(complete);
+  var prime = stats(complete.filter(function(t){return t.verdict==='PRIME';}));
+  var take  = stats(complete.filter(function(t){return t.verdict==='TAKE';}));
 
-  const all  = stats(complete);
-  const prime = stats(complete.filter(t=>t.verdict==='PRIME'));
-  const take  = stats(complete.filter(t=>t.verdict==='TAKE'));
+  var aggHTML = '<div class="an-sec"><div class="an-sec-title">Aggregate Performance · '+complete.length+' complete records</div><div class="analytics-grid"><div class="stat-card"><div class="stat-eye">Win Rate</div><div class="stat-val" style="color:'+(all.wr>=70?'var(--green)':all.wr>=50?'var(--amber)':'var(--red)')+'">'+all.wr+'%</div><div class="stat-sub">'+all.w+'W / '+all.l+'L</div></div><div class="stat-card"><div class="stat-eye">Net RRR at 1:3</div><div class="stat-val" style="color:'+(all.rrr>0?'var(--gold)':'var(--red)')+'">'+( all.rrr>0?'+':'')+all.rrr+'R</div><div class="stat-sub">'+complete.length+' trades</div></div><div class="stat-card"><div class="stat-eye">PRIME</div><div class="stat-val" style="color:var(--gold)">'+(prime.n?prime.wr+'%':'—')+'</div><div class="stat-sub">'+prime.n+' trades · '+prime.w+'W / '+prime.l+'L</div></div><div class="stat-card"><div class="stat-eye">TAKE</div><div class="stat-val" style="color:var(--green)">'+(take.n?take.wr+'%':'—')+'</div><div class="stat-sub">'+take.n+' trades · '+take.w+'W / '+take.l+'L</div></div><div class="stat-card"><div class="stat-eye">Max Losing Streak</div><div class="stat-val" style="color:var(--text3)">'+all.ms+'</div><div class="stat-sub">Complete records</div></div></div></div>';
 
-  // Aggregate cards
-  const aggHTML = `
-    <div class="an-sec">
-      <div class="an-sec-title">Aggregate Performance · ${complete.length} complete records</div>
-      <div class="analytics-grid">
-        <div class="stat-card">
-          <div class="stat-eye">Win Rate</div>
-          <div class="stat-val" style="color:${all.wr>=70?'var(--green)':all.wr>=50?'var(--amber)':'var(--red)'}">${all.wr}%</div>
-          <div class="stat-sub">${all.w}W / ${all.l}L</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eye">Net RRR at 1:3</div>
-          <div class="stat-val" style="color:${all.rrr>0?'var(--gold)':'var(--red)'}">${all.rrr>0?'+':''}${all.rrr}R</div>
-          <div class="stat-sub">${complete.length} trades</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eye">PRIME</div>
-          <div class="stat-val" style="color:var(--gold)">${prime.n ? prime.wr+'%' : '—'}</div>
-          <div class="stat-sub">${prime.n} trades · ${prime.w}W / ${prime.l}L</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eye">TAKE</div>
-          <div class="stat-val" style="color:var(--green)">${take.n ? take.wr+'%' : '—'}</div>
-          <div class="stat-sub">${take.n} trades · ${take.w}W / ${take.l}L</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eye">Max Losing Streak</div>
-          <div class="stat-val" style="color:var(--text3)">${all.ms}</div>
-          <div class="stat-sub">Complete records</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-eye">Instruments</div>
-          <div class="stat-val" style="font-size:14px;color:var(--text3)">${['EU','GU','UC','XU'].map(i=>{const n=complete.filter(t=>t.instrument===i).length; return n?`${i}:${n}`:''}).filter(Boolean).join(' · ')}</div>
-          <div class="stat-sub">By instrument count</div>
-        </div>
-      </div>
-    </div>`;
-
-  // Per-instrument breakdown
-  const instRows = ['EU','GU','UC','XU'].map(i => {
-    const ts = complete.filter(t=>t.instrument===i);
+  var instRows = ['EU','GU','UC','XU'].map(function(i){
+    var ts = complete.filter(function(t){return t.instrument===i;});
     if (!ts.length) return '';
-    const s = stats(ts);
-    return `<tr><td>${instLabel(i)}</td><td class="val-neu">${s.n}</td><td class="${s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg'}">${s.wr}%</td><td class="${s.rrr>0?'val-gld':'val-neg'}">${s.rrr>0?'+':''}${s.rrr}R</td><td class="val-neu">${s.ms}</td></tr>`;
+    var s = stats(ts);
+    return '<tr><td>'+instFull(i)+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td><td class="val-neu">'+s.ms+'</td></tr>';
   }).join('');
 
-  const instHTML = instRows ? `
-    <div class="an-sec">
-      <div class="an-sec-title">By Instrument</div>
-      <div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;">
-        <table class="breakdown-table">
-          <tr><th>Instrument</th><th>Trades</th><th>Win Rate</th><th>RRR</th><th>Max Streak</th></tr>
-          ${instRows}
-        </table>
-      </div>
-    </div>` : '';
+  var instHTML = instRows ? '<div class="an-sec"><div class="an-sec-title">By Instrument</div><div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;"><table class="breakdown-table"><tr><th>Instrument</th><th>Trades</th><th>Win Rate</th><th>RRR</th><th>Streak</th></tr>'+instRows+'</table></div></div>' : '';
 
-  // Filter performance breakdown
-  const filterDefs = [
-    { label:'HTF Opposing Zone', key:'htf', opts:[{v:'pass',l:'No HTF'},{v:'med',l:'H4 Only'},{v:'kill',l:'D1 Involved'}] },
-    { label:'MSS Q1 Broker', key:'mssq1', opts:[{v:'yes',l:'Disagree'},{v:'no',l:'Agree'}] },
-    { label:'MSS Q2 D1 FVG', key:'mssq2', opts:[{v:'yes',l:'FVG Yes'},{v:'no',l:'FVG No'}] },
-    { label:'Zone Depth', key:'zdepth', opts:[{v:'deep-h1',l:'Deep H1'},{v:'deep-sw',l:'Deep + Sideways'},{v:'shallow-m45',l:'Shallow M45'},{v:'shallow-none',l:'Shallow None'}] },
-    { label:'Zone Liquidity', key:'zliq', opts:[{v:'clean',l:'Clean'},{v:'overlap',l:'Overlap'}] },
-    { label:'Historical Ref', key:'hist', opts:[{v:'med',l:'Historical Ref'},{v:'pass',l:'Fresh Level'}] },
-    { label:'PD Candle Type', key:'candle', opts:[{v:'pos',l:'Pin Bar/Balanced'},{v:'neu',l:'Strong Directional'},{v:'neg',l:'Indecisive'},{v:'med',l:'DBI Sweep'}] },
-    { label:'Zone Location', key:'loc', opts:[{v:'prime',l:'PDH/PDL'},{v:'good',l:'Near PDH or 50-79%'},{v:'mid',l:'40-50%'},{v:'weak',l:'20-40%'}] },
+  var filterDefs = [
+    {label:'HTF Zone',key:'htf',opts:[{v:'pass',l:'No HTF'},{v:'med',l:'H4 Only'},{v:'kill',l:'D1'}]},
+    {label:'MSS Broker (Q1)',key:'mssq1',opts:[{v:'yes',l:'Disagree'},{v:'no',l:'Agree'}]},
+    {label:'MSS D1 FVG (Q2)',key:'mssq2',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
+    {label:'Zone Depth',key:'zdepth',opts:[{v:'deep-h1',l:'Deep H1'},{v:'deep-sw',l:'Deep+Sideways'},{v:'shallow-m45',l:'Shallow M45'},{v:'shallow-none',l:'Shallow None'}]},
+    {label:'Zone Liquidity',key:'zliq',opts:[{v:'clean',l:'Clean'},{v:'overlap',l:'Overlap'}]},
+    {label:'Historical Ref',key:'hist',opts:[{v:'med',l:'Yes'},{v:'pass',l:'No'}]},
+    {label:'PD Candle',key:'candle',opts:[{v:'pos',l:'Pin/Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'},{v:'med',l:'DBI Sweep'}]},
+    {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'good',l:'Near/50-79%'},{v:'mid',l:'40-50%'},{v:'weak',l:'20-40%'}]},
   ];
 
-  const filterRows = filterDefs.map(fd => {
-    const rows = fd.opts.map(opt => {
-      const ts = complete.filter(t => t.steps && t.steps[fd.key] === opt.v);
+  var filterRows = filterDefs.map(function(fd){
+    return fd.opts.map(function(opt){
+      var ts = complete.filter(function(t){ return t.steps && t.steps[fd.key] === opt.v; });
       if (!ts.length) return '';
-      const s = stats(ts);
-      return `<tr><td>${fd.label}</td><td>${opt.l}</td><td class="val-neu">${s.n}</td><td class="${s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg'}">${s.wr}%</td><td class="${s.rrr>0?'val-gld':'val-neg'}">${s.rrr>0?'+':''}${s.rrr}R</td></tr>`;
+      var s = stats(ts);
+      return '<tr><td>'+fd.label+'</td><td>'+opt.l+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td></tr>';
     }).join('');
-    return rows;
   }).join('');
 
-  const filterHTML = filterRows ? `
-    <div class="an-sec">
-      <div class="an-sec-title">Filter Performance Breakdown</div>
-      <div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;">
-        <table class="breakdown-table">
-          <tr><th>Filter</th><th>Answer</th><th>Trades</th><th>Win Rate</th><th>RRR</th></tr>
-          ${filterRows}
-        </table>
-      </div>
-    </div>` : '';
+  var filterHTML = filterRows ? '<div class="an-sec"><div class="an-sec-title">Filter Performance</div><div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;"><table class="breakdown-table"><tr><th>Filter</th><th>Answer</th><th>Trades</th><th>Win Rate</th><th>RRR</th></tr>'+filterRows+'</table></div></div>' : '';
 
-  // Pattern alerts
-  const alerts = [];
-  const MIN_SAMPLE = 10;
-  const DEVIATION = 15;
-  const overallWR = all.wr;
-
-  filterDefs.forEach(fd => {
-    fd.opts.forEach(opt => {
-      const ts = complete.filter(t => t.steps && t.steps[fd.key] === opt.v);
+  var MIN_SAMPLE=10, DEV=15;
+  var alerts = [];
+  filterDefs.forEach(function(fd){
+    fd.opts.forEach(function(opt){
+      var ts = complete.filter(function(t){ return t.steps && t.steps[fd.key] === opt.v; });
       if (ts.length < MIN_SAMPLE) return;
-      const s = stats(ts);
-      if (s.wr < overallWR - DEVIATION) {
-        alerts.push({ title:`${fd.label} — ${opt.l}`, body:`Win rate ${s.wr}% across ${s.n} trades. Overall filtered rate is ${overallWR}%. ${DEVIATION}pt+ below average. Review whether this condition warrants reclassification.`, n:s.n });
-      }
+      var s = stats(ts);
+      if (s.wr < all.wr - DEV) alerts.push({title:fd.label+' — '+opt.l,body:'Win rate '+s.wr+'% ('+s.n+' trades). System average '+all.wr+'%. '+DEV+'pt+ below — review this condition.',n:s.n});
     });
   });
 
-  // Instrument alerts
-  ['EU','GU','UC','XU'].forEach(i => {
-    const ts = complete.filter(t=>t.instrument===i);
-    if (ts.length < MIN_SAMPLE) return;
-    const s = stats(ts);
-    if (s.wr < overallWR - DEVIATION) {
-      alerts.push({ title:`${instLabel(i)} — Underperforming`, body:`Win rate ${s.wr}% across ${s.n} trades. ${DEVIATION}pt+ below system average of ${overallWR}%. Consider instrument-specific review.`, n:s.n });
-    }
-  });
-
-  const alertsHTML = alerts.length ? `
-    <div class="an-sec">
-      <div class="an-sec-title">Pattern Alerts · Min ${MIN_SAMPLE} trades · ${DEVIATION}pt deviation threshold</div>
-      ${alerts.map(a=>`
-        <div class="alert-card">
-          <div class="alert-title">${a.title}</div>
-          <div class="alert-body">${a.body}</div>
-          <div class="sample-note">Sample: ${a.n} trades</div>
-        </div>`).join('')}
-    </div>` : `
-    <div class="an-sec">
-      <div class="an-sec-title">Pattern Alerts</div>
-      <div class="empty-state" style="padding:20px 0;text-align:left;">No patterns flagged — no condition combination has reached ${MIN_SAMPLE} trades with ${DEVIATION}pt+ deviation from overall win rate.</div>
-    </div>`;
+  var alertsHTML = alerts.length
+    ? '<div class="an-sec"><div class="an-sec-title">Pattern Alerts</div>'+alerts.map(function(a){ return '<div class="alert-card"><div class="alert-title">'+a.title+'</div><div class="alert-body">'+a.body+'</div><div class="sample-note">Sample: '+a.n+' trades</div></div>'; }).join('')+'</div>'
+    : '<div class="an-sec"><div class="an-sec-title">Pattern Alerts</div><div class="empty-state" style="padding:16px 0;text-align:left;">No patterns flagged. Threshold: '+MIN_SAMPLE+' trades, '+DEV+'pt deviation.</div></div>';
 
   el.innerHTML = aggHTML + instHTML + filterHTML + alertsHTML;
 }
 
-// ── EXPORT ─────────────────────────────────────────────────────────
+// ── EXPORT ────────────────────────────────────────────────────────
 window.doExport = function() {
-  const complete = allTrades.filter(t => t.status === 'complete');
+  var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
   if (!complete.length) { alert('No complete records to export.'); return; }
-
-  const headers = ['id','instrument','date','verdict','outcome','killReason','flags','imp','adr',
+  var headers = ['id','instrument','created_at','verdict','outcome','flags','kill_reason','imp','adr',
     'news','gap','gpos','htf','mssq1','mssq2','mssq3','zdepth','zliq','asian','dba','dbh','hist','loc','candle',
-    'beforeImage','afterImage','notes','createdAt','triggeredAt','completedAt'];
-
-  const rows = complete.map(t => headers.map(h => {
-    if (h === 'date') return fmtDate(t.createdAt);
-    if (h === 'flags') return (t.flags||[]).join('; ');
-    if (h === 'imp') return t.steps?.imp || '';
-    if (h === 'adr') return t.steps?.adr || '';
-    if (['news','gap','gpos','htf','mssq1','mssq2','mssq3','zdepth','zliq','asian','dba','dbh','hist','loc','candle'].includes(h))
-      return t.steps?.[h] || '';
-    if (['createdAt','triggeredAt','completedAt'].includes(h))
-      return t[h] ? fmtDate(t[h]) : '';
-    return (t[h] ?? '').toString().replace(/,/g,'|');
-  }));
-
-  const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
-  const blob = new Blob([csv], { type:'text/csv' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = `biverway-trades-${new Date().toISOString().slice(0,10)}.csv`;
+    'before_image','after_image','notes','triggered_at','completed_at'];
+  var rows = complete.map(function(t){
+    return headers.map(function(h){
+      if (h==='flags') return (t.flags||[]).join('; ');
+      if (['news','gap','gpos','htf','mssq1','mssq2','mssq3','zdepth','zliq','asian','dba','dbh','hist','loc','candle','imp','adr'].includes(h))
+        return (t.steps && t.steps[h]) || '';
+      return (t[h]||'').toString().replace(/,/g,'|');
+    });
+  });
+  var csv = [headers].concat(rows).map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(','); }).join('\n');
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = 'biverway-trades-'+new Date().toISOString().slice(0,10)+'.csv';
   a.click();
 };
 
-// ── NAV ────────────────────────────────────────────────────────────
+// ── NAV / TOAST ───────────────────────────────────────────────────
 window.showPanel = function(name, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById(`panel-${name}`).classList.add('active');
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-tab').forEach(function(t){ t.classList.remove('active'); });
+  document.getElementById('panel-'+name).classList.add('active');
   btn.classList.add('active');
 };
 
-// ── EXPOSE SAVE FUNCTION FOR DECISION ENGINE ───────────────────────
-window._saveTradeRecord = async function(tradeData) {
-  try {
-    const docRef = await addDoc(collection(db, 'trades'), {
-      ...tradeData,
-      createdAt: Timestamp.now(),
-      status: 'pending'
-    });
-    return docRef.id;
-  } catch(e) {
-    console.error('Save failed:', e);
-    return null;
-  }
-};
+var toastTimer;
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
+}
 
+// ── INIT ──────────────────────────────────────────────────────────
+loadTrades();
 </script>
 </body>
 </html>
