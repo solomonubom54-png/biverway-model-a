@@ -1012,7 +1012,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">5</div></div>
         <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">84.4%</div></div>
       </div>
-            <button class="df-detail-trigger" id="dft-all" aria-expanded="false" onclick="toggleDetail('all')">
+      <button class="df-detail-trigger" id="dft-all" aria-expanded="false" onclick="toggleDetail('all')">
         <div class="df-chevron">&#8964;</div><span>View Detailed Metrics</span>
       </button>
       <div class="df-detail" id="dfd-all">
@@ -1210,7 +1210,7 @@ function stepDone(s){
   if(s==='hist') return !!rv('hist');
   if(s==='imp') return !isNaN(parseFloat(g('imp').value));
   if(s==='adr') return !isNaN(parseFloat(g('adr').value));
-  if(s==='loc') return !!rv('loc');
+  if(s==='loc'){ if(rv('hist')==='med') return true; return !!rv('loc'); }
   if(s==='candle') return !!rv('candle');
   return false;
 }
@@ -1372,8 +1372,15 @@ function run(){
 
   // ── Step 8 Location ──────────────────────────────────────────
   var lv2=rv('loc');
-  if(lv2){sc('loc','pa');ss('loc','Noted','var(--green)');}
-  else{sc('loc','');ss('loc','—','var(--dim)');}
+  var histIsRef = rv('hist')==='med';
+  if(histIsRef){
+    sc('loc','pa');ss('loc','N/A','var(--dim)');
+    g('c-loc').style.opacity='0.38';g('c-loc').style.pointerEvents='none';
+  } else {
+    g('c-loc').style.opacity='';g('c-loc').style.pointerEvents='';
+    if(lv2){sc('loc','pa');ss('loc','Noted','var(--green)');}
+    else{sc('loc','');ss('loc','—','var(--dim)');}
+  }
 
   // ── Step 9 Candle ────────────────────────────────────────────
   var cv=rv('candle');
@@ -1467,6 +1474,7 @@ function resetAll(){
   var prev=document.getElementById('before-img-preview');if(prev){prev.src='';prev.style.display='none';}
   var saved=document.getElementById('sp-saved');if(saved)saved.style.display='none';
   var btn=document.getElementById('sp-save-btn');if(btn){btn.textContent='Save Record & Open Tracker';btn.disabled=false;}
+  var locEl=g('c-loc');if(locEl){locEl.style.opacity='';locEl.style.pointerEvents='';}
 }
 // Initial lock state on page load
 updateLocks();
@@ -1541,60 +1549,61 @@ window.saveToTracker = async function() {
   if (steps.mssq2 === 'yes' && steps.mssq3 !== 'yes') flags.push('D1 FVG Rejection');
 
   var btn = document.getElementById('sp-save-btn');
+  var savedEl = document.getElementById('sp-saved');
   if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
 
-  var tradeData = { instrument: _selectedInst, verdict: verdict, steps: steps, flags: flags, notes: '' };
+  var SUPA_URL = 'https://wqmtdotsdedlblqucagn.supabase.co';
+  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndxbXRkb3RzZGVkbGJscXVjYWduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2NTE3NjksImV4cCI6MjA5MjIyNzc2OX0.bgOYJHxLGi6cTKWiGQgYpLGPbR8XjLd1VTN0YW18h1I';
 
   try {
-    var [fb, fbAuth, fbFs, fbSt] = await Promise.all([
-      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js'),
-      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js'),
-      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js'),
-      import('https://www.gstatic.com/firebasejs/11.6.0/firebase-storage.js')
-    ]);
-    var firebaseConfig = {
-      apiKey:"AIzaSyD7-KdudvuKAuquuWz94ZYwr6U1b0lBIbk",
-      authDomain:"biverway-model-a.firebaseapp.com",
-      projectId:"biverway-model-a",
-      storageBucket:"biverway-model-a.firebasestorage.app",
-      messagingSenderId:"97466390074",
-      appId:"1:97466390074:web:fe3e45409b5e35111e8703"
-    };
-    var existingApp; try { existingApp = fb.getApp(); } catch(e){}
-    var app2 = existingApp || fb.initializeApp(firebaseConfig);
-    var auth2 = fbAuth.getAuth(app2);
-    var db2   = fbFs.getFirestore(app2);
-    var st2   = fbSt.getStorage(app2);
-
-    if (!auth2.currentUser) {
-      sessionStorage.setItem('pendingTrade', JSON.stringify(tradeData));
-      window.open('biverway-tracker.html', '_blank');
-      if (btn) { btn.textContent = 'Save Record & Open Tracker'; btn.disabled = false; }
-      return;
-    }
-
     var beforeUrl = null;
     if (_beforeImgFile) {
-      var tmpRef = fbSt.ref(st2, 'trades/tmp_' + Date.now() + '/before');
-      var snap1 = await fbSt.uploadBytes(tmpRef, _beforeImgFile);
-      beforeUrl = await fbSt.getDownloadURL(snap1.ref);
+      var ext = _beforeImgFile.name.split('.').pop() || 'jpg';
+      var imgPath = 'before_' + Date.now() + '.' + ext;
+      var uploadResp = await fetch(SUPA_URL + '/storage/v1/object/trade-images/' + imgPath, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': _beforeImgFile.type },
+        body: _beforeImgFile
+      });
+      if (uploadResp.ok) {
+        beforeUrl = SUPA_URL + '/storage/v1/object/public/trade-images/' + imgPath;
+      }
     }
 
-    var docRef = await fbFs.addDoc(fbFs.collection(db2, 'trades'), {
-      ...tradeData,
-      beforeImage: beforeUrl,
-      createdAt: fbFs.Timestamp.now(),
-      status: 'pending'
+    var payload = {
+      instrument: _selectedInst,
+      verdict: verdict,
+      status: 'pending',
+      flags: flags,
+      steps: steps,
+      before_image: beforeUrl,
+      notes: ''
+    };
+
+    var resp = await fetch(SUPA_URL + '/rest/v1/trades', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(payload)
     });
 
-    var saved = document.getElementById('sp-saved');
-    if (saved) saved.style.display = 'block';
-    if (btn) { btn.textContent = 'Saved'; }
-    setTimeout(function(){ window.open('biverway-tracker.html', '_blank'); }, 700);
+    if (!resp.ok) {
+      var errText = await resp.text();
+      throw new Error('Insert failed: ' + errText);
+    }
+
+    if (savedEl) savedEl.style.display = 'block';
+    if (btn) btn.textContent = 'Saved';
+    setTimeout(function(){ window.open('https://solomonubom54-png.github.io/biverway-model-a/trade-tracker.html', '_blank'); }, 700);
+
   } catch(err) {
     console.error('Save error:', err);
     if (btn) { btn.textContent = 'Save Record & Open Tracker'; btn.disabled = false; }
-    alert('Save failed. Open the tracker, sign in, then retry.');
+    alert('Save failed: ' + err.message);
   }
 };
 
