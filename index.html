@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biverway — Model A</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#08090e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Biverway">
+<link rel="apple-touch-icon" href="icon-192.png">
 <style>
 :root {
   --bg:      #08090e;
@@ -44,7 +50,13 @@ header{padding:28px 0 20px;border-bottom:1px solid var(--line);}
 .msw{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 13px;border-radius:6px;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:all 0.2s;}
 .msw.on-fx{background:rgba(74,143,212,0.15);color:var(--blue);}
 .msw.on-au{background:rgba(201,151,58,0.15);color:var(--gold);}
-.mode-sub{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.1em;margin-top:8px;}
+.inst-selector{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.inst-chip{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:5px 13px;border-radius:20px;border:1px solid var(--line2);background:var(--bg);color:var(--dim);cursor:pointer;transition:all 0.18s;}
+.inst-chip:hover{color:var(--text2);border-color:var(--dim);}
+.inst-chip.sel{background:rgba(201,151,58,0.12);border-color:rgba(201,151,58,0.5);color:var(--gold);}
+.inst-chip.sel-lock{background:rgba(201,151,58,0.08);border-color:rgba(201,151,58,0.35);color:var(--gold-lo);}
+.tracker-link{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line2);padding:5px 10px;border-radius:6px;transition:all 0.2s;display:block;margin-top:10px;float:right;}
+.tracker-link:hover{color:var(--gold-lo);border-color:var(--gold-lo);}
 
 /* ── VERDICT BAR ── */
 .vbar{position:sticky;top:0;z-index:200;background:rgba(8,9,14,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
@@ -367,7 +379,13 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <div class="brand-name">Biverway <span>Model A</span></div>
     </div>
   </div>
-  <div class="mode-sub" id="mode-sub">EURUSD · GBPUSD · USDCHF · XAUUSD</div>
+  <a href="https://solomonubom54-png.github.io/biverway-model-a/trade-tracker.html" target="_blank" class="tracker-link" title="Open Trade Tracker">Tracker ↗</a>
+  <div class="inst-selector" id="inst-selector">
+    <button class="inst-chip" id="ic-EU" onclick="selectInst('EU')">EURUSD</button>
+    <button class="inst-chip" id="ic-GU" onclick="selectInst('GU')">GBPUSD</button>
+    <button class="inst-chip" id="ic-UC" onclick="selectInst('UC')">USDCHF</button>
+    <button class="inst-chip" id="ic-XU" onclick="selectInst('XU')">XAUUSD</button>
+  </div>
 </header>
 </div>
 
@@ -837,24 +855,15 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 <!-- ── SAVE TO TRACKER ── -->
 <div class="save-prompt" id="save-prompt">
   <div class="sp-title">Save to Trade Tracker</div>
-  <div class="sp-row">
-    <div class="sp-inst">
-      <button class="sp-inst-btn" id="si-EU" onclick="selectInst('EU')">EU</button>
-      <button class="sp-inst-btn" id="si-GU" onclick="selectInst('GU')">GU</button>
-      <button class="sp-inst-btn" id="si-UC" onclick="selectInst('UC')">UC</button>
-      <button class="sp-inst-btn" id="si-XU" onclick="selectInst('XU')">XU</button>
-    </div>
+  <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;margin-bottom:10px;">Instrument selected above. Attach the before chart, then save.</div>
+  <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Before Chart</div>
+  <div class="upload-zone" onclick="document.getElementById('before-img-input').click()">
+    <input type="file" id="before-img-input" accept="image/*" onchange="previewBefore(this)">
+    <div class="upload-zone-txt">Tap to attach before chart screenshot</div>
+    <img id="before-img-preview" class="upload-preview">
   </div>
-  <div style="margin-top:10px;">
-    <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Before Chart Image</div>
-    <div class="upload-zone" id="before-upload-zone" onclick="document.getElementById('before-img-input').click()">
-      <input type="file" id="before-img-input" accept="image/*" onchange="previewBefore(this)">
-      <div class="upload-zone-txt">Tap to attach before chart screenshot</div>
-      <img id="before-img-preview" class="upload-preview">
-    </div>
-  </div>
-  <button class="sp-save" id="sp-save-btn" onclick="saveToTracker()">Save Record &amp; Open Tracker</button>
-  <div class="sp-saved" id="sp-saved">Record saved. Opening tracker...</div>
+  <button class="sp-save" id="sp-save-btn" onclick="saveToTracker()" style="margin-top:10px;">Save &amp; Open Tracker</button>
+  <div class="sp-saved" id="sp-saved">Saved. Opening tracker...</div>
 </div>
 
 
@@ -925,14 +934,14 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
           </div>
           <div class="df-grade-block">
-            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">TAKE</div>
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">VALID</div>
             <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">21</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">15</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">6</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">71.4%</span></div>
           </div>
         </div>
-        <div class="df-note">PRIME = zero medium flags. 10 trades, 10 wins, 0 losses. The cleanest signal the system produces.<br>TAKE = one medium flag. 21 trades, 15W / 6L at 71.4% win rate.<br>28 skipped — 24 were losses. The filter protects more than it costs.</div>
+        <div class="df-note">PRIME = zero medium flags. 10 trades, 10 wins, 0 losses. The cleanest signal the system produces.<br>VALID = one medium flag. 21 trades, 15W / 6L at 71.4% win rate.<br>28 skipped — 24 were losses. The filter protects more than it costs.</div>
       </div>
     </div>
 
@@ -975,14 +984,14 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
           </div>
           <div class="df-grade-block">
-            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">TAKE</div>
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">VALID</div>
             <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">6</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">2</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">4</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">33.3%</span></div>
           </div>
         </div>
-        <div class="df-note">12 trades. Smaller sample — interpret with weight proportional to size.<br>PRIME held clean: both trades resolved as wins. TAKE carries the dataset variance.<br>Gold operates under the same unified rules as forex. No separate filter set.</div>
+        <div class="df-note">12 trades. Smaller sample — interpret with weight proportional to size.<br>PRIME held clean: both trades resolved as wins. VALID carries the dataset variance.<br>Gold operates under the same unified rules as forex. No separate filter set.</div>
       </div>
     </div>
 
@@ -1025,7 +1034,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
           </div>
           <div class="df-grade-block">
-            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">TAKE</div>
+            <div class="df-grade-eye">Grade</div><div class="df-grade-name take">VALID</div>
             <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">27</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">17</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">10</span></div>
@@ -1047,7 +1056,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 // Unified system — no mode separation
 function g(id){return document.getElementById(id);}
 function rv(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:null;}
-var STEPS=['news','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'];
+var STEPS=['inst','news','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'];
 
 // Returns the index of the first incomplete step (0-based)
 function firstIncomplete(){
@@ -1080,6 +1089,7 @@ document.addEventListener('change',function(e){
   var stepMap={
     news:'news',gap:'gap',gpos:'gap',
     htf:'htf',
+    inst_chip:'inst',
     mssq1:'mss',mssq2:'mss',mssq3:'mss',
     zdepth:'zone',zliq:'zone',
     asian:'asian',dba:'dba',dbh:'dbh',hist:'hist',
@@ -1182,6 +1192,7 @@ function onDepth(){
 function stepDone(s){
   if(s==='news') return !!rv('news');
   if(s==='gap'){var gv=rv('gap');if(!gv)return false;if(gv==='no')return true;return !!rv('gpos');}
+  if(s==='inst') return !!_selectedInst;
   if(s==='mss'){
     // Q1 (broker) always required
     var q1=rv('mssq1');
@@ -1216,7 +1227,7 @@ function stepDone(s){
 }
 
 function allDone(){
-  return['news','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].every(stepDone);
+  return['inst','news','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].every(stepDone);
 }
 
 function run(){
@@ -1230,7 +1241,7 @@ function run(){
   // ── Step 1 News ──────────────────────────────────────────────
   var nv=rv('news');
   if(!nv){sc('news','');ss('news','—','var(--dim)');}
-  else if(nv==='kill'){kills++;kr.push('Post news whipsaw day');sc('news','sk');ss('news','Skip','var(--red)');}
+  else if(nv==='kill'){kills++;kr.push('Post-news whipsaw day — yesterday closed as a DBI Sweep Candle');sc('news','sk');ss('news','Skip','var(--red)');}
   else{sc('news','pa');ss('news','Clear','var(--green)');}
 
   // ── Step 2 Gap ───────────────────────────────────────────────
@@ -1241,13 +1252,13 @@ function run(){
   else{
     if(!gpv){sc('gap','');ss('gap','Select','var(--amber)');}
     else if(gpv==='before'){sc('gap','pa');ss('gap','Organic','var(--green)');}
-    else{kills++;kr.push('Gap-Driven Structure — zone origin is gap-initiated');sc('gap','sk');ss('gap','Skip','var(--red)');}
+    else{kills++;kr.push('Gap-driven structure — zone origin is a gap-initiated MSS');sc('gap','sk');ss('gap','Skip','var(--red)');}
   }
 
   // ── Step 3 HTF ───────────────────────────────────────────────
   var hv=rv('htf');
   if(!hv){sc('htf','');ss('htf','—','var(--dim)');}
-  else if(hv==='kill'){kills++;kr.push('D1 HTF opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
+  else if(hv==='kill'){kills++;kr.push('D1 opposing zone — impulse that created the zone reached into a D1 decisional or extreme opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
   else if(hv==='med'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
   else{sc('htf','pa');ss('htf','Clear','var(--green)');}
 
@@ -1270,7 +1281,7 @@ function run(){
       mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');
     } else {
       // Q2 yes + Q3 yes — hard kill (regardless of Q1)
-      kills++;kr.push('Compound MSS signature — D1 FVG confirmed, DBI structural sweep');sc('mss','sk');ss('mss','Skip','var(--red)');
+      kills++;kr.push('MSS compound signature — D1 FVG rejection confirmed, broker inconsistency on MSS close, and structural sweep all present');sc('mss','sk');ss('mss','Skip','var(--red)');
     }
   }
 
@@ -1287,12 +1298,12 @@ function run(){
     // Both: any overlap on valid zone = medium flag
     // Gold: shallow-none = not a kill, not a flag — needs liq for stacking to work
     var zk=false,zkr='';
-    if(depthV==='shallow-none'){zk=true;zkr='Shallow — no validation';}
+    if(depthV==='shallow-none'){zk=true;zkr='Shallow zone — no structural validation. Immediate hard kill';}
     // Shallow + overlap on any depth (including m45+overlap) = hard kill
     if(!zk&&hasOv&&(depthV==='shallow-none'||depthV==='shallow-m45')){
       // Only hard kill if we're on forex for shallow-none (already caught above)
       // For shallow-m45+overlap: hard kill on both
-      if(depthV==='shallow-m45'){zk=true;zkr='Shallow M45 + Overlap';}
+      if(depthV==='shallow-m45'){zk=true;zkr='Shallow plus overlap — M45 validation with overlapping structure. Hard kill';}
     }
     // Pure shallow+overlap on forex already caught above
     // For gold shallow-none+overlap: hard kill
@@ -1327,7 +1338,7 @@ function run(){
     if(!hz2||!hasI||!hasA){sc('asian','au');ss('asian','Pending','var(--gold)');}
     else{
       var ak=hasOv||adrFlag||impFlag;
-      if(ak){kills++;kr.push('Asian coincide — overlap or exhaustion present');sc('asian','sk');ss('asian','Skip','var(--red)');}
+      if(ak){kills++;kr.push('Asian range coincide — ' + (hasOv?'overlap present':'') + (hasOv&&(adrFlag||impFlag)?' + ':'') + (adrFlag?'ADR above 1.5':'') + (impFlag?'impulse above 3.0':''));sc('asian','sk');ss('asian','Skip','var(--red)');}
       else{sc('asian','au');ss('asian','Conditional','var(--gold)');}
     }
   }
@@ -1335,13 +1346,13 @@ function run(){
   // ── Step 5b DBA ──────────────────────────────────────────────
   var dbav=rv('dba');
   if(!dbav){sc('dba','');ss('dba','—','var(--dim)');}
-  else if(dbav==='kill'){kills++;kr.push('Prior failure at DBI Asian range');sc('dba','sk');ss('dba','Skip','var(--red)');}
+  else if(dbav==='kill'){kills++;kr.push('Prior failure at DBI Asian range — prior visit rejected without candle closing or sweeping through');sc('dba','sk');ss('dba','Skip','var(--red)');}
   else{sc('dba','pa');ss('dba','Clear','var(--green)');}
 
   // ── Step 5c DBH ──────────────────────────────────────────────
   var dbhv=rv('dbh');
   if(!dbhv){sc('dbh','');ss('dbh','—','var(--dim)');}
-  else if(dbhv==='kill'){kills++;kr.push('Prior failure at DBI high/low');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
+  else if(dbhv==='kill'){kills++;kr.push('Prior failure at DBI high or low — prior visit reached DBI high or low without convincing break');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
   else{sc('dbh','pa');ss('dbh','Clear','var(--green)');}
 
   // ── Step 5d Hist ─────────────────────────────────────────────
@@ -1394,7 +1405,7 @@ function run(){
   ['fp1','fp2','fp3'].forEach(function(id,i){g(id).className='fpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
   var fct=mf===0?'Medium flags: 0 — clear':mf===1?'Medium flags: 1 — one flag present':'Medium flags: '+mf+' — skip triggered';
   g('fctxt').textContent=fct;g('fctxt').style.color=mf===0?'var(--green)':mf===1?'var(--amber)':'var(--red)';
-  if(mf>=2)kills++;
+  if(mf>=2){kills++;}
 
   // ── Verdict ──────────────────────────────────────────────────
   var hasKill=kills>0,done=allDone();
@@ -1405,20 +1416,30 @@ function run(){
 
   if(hasKill){
     g('vp-dec').textContent='SKIP'; g('vp-dec').style.color='var(--red)';
-    g('vp-note').textContent=kr.join('. ')+'.';
+    var skipKills=[...kr];
+    if(mf>=2){var flagNames=[];if(rv('htf')==='med')flagNames.push('H4 HTF zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(rv('hist')==='med')flagNames.push('Historical reference level');if(rv('candle')==='med')flagNames.push('DBI Sweep Candle');if(hasI&&impV>3.0)flagNames.push('Impulse above 3.0');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));}
+    g('vp-note').textContent=skipKills.join(' · ');
     g('vp').style.borderColor='rgba(224,80,80,0.3)';g('vp').style.boxShadow='0 0 30px rgba(224,80,80,0.05)';
     g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf>=2?'var(--red)':mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent='SKIP';g('vps-g').style.color='var(--red)';
     setVBar('r','Skip — '+kr[0],'SKIP','var(--red)','rgba(224,80,80,0.4)');
   }else if(done){
-    var verdict=mf===0?'PRIME':'TAKE';
+    var verdict=mf===0?'PRIME':'VALID';
     var vc=mf===0?'var(--gold)':'var(--green)';
     var dc2=mf===0?'au':'g';
     var vbc=mf===0?'var(--gold)':'var(--green)';
     var vbb=mf===0?'rgba(201,151,58,0.4)':'rgba(45,184,130,0.4)';
-    var vnote=mf===0?'Clean structure across every filter. Zero flags. Execute with full conviction and hold to the full 1:3 target.':'All hard kills clear. One medium flag present. Setup is valid — execute at full size.';
-    if(cv==='med')vnote+=' DBI Sweep Candle noted — track this instance.';
+    var activeFlags=[];
+    if(rv('htf')==='med')activeFlags.push('H4 HTF zone');
+    if(rv('zliq')==='overlap')activeFlags.push('Overlap');
+    if(rv('hist')==='med')activeFlags.push('Historical reference level');
+    if(rv('candle')==='med')activeFlags.push('DBI Sweep Candle');
+    if(hasI&&impV>3.0)activeFlags.push('Impulse above 3.0');
+    if(hasA&&adrV>1.5)activeFlags.push('ADR above 1.5');
+    if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')activeFlags.push('D1 FVG rejection');
+    var vnote=mf===0?'Clean trade across every filter. Zero flags. Execute with full conviction and hold to the full 1:3 target.':'One medium flag present. Structure holds — the setup is valid. Acknowledge the flag, execute with awareness, and hold to the full 1:3 target.';
+    if(activeFlags.length)vnote+=' Active flag: '+activeFlags.join(', ')+'.';
     g('vp-dec').textContent=verdict;g('vp-dec').style.color=vc;
     g('vp-note').textContent=vnote;
     g('vp').style.borderColor=mf===0?'rgba(201,151,58,0.2)':'rgba(45,184,130,0.15)';
@@ -1426,7 +1447,7 @@ function run(){
     g('vps-k').textContent='None';g('vps-k').style.color='var(--green)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent=verdict;g('vps-g').style.color=vc;
-    setVBar(dc2,verdict==='PRIME'?'Prime — full conviction':'Take — one flag present',verdict,vbc,vbb);
+    setVBar(dc2,verdict==='PRIME'?'Prime — full conviction':'Valid — one flag',verdict,vbc,vbb);
   }else{
     // Not done, no kill — show placeholder state
     g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
@@ -1470,11 +1491,12 @@ function resetAll(){
   refreshPrompt();
   _selectedInst = null;
   _beforeImgFile = null;
-  ['EU','GU','UC','XU'].forEach(function(i){var el=document.getElementById('si-'+i);if(el)el.className='sp-inst-btn';});
-  var prev=document.getElementById('before-img-preview');if(prev){prev.src='';prev.style.display='none';}
+  ['EU','GU','UC','XU'].forEach(function(i){var hdr=document.getElementById('ic-'+i);if(hdr)hdr.className='inst-chip';var sp=document.getElementById('si-'+i);if(sp)sp.className='sp-inst-btn';});
   var saved=document.getElementById('sp-saved');if(saved)saved.style.display='none';
   var btn=document.getElementById('sp-save-btn');if(btn){btn.textContent='Save Record & Open Tracker';btn.disabled=false;}
   var locEl=g('c-loc');if(locEl){locEl.style.opacity='';locEl.style.pointerEvents='';}
+  _beforeImgFile=null;
+  var prev=document.getElementById('before-img-preview');if(prev){prev.src='';prev.style.display='none';}
 }
 // Initial lock state on page load
 updateLocks();
@@ -1486,9 +1508,13 @@ var _beforeImgFile = null;
 window.selectInst = function(inst) {
   _selectedInst = inst;
   ['EU','GU','UC','XU'].forEach(function(i){
-    var el = document.getElementById('si-'+i);
-    if(el) el.className = 'sp-inst-btn' + (i===inst?' sel':'');
+    var hdr = document.getElementById('ic-'+i);
+    if(hdr) hdr.className = 'inst-chip' + (i===inst?' sel':'');
+    var sp = document.getElementById('si-'+i);
+    if(sp) sp.className = 'sp-inst-btn' + (i===inst?' sel':'');
   });
+  updateLocks();
+  refreshPrompt();
 };
 
 window.previewBefore = function(input) {
@@ -1501,25 +1527,39 @@ window.previewBefore = function(input) {
 };
 
 function captureSteps() {
+  // Read exact label text to avoid ambiguous shared values
+  function rl(n){
+    var e=document.querySelector('input[name="'+n+'"]:checked');
+    if(!e) return null;
+    var lbl=document.querySelector('label[for="'+e.id+'"]');
+    return lbl ? lbl.textContent.trim() : e.value;
+  }
   function rv2(n){ var e=document.querySelector('input[name="'+n+'"]:checked'); return e?e.value:null; }
   return {
-    news:   rv2('news'),
-    gap:    rv2('gap'),
-    gpos:   rv2('gpos'),
-    htf:    rv2('htf'),
-    mssq1:  rv2('mssq1'),
-    mssq2:  rv2('mssq2'),
-    mssq3:  rv2('mssq3'),
-    zdepth: rv2('zdepth'),
-    zliq:   rv2('zliq'),
-    asian:  rv2('asian'),
-    dba:    rv2('dba'),
-    dbh:    rv2('dbh'),
-    hist:   rv2('hist'),
+    news:   rl('news'),
+    gap:    rl('gap'),
+    gpos:   rl('gpos'),
+    htf:    rl('htf'),
+    mssq1:  rl('mssq1'),
+    mssq2:  rl('mssq2'),
+    mssq3:  rl('mssq3'),
+    zdepth: rl('zdepth'),
+    zliq:   rl('zliq'),
+    asian:  rl('asian'),
+    dba:    rl('dba'),
+    dbh:    rl('dbh'),
+    hist:   rl('hist'),
     imp:    document.getElementById('imp').value || null,
     adr:    document.getElementById('adr').value || null,
-    loc:    rv2('loc'),
-    candle: rv2('candle')
+    loc:    rl('loc'),
+    candle: rl('candle'),
+    _values: {
+      news:rv2('news'),gap:rv2('gap'),gpos:rv2('gpos'),htf:rv2('htf'),
+      mssq1:rv2('mssq1'),mssq2:rv2('mssq2'),mssq3:rv2('mssq3'),
+      zdepth:rv2('zdepth'),zliq:rv2('zliq'),asian:rv2('asian'),
+      dba:rv2('dba'),dbh:rv2('dbh'),hist:rv2('hist'),
+      loc:rv2('loc'),candle:rv2('candle')
+    }
   };
 }
 
@@ -1558,11 +1598,11 @@ window.saveToTracker = async function() {
   try {
     var beforeUrl = null;
     if (_beforeImgFile) {
-      var ext = _beforeImgFile.name.split('.').pop() || 'jpg';
+      var ext = (_beforeImgFile.name||'img').split('.').pop()||'jpg';
       var imgPath = 'before_' + Date.now() + '.' + ext;
       var uploadResp = await fetch(SUPA_URL + '/storage/v1/object/trade-images/' + imgPath, {
         method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': _beforeImgFile.type },
+        headers: { 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': _beforeImgFile.type||'image/jpeg' },
         body: _beforeImgFile
       });
       if (uploadResp.ok) {
