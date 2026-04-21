@@ -1,8 +1,8 @@
 {
   "name": "Biverway Model A",
   "short_name": "Biverway",
-  "description": "Biverway Model A — Day Trading Decision Engine",
-  "start_url": "./",
+  "description": "Biverway Model A \u2014 Day Trading Decision Engine",
+  "start_url": "/biverway-model-a/",
   "display": "standalone",
   "background_color": "#08090e",
   "theme_color": "#08090e",
@@ -20,5 +20,6 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "scope": "/biverway-model-a/"
 }
