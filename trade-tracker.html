@@ -10,7 +10,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Biverway">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
 <style>
 :root{
   --bg:#08090e;--surf:#0d0f18;--surf2:#111420;--line:#1e2236;--line2:#262d44;
@@ -264,11 +264,9 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
       <input type="hidden" id="discard-trade-id">
       <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;margin-bottom:14px;line-height:1.65;">Select the reason this setup is being discarded. Stored with the record.</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
-        <label class="discard-opt"><input type="radio" name="discard-reason" value="Setup invalidated before entry"> Setup invalidated before entry &mdash; structure broke</label>
-        <label class="discard-opt"><input type="radio" name="discard-reason" value="Entry missed"> Entry missed &mdash; price moved without triggering</label>
-        <label class="discard-opt"><input type="radio" name="discard-reason" value="Near miss"> Near miss &mdash; price reversed before triggering</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Setup invalidated — structure broke"> Setup invalidated &mdash; structure broke</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Didn't trigger within trading time range"> Didn&rsquo;t trigger within our trading time range</label>
         <label class="discard-opt"><input type="radio" name="discard-reason" value="News or external event"> News or external event</label>
-        <label class="discard-opt"><input type="radio" name="discard-reason" value="Personal decision"> Personal decision &mdash; chose not to take</label>
         <label class="discard-opt"><input type="radio" name="discard-reason" value="Other" onchange="document.getElementById('discard-other-row').style.display='block'"> Other</label>
       </div>
       <div id="discard-other-row" style="display:none;margin-bottom:14px;">
@@ -302,9 +300,11 @@ async function supaGet(filter) {
 }
 
 async function supaUpdate(id, data) {
+  var h = supaHeaders();
+  h['Prefer'] = 'return=minimal';
   var r = await fetch(SUPA_URL + '/rest/v1/trades?id=eq.' + id, {
     method: 'PATCH',
-    headers: { ...supaHeaders(), 'Prefer': 'return=minimal' },
+    headers: h,
     body: JSON.stringify(data)
   });
   return r.ok;
@@ -535,12 +535,18 @@ window.confirmDiscard = async function() {
     var note = document.getElementById('discard-other-note').value.trim();
     if (note) reason = 'Other: ' + note;
   }
-  var ok = await supaUpdate(id, { status:'discarded', discard_reason: reason });
-  if (ok) {
-    document.getElementById('discard-modal').classList.remove('open');
-    showToast('Setup discarded');
-    await loadTrades();
-    closeModal();
+  try {
+    var ok = await supaUpdate(id, { status:'discarded', discard_reason: reason });
+    if (ok) {
+      document.getElementById('discard-modal').classList.remove('open');
+      showToast('Setup discarded');
+      await loadTrades();
+      closeModal();
+    } else {
+      showToast('Error saving — check connection');
+    }
+  } catch(err) {
+    showToast('Error: ' + err.message);
   }
 };
 
