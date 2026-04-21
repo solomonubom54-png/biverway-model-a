@@ -50,12 +50,13 @@ header{padding:28px 0 20px;border-bottom:1px solid var(--line);}
 .msw{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 13px;border-radius:6px;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:all 0.2s;}
 .msw.on-fx{background:rgba(74,143,212,0.15);color:var(--blue);}
 .msw.on-au{background:rgba(201,151,58,0.15);color:var(--gold);}
-.inst-selector{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
-.inst-chip{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;padding:5px 13px;border-radius:20px;border:1px solid var(--line2);background:var(--bg);color:var(--dim);cursor:pointer;transition:all 0.18s;}
-.inst-chip:hover{color:var(--text2);border-color:var(--dim);}
-.inst-chip.sel{background:rgba(201,151,58,0.12);border-color:rgba(201,151,58,0.5);color:var(--gold);}
-.inst-chip.sel-lock{background:rgba(201,151,58,0.08);border-color:rgba(201,151,58,0.35);color:var(--gold-lo);}
-.tracker-link{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line2);padding:5px 10px;border-radius:6px;transition:all 0.2s;display:block;margin-top:10px;float:right;}
+.inst-selector{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+.inst-chip{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:0;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:color 0.2s;}
+.inst-chip::after{content:' ·';color:var(--line2);}
+.inst-chip:last-child::after{content:'';}
+.inst-chip:hover{color:var(--text2);}
+.inst-chip.sel{color:var(--gold);}
+.tracker-link{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line2);padding:5px 10px;border-radius:6px;transition:all 0.2s;align-self:flex-end;}
 .tracker-link:hover{color:var(--gold-lo);border-color:var(--gold-lo);}
 
 /* ── VERDICT BAR ── */
@@ -378,8 +379,8 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <div class="brand-eye">Day Trading · Decision Engine</div>
       <div class="brand-name">Biverway <span>Model A</span></div>
     </div>
+    <a href="https://solomonubom54-png.github.io/biverway-model-a/trade-tracker.html" target="_blank" class="tracker-link" title="Open Trade Tracker">Tracker ↗</a>
   </div>
-  <a href="https://solomonubom54-png.github.io/biverway-model-a/trade-tracker.html" target="_blank" class="tracker-link" title="Open Trade Tracker">Tracker ↗</a>
   <div class="inst-selector" id="inst-selector">
     <button class="inst-chip" id="ic-EU" onclick="selectInst('EU')">EURUSD</button>
     <button class="inst-chip" id="ic-GU" onclick="selectInst('GU')">GBPUSD</button>
@@ -1393,7 +1394,7 @@ function run(){
     else{sc('loc','');ss('loc','—','var(--dim)');}
   }
 
-  // ── Step 9 Candle ────────────────────────────────────────────
+ // ── Step 9 Candle ────────────────────────────────────────────
   var cv=rv('candle');
   if(cv==='med')mf++;
   if(cv){sc('candle',cv==='med'?'wa':'pa');ss('candle',cv==='med'?'Flag':'Noted',cv==='med'?'var(--amber)':'var(--green)');}
@@ -1423,7 +1424,7 @@ function run(){
     g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf>=2?'var(--red)':mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent='SKIP';g('vps-g').style.color='var(--red)';
-    setVBar('r','Skip — '+kr[0],'SKIP','var(--red)','rgba(224,80,80,0.4)');
+    setVBar('r','Skip — no trade','SKIP','var(--red)','rgba(224,80,80,0.4)');
   }else if(done){
     var verdict=mf===0?'PRIME':'VALID';
     var vc=mf===0?'var(--gold)':'var(--green)';
@@ -1447,7 +1448,7 @@ function run(){
     g('vps-k').textContent='None';g('vps-k').style.color='var(--green)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent=verdict;g('vps-g').style.color=vc;
-    setVBar(dc2,verdict==='PRIME'?'Prime — full conviction':'Valid — one flag',verdict,vbc,vbb);
+    setVBar(dc2,verdict==='PRIME'?'Prime — full conviction':'Valid — one flag present',verdict,vbc,vbb);
   }else{
     // Not done, no kill — show placeholder state
     g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
@@ -1693,6 +1694,14 @@ function toggleDetail(id) {
   var isOpen  = detail.classList.contains('open');
   detail.classList.toggle('open', !isOpen);
   trigger.setAttribute('aria-expanded', String(!isOpen));
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js');
+  });
 }
 </script>
 </body>
