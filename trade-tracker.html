@@ -205,7 +205,10 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 <!-- ARCHIVE -->
 <div class="panel" id="panel-archive">
   <div style="padding-top:14px;">
-    <div class="sec-hdr"><span class="sec-title">Discarded Archive</span></div>
+    <div class="sec-hdr">
+      <span class="sec-title">Discarded Archive</span>
+      <button class="act-btn danger" id="clear-archive-btn" onclick="clearAllDiscarded()" style="font-size:7px;padding:5px 10px;">Clear All</button>
+    </div>
     <div class="trade-list" id="archive-list"><div class="loading">Loading...</div></div>
   </div>
 </div>
@@ -249,6 +252,22 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
       <div style="display:flex;gap:8px;">
         <button class="act-btn" onclick="document.getElementById('trig-modal').classList.remove('open')">Cancel</button>
         <button class="act-btn primary" onclick="confirmTriggered()">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="confirm-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-hdr">
+      <span class="modal-title" id="confirm-modal-title">Confirm</span>
+      <button class="modal-close" onclick="document.getElementById('confirm-modal').classList.remove('open')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div id="confirm-modal-message" style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.7;letter-spacing:0.04em;margin-bottom:16px;"></div>
+      <div style="display:flex;gap:8px;">
+        <button class="act-btn" onclick="document.getElementById('confirm-modal').classList.remove('open')">Cancel</button>
+        <button class="act-btn danger" onclick="doConfirm()">Confirm</button>
       </div>
     </div>
   </div>
@@ -307,7 +326,13 @@ async function supaUpdate(id, data) {
     headers: h,
     body: JSON.stringify(data)
   });
-  return r.ok;
+  if (!r.ok) {
+    var errText = '';
+    try { var j = await r.json(); errText = j.message || j.hint || JSON.stringify(j); } catch(e) { errText = r.status + ' ' + r.statusText; }
+    console.error('supaUpdate error:', errText, 'data:', JSON.stringify(data));
+    throw new Error(errText);
+  }
+  return true;
 }
 
 async function uploadImage(file, prefix) {
@@ -509,12 +534,14 @@ window.confirmTriggered = async function() {
   var id = document.getElementById('trig-id').value;
   var timeVal = document.getElementById('trig-time').value;
   var trigISO = timeVal ? new Date(timeVal).toISOString() : new Date().toISOString();
-  var ok = await supaUpdate(id, { status:'triggered', triggered_at: trigISO });
-  if (ok) {
+  try {
+    await supaUpdate(id, { status:'triggered', triggered_at: trigISO });
     document.getElementById('trig-modal').classList.remove('open');
     showToast('Marked as triggered');
     await loadTrades();
     closeModal();
+  } catch(err) {
+    showToast('Error: ' + err.message.slice(0,60));
   }
 };
 
@@ -536,17 +563,22 @@ window.confirmDiscard = async function() {
     if (note) reason = 'Other: ' + note;
   }
   try {
-    var ok = await supaUpdate(id, { status:'discarded', discard_reason: reason });
-    if (ok) {
-      document.getElementById('discard-modal').classList.remove('open');
-      showToast('Setup discarded');
-      await loadTrades();
-      closeModal();
-    } else {
-      showToast('Error saving — check connection');
+    // First update status — this always works if table exists
+    await supaUpdate(id, { status: 'discarded' });
+    // Then try to save discard reason — column may not exist yet, we catch separately
+    try {
+      await supaUpdate(id, { discard_reason: reason });
+    } catch(e2) {
+      // discard_reason column missing — run the SQL below to add it
+      console.warn('discard_reason column missing:', e2.message);
     }
+    document.getElementById('discard-modal').classList.remove('open');
+    showToast('Setup discarded');
+    await loadTrades();
+    closeModal();
   } catch(err) {
-    showToast('Error: ' + err.message);
+    showToast('Save error: ' + err.message.slice(0,60));
+    console.error('confirmDiscard failed:', err);
   }
 };
 
@@ -598,14 +630,24 @@ window.markComplete = async function(id, outcome) {
   if (_afterFile) { afterUrl = await uploadImage(_afterFile, 'after_'+id); }
   var update = { status:'complete', outcome:outcome, completed_at:completedISO, notes:notes };
   if (afterUrl) update.after_image = afterUrl;
-  var ok = await supaUpdate(id, update);
-  if (ok) { showToast(outcome + ' recorded'); await loadTrades(); closeModal(); }
+  try {
+    await supaUpdate(id, update);
+    showToast(outcome + ' recorded');
+    await loadTrades();
+    closeModal();
+  } catch(err) {
+    showToast('Error: ' + err.message.slice(0,60));
+  }
 };
 
 window.saveNotes = async function(id) {
   var el = document.getElementById('notes-'+id); if (!el) return;
-  var ok = await supaUpdate(id, { notes: el.value });
-  if (ok) showToast('Notes saved');
+  try {
+    await supaUpdate(id, { notes: el.value });
+    showToast('Notes saved');
+  } catch(err) {
+    showToast('Error: ' + err.message.slice(0,40));
+  }
 };
 
 // ── ANALYTICS ─────────────────────────────────────────────────────
@@ -709,6 +751,48 @@ window.doExport = function() {
 };
 
 // ── NAV / TOAST ───────────────────────────────────────────────────
+window.clearAllDiscarded = async function() {
+  var discarded = allTrades.filter(function(t){ return t.status === 'discarded'; });
+  if (!discarded.length) { showToast('No discarded records'); return; }
+  showConfirmModal(
+    'Clear All Discarded?',
+    'This will permanently delete all ' + discarded.length + ' discarded record' + (discarded.length!==1?'s':'') + '. This cannot be undone.',
+    async function() {
+      var ids = discarded.map(function(t){ return t.id; });
+      try {
+        var h = supaHeaders();
+        var idList = ids.map(function(i){ return '"'+i+'"'; }).join(',');
+        var r = await fetch(SUPA_URL + '/rest/v1/trades?id=in.(' + ids.join(',') + ')', {
+          method: 'DELETE',
+          headers: h
+        });
+        if (r.ok || r.status === 204) {
+          showToast('All discarded records cleared');
+          await loadTrades();
+        } else {
+          var e = await r.text();
+          showToast('Error: ' + e.slice(0,50));
+        }
+      } catch(err) {
+        showToast('Error: ' + err.message.slice(0,50));
+      }
+    }
+  );
+};
+
+// Generic confirm modal
+function showConfirmModal(title, message, onConfirm) {
+  document.getElementById('confirm-modal-title').textContent = title;
+  document.getElementById('confirm-modal-message').textContent = message;
+  window._confirmCallback = onConfirm;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+
+window.doConfirm = function() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  if (window._confirmCallback) window._confirmCallback();
+};
+
 window.showPanel = function(name, btn) {
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
   document.querySelectorAll('.nav-tab').forEach(function(t){ t.classList.remove('active'); });
