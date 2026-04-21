@@ -437,26 +437,36 @@ function openTrade(id) {
   var tid = String(t.id);
 
   if (t.status === 'pending') {
-    actionsHtml = '<div class="action-row"><button class="act-btn primary" onclick="markTriggered(\''+tid+'\')">' + 'Mark as Triggered</button><button class="act-btn danger" onclick="markDiscarded(\''+tid+'\')">' + 'Discard</button></div>';
+    actionsHtml = '<div class="action-row">'
+      + '<button class="act-btn primary" data-action="trigger" data-id="'+tid+'">Mark as Triggered</button>'
+      + '<button class="act-btn danger" data-action="discard" data-id="'+tid+'">Discard</button>'
+      + '</div>';
   } else if (t.status === 'triggered') {
-        var nowLocal = new Date(); var localISO = new Date(nowLocal.getTime() - nowLocal.getTimezoneOffset()*60000).toISOString().slice(0,16);
-    var nowLocal = new Date(); var localISO = new Date(nowLocal.getTime() - nowLocal.getTimezoneOffset()*60000).toISOString().slice(0,16);
+    var nowLocal = new Date();
+    var localISO = new Date(nowLocal.getTime() - nowLocal.getTimezoneOffset()*60000).toISOString().slice(0,16);
     actionsHtml = '<div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Completion Date &amp; Time</div>'
-      +'<input type="datetime-local" id="complete-time-'+tid+'" value="'+localISO+'" style="font-family:\'Space Mono\',monospace;font-size:9px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);border-radius:7px;color:var(--text2);width:100%;margin-bottom:12px;outline:none;">'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Record Outcome</div>'
+      +'<div style="font-family:Space Mono,monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Completion Date &amp; Time</div>'
+      +'<input type="datetime-local" id="complete-time-'+tid+'" value="'+localISO+'" style="font-family:Space Mono,monospace;font-size:9px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);border-radius:7px;color:var(--text2);width:100%;margin-bottom:12px;outline:none;">'
+      +'<div style="font-family:Space Mono,monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Record Outcome</div>'
       +'<div class="action-row" style="margin-top:0;margin-bottom:12px;">'
-      +'<button class="act-btn primary" onclick="markComplete(\''+tid+'\',\'Win\')">Win</button>'
-      +'<button class="act-btn loss-btn" onclick="markComplete(\''+tid+'\',\'Loss\')">Loss</button>'
+      +'<button class="act-btn primary" data-action="win" data-id="'+tid+'">Win</button>'
+      +'<button class="act-btn loss-btn" data-action="loss" data-id="'+tid+'">Loss</button>'
       +'</div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">After Chart</div>'
-      +'<div class="upload-zone" onclick="document.getElementById(\'after-inp-'+tid+'\').click()">'
-      +'<input type="file" id="after-inp-'+tid+'" accept="image/*" onchange="previewAfterImg(this,\''+tid+'\')"><div class="upload-zone-txt">Tap to attach after chart</div><img id="after-prev-'+tid+'" class="upload-preview"></div>'
-      +'<div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin:10px 0 6px;">Notes</div>'
+      +'<div style="font-family:Space Mono,monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">After Chart</div>'
+      +'<div class="upload-zone" id="after-zone-'+tid+'">'
+      +'<input type="file" id="after-inp-'+tid+'" accept="image/*" style="display:none;">'
+      +'<div class="upload-zone-txt">Tap to attach after chart</div>'
+      +'<img id="after-prev-'+tid+'" class="upload-preview">'
+      +'</div>'
+      +'<div style="font-family:Space Mono,monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin:10px 0 6px;">Notes</div>'
       +'<textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea>'
       +'</div>';
   } else if (t.status === 'complete') {
-    actionsHtml = '<div><div style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Notes</div><textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea><button class="act-btn" style="margin-top:8px;" onclick="saveNotes(\''+tid+'\')">Save Notes</button></div>';
+    actionsHtml = '<div>'
+      +'<div style="font-family:Space Mono,monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Notes</div>'
+      +'<textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea>'
+      +'<button class="act-btn" data-action="savenotes" data-id="'+tid+'" style="margin-top:8px;">Save Notes</button>'
+      +'</div>';
   }
 
   document.getElementById('modal-body').innerHTML =
@@ -483,12 +493,7 @@ window.uploadBeforeImg = async function(input, id) {
   }
 };
 
-window.previewAfterImg = function(input, id) {
-  var file = input.files[0]; if (!file) return;
-  _afterFile = file;
-  var prev = document.getElementById('after-prev-'+id);
-  if (prev) { prev.src = URL.createObjectURL(file); prev.style.display = 'block'; }
-};
+// previewAfterImg replaced by event delegation
 
 // ── STATUS TRANSITIONS ────────────────────────────────────────────
 window.markTriggered = function(id) {
@@ -542,6 +547,40 @@ window.confirmDiscard = async function() {
 window.closeDiscardOutside = function(e) {
   if(e.target===document.getElementById('discard-modal')) document.getElementById('discard-modal').classList.remove('open');
 };
+
+// Event delegation for all dynamically built modal body buttons
+document.getElementById('modal').addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-action]');
+  if (!btn) return;
+  var action = btn.getAttribute('data-action');
+  var id = btn.getAttribute('data-id');
+  if (action === 'trigger')    window.markTriggered(id);
+  if (action === 'discard')    window.markDiscarded(id);
+  if (action === 'win')        window.markComplete(id, 'Win');
+  if (action === 'loss')       window.markComplete(id, 'Loss');
+  if (action === 'savenotes')  window.saveNotes(id);
+});
+
+// After chart upload zone delegation
+document.getElementById('modal').addEventListener('click', function(e) {
+  var zone = e.target.closest('.upload-zone[id^="after-zone-"]');
+  if (!zone) return;
+  var id = zone.id.replace('after-zone-', '');
+  var inp = document.getElementById('after-inp-'+id);
+  if (inp) inp.click();
+});
+
+// After chart file input change delegation
+document.getElementById('modal').addEventListener('change', function(e) {
+  var inp = e.target;
+  if (!inp.type || inp.type !== 'file') return;
+  if (!inp.id || !inp.id.startsWith('after-inp-')) return;
+  var id = inp.id.replace('after-inp-', '');
+  var file = inp.files[0]; if (!file) return;
+  _afterFile = file;
+  var prev = document.getElementById('after-prev-'+id);
+  if (prev) { prev.src = URL.createObjectURL(file); prev.style.display = 'block'; }
+});
 
 window.markComplete = async function(id, outcome) {
   var notesEl = document.getElementById('notes-'+id);
@@ -681,6 +720,14 @@ function showToast(msg) {
 
 // ── INIT ──────────────────────────────────────────────────────────
 loadTrades();
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function() {
+    navigator.serviceWorker.register('./sw.js');
+  });
+}
 </script>
 </body>
 </html>
