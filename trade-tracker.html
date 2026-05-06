@@ -650,6 +650,159 @@ window.saveNotes = async function(id) {
   }
 };
 
+// ── EDIT TRADE ────────────────────────────────────────────────────
+window.openEditModal = function(id) {
+  var t = allTrades.find(function(x){ return String(x.id)===String(id); });
+  if (!t) return;
+  var s = t.steps || {};
+
+  // Helper to build a radio group
+  function radioGroup(name, options, current) {
+    return options.map(function(o) {
+      var checked = (current === o.v) ? 'checked' : '';
+      return '<label style="display:flex;align-items:flex-start;gap:8px;font-family:Space Mono,monospace;font-size:8px;color:var(--text2);padding:5px 8px;border-radius:6px;border:1px solid transparent;cursor:pointer;margin-bottom:4px;" class="edit-opt">'
+        + '<input type="radio" name="edit_'+name+'" value="'+o.v+'" '+checked+' style="margin-top:2px;accent-color:var(--gold);flex-shrink:0;"> '+o.l+'</label>';
+    }).join('');
+  }
+
+  var html = '<div style="font-family:Space Mono,monospace;font-size:7px;color:var(--dim);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;">Editing: '+instFull(t.instrument)+' · '+fmtDate(t.created_at)+'</div>';
+
+  // Verdict
+  html += '<div class="edit-section"><div class="edit-label">Verdict</div>'
+    + radioGroup('verdict', [
+        {v:'PRIME', l:'PRIME — zero flags, all clean'},
+        {v:'VALID',  l:'VALID — one medium flag present'},
+        {v:'SKIP',   l:'SKIP — hard kill or two or more flags'}
+      ], t.verdict)
+    + '</div>';
+
+  // HTF Opposing Zone
+  html += '<div class="edit-section"><div class="edit-label">03 · HTF Opposing Zone</div>'
+    + radioGroup('htf', [
+        {v:'pass', l:'No HTF opposing zone'},
+        {v:'med',  l:'H4 only — medium flag'},
+        {v:'kill', l:'D1 involved — hard kill'}
+      ], s.htf)
+    + '</div>';
+
+  // MSS Q1
+  html += '<div class="edit-section"><div class="edit-label">04 · MSS Q1 — Broker inconsistency</div>'
+    + radioGroup('mssq1', [
+        {v:'yes', l:'Yes — Pepperstone and IC Markets disagree'},
+        {v:'no',  l:'No — both platforms agree'}
+      ], s.mssq1)
+    + '</div>';
+
+  // MSS Q2
+  html += '<div class="edit-section"><div class="edit-label">04 · MSS Q2 — D1 FVG tap and rejection</div>'
+    + radioGroup('mssq2', [
+        {v:'yes', l:'Yes — D1 FVG tapped and rejected'},
+        {v:'no',  l:'No'}
+      ], s.mssq2)
+    + '</div>';
+
+  // MSS Q3
+  html += '<div class="edit-section"><div class="edit-label">04 · MSS Q3 — DBI or 2–3 day sweep</div>'
+    + radioGroup('mssq3', [
+        {v:'yes', l:'Yes — structural level swept'},
+        {v:'no',  l:'No'}
+      ], s.mssq3)
+    + '</div>';
+
+  // Zone Condition
+  html += '<div class="edit-section"><div class="edit-label">05 · Zone Depth</div>'
+    + radioGroup('zdepth', [
+        {v:'deep-h1',      l:'Deep — H1 validated'},
+        {v:'deep-sw',      l:'Deep — H1 + Clean Sideways Base'},
+        {v:'shallow-m45',  l:'Shallow — M45 validated'},
+        {v:'shallow-none', l:'Shallow — no validation'}
+      ], s.zdepth)
+    + '</div>';
+
+  // Zone Liquidity
+  html += '<div class="edit-section"><div class="edit-label">05 · Zone Liquidity</div>'
+    + radioGroup('zliq', [
+        {v:'clean',   l:'Clean — no overlap'},
+        {v:'overlap', l:'Overlapping'}
+      ], s.zliq)
+    + '</div>';
+
+  // Historical reference
+  html += '<div class="edit-section"><div class="edit-label">06d · Historical Reference Location</div>'
+    + radioGroup('hist', [
+        {v:'med',  l:'Yes — 2 to 3 day old reference level'},
+        {v:'pass', l:'No — fresh or PD structural level'}
+      ], s.hist)
+    + '</div>';
+
+  // Outcome
+  html += '<div class="edit-section"><div class="edit-label">Outcome</div>'
+    + radioGroup('outcome_edit', [
+        {v:'Win',  l:'Win'},
+        {v:'Loss', l:'Loss'}
+      ], t.outcome)
+    + '</div>';
+
+  // Amendment note
+  html += '<div class="edit-section"><div class="edit-label">Amendment note (required)</div>'
+    + '<textarea id="edit-amendment-note" class="modal-notes" placeholder="Briefly describe what was corrected and why..." style="min-height:60px;margin-top:4px;"></textarea>'
+    + '</div>';
+
+  html += '<div style="display:flex;gap:8px;margin-top:4px;">'
+    + '<button class="act-btn" onclick="document.getElementById(\'edit-modal\').classList.remove(\'open\')">Cancel</button>'
+    + '<button class="act-btn gold" onclick="saveEdit(\''+id+'\')">Save Correction</button>'
+    + '</div>';
+
+  document.getElementById('edit-modal-body').innerHTML = html;
+  document.getElementById('edit-modal').classList.add('open');
+};
+
+window.saveEdit = async function(id) {
+  function getRadio(name) {
+    var el = document.querySelector('input[name="edit_'+name+'"]:checked');
+    return el ? el.value : null;
+  }
+
+  var amendment = document.getElementById('edit-amendment-note').value.trim();
+  if (!amendment) { showToast('Please add an amendment note'); return; }
+
+  var t = allTrades.find(function(x){ return String(x.id)===String(id); });
+  if (!t) return;
+
+  var updatedSteps = Object.assign({}, t.steps || {}, {
+    htf:    getRadio('htf')    || t.steps.htf,
+    mssq1:  getRadio('mssq1')  || t.steps.mssq1,
+    mssq2:  getRadio('mssq2')  || t.steps.mssq2,
+    mssq3:  getRadio('mssq3')  || t.steps.mssq3,
+    zdepth: getRadio('zdepth') || t.steps.zdepth,
+    zliq:   getRadio('zliq')   || t.steps.zliq,
+    hist:   getRadio('hist')   || t.steps.hist,
+  });
+
+  var newVerdict = getRadio('verdict') || t.verdict;
+  var newOutcome = getRadio('outcome_edit') || t.outcome;
+  var amendedAt  = new Date().toISOString();
+  var amendNote  = '[Amended ' + new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'}) + '] ' + amendment;
+  var existingNotes = t.notes || '';
+  var updatedNotes = existingNotes ? existingNotes + '\n\n' + amendNote : amendNote;
+
+  try {
+    await supaUpdate(id, {
+      verdict: newVerdict,
+      outcome: newOutcome,
+      steps:   updatedSteps,
+      notes:   updatedNotes,
+      amended_at: amendedAt
+    });
+    document.getElementById('edit-modal').classList.remove('open');
+    showToast('Record corrected');
+    await loadTrades();
+    closeModal();
+  } catch(err) {
+    showToast('Error: ' + err.message.slice(0,50));
+  }
+};
+  
 // ── ANALYTICS ─────────────────────────────────────────────────────
 function renderAnalytics() {
   var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
