@@ -129,6 +129,12 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 .export-section{background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:18px;}
 .export-desc{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.7;letter-spacing:0.04em;margin-bottom:16px;}
 .export-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:10px 20px;border-radius:8px;border:1px solid rgba(45,184,130,0.3);background:rgba(45,184,130,0.07);color:var(--green);cursor:pointer;transition:all 0.2s;}
+.act-btn.gold{background:rgba(201,151,58,0.08);border-color:rgba(201,151,58,0.3);color:var(--gold);}
+.edit-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line);}
+.edit-section:last-of-type{border-bottom:none;}
+.edit-label{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:8px;}
+.edit-opt:hover{border-color:var(--line2) !important;}
+
 .export-btn:hover{background:rgba(45,184,130,0.12);}
 .discard-opt{display:flex;align-items:flex-start;gap:8px;font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);letter-spacing:0.04em;line-height:1.55;cursor:pointer;padding:7px 10px;border-radius:7px;border:1px solid transparent;transition:border-color 0.15s;}
 .discard-opt:hover{border-color:var(--line2);}
@@ -270,6 +276,16 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
         <button class="act-btn danger" onclick="doConfirm()">Confirm</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-hdr">
+      <span class="modal-title">Correct Trade Record</span>
+      <button class="modal-close" onclick="document.getElementById('edit-modal').classList.remove('open')">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="edit-modal-body"></div>
   </div>
 </div>
 
@@ -465,6 +481,7 @@ function openTrade(id) {
     actionsHtml = '<div class="action-row">'
       + '<button class="act-btn primary" data-action="trigger" data-id="'+tid+'">Mark as Triggered</button>'
       + '<button class="act-btn danger" data-action="discard" data-id="'+tid+'">Discard</button>'
+      + '<button class="act-btn gold" onclick="openEditModal(\''+tid+'\')">Correct Record</button>'
       + '</div>';
   } else if (t.status === 'triggered') {
     var nowLocal = new Date();
@@ -490,7 +507,10 @@ function openTrade(id) {
     actionsHtml = '<div>'
       +'<div style="font-family:Space Mono,monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Notes</div>'
       +'<textarea class="modal-notes" id="notes-'+tid+'" placeholder="Optional notes...">'+(t.notes||'')+'</textarea>'
-      +'<button class="act-btn" data-action="savenotes" data-id="'+tid+'" style="margin-top:8px;">Save Notes</button>'
+      +'<div style="display:flex;gap:8px;margin-top:8px;">'
+      +'<button class="act-btn" data-action="savenotes" data-id="'+tid+'">Save Notes</button>'
+      +'<button class="act-btn gold" onclick="openEditModal(\''+tid+'\')">Correct Record</button>'
+      +'</div>'
       +'</div>';
   }
 
@@ -802,7 +822,7 @@ window.saveEdit = async function(id) {
     showToast('Error: ' + err.message.slice(0,50));
   }
 };
-  
+
 // ── ANALYTICS ─────────────────────────────────────────────────────
 function renderAnalytics() {
   var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
