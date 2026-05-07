@@ -681,7 +681,7 @@ window.openEditModal = function(id) {
     var completedMs = new Date(t.completed_at).getTime();
     var nowMs = Date.now();
     var hoursElapsed = (nowMs - completedMs) / (1000 * 60 * 60);
-    if (hoursElapsed > 999) {
+    if (hoursElapsed > 24) {
       showToast('Editing locked — more than 24 hours since outcome was recorded');
       return;
     }
