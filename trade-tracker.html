@@ -981,7 +981,7 @@ function renderAnalytics() {
     {label:'Zone Liquidity',key:'zliq',opts:[{v:'clean',l:'Clean'},{v:'overlap',l:'Overlap'}]},
     {label:'Historical Ref',key:'hist',opts:[{v:'med',l:'Yes'},{v:'pass',l:'No'}]},
     {label:'PD Candle',key:'candle',opts:[{v:'pos',l:'Pin/Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'},{v:'med',l:'DBI Sweep'}]},
-    {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'good',l:'Near/50-79%'},{v:'mid',l:'40-50%'},{v:'weak',l:'20-40%'}]},
+    {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'near',l:'Near PDH/PDL'},{v:'good-62',l:'62–79%'},{v:'good-50',l:'50–62%'},{v:'mid',l:'40–50%'},{v:'weak-30',l:'30–40%'},{v:'weak-20',l:'20–30%'}]},
   ];
 
   var filterRows = filterDefs.map(function(fd){
