@@ -794,9 +794,12 @@ window.openEditModal = function(id) {
   // S4 — Context
   html += section('09','Zone Location in PD Range',
     radioRow('loc','prime','PDH / PDL') +
-    radioRow('loc','good','Near PDH or PDL — or 50–79%') +
-    radioRow('loc','mid','40–50%') +
-    radioRow('loc','weak','20–40%'));
+    radioRow('loc','near','Near PDH / PDL') +
+    radioRow('loc','good-62','62 – 79%') +
+    radioRow('loc','good-50','50 – 62%') +
+    radioRow('loc','mid','40 – 50%') +
+    radioRow('loc','weak-30','30 – 40%') +
+    radioRow('loc','weak-20','20 – 30%'));
 
   html += section('10','Previous Day Candle Type',
     radioRow('candle','pos','Pin Bar or Balanced') +
