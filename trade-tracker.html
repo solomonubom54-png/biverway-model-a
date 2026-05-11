@@ -400,7 +400,7 @@ function stepLabel(key, val) {
     dba:{kill:'Prior failure — DBI Asian',pass:'No failure'},
     dbh:{kill:'Prior failure — DBI H/L',pass:'No failure'},
     hist:{med:'Historical reference level',pass:'Fresh level'},
-    loc:{prime:'PDH / PDL',good:'Near PDH or 50–79%',mid:'40–50%',weak:'20–40%'},
+    loc:{prime:'PDH / PDL',near:'Near PDH / PDL','good-62':'62 – 79%','good-50':'50 – 62%',mid:'40 – 50%','weak-30':'30 – 40%','weak-20':'20 – 30%'},
     candle:{pos:'Pin Bar / Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle'}
   };
   return (map[key] && map[key][val]) || val;
