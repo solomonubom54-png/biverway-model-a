@@ -227,8 +227,11 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
       <div class="export-desc">Exports all Complete records as CSV. Every field included. Before/after image URLs included as links. Pending, Triggered, and Discarded records are excluded.</div>
       <button class="export-btn" onclick="doExport()">Export Complete Records as CSV</button>
     </div>
+    <div class="export-section" style="margin-top:10px;">
+      <div class="export-desc">One-time migration — converts old trades stored with label text to short value codes so they appear correctly in Filter Performance analytics. Export your CSV backup before running. Run once only.</div>
+      <button class="export-btn" style="border-color:rgba(201,151,58,0.3);background:rgba(201,151,58,0.07);color:var(--gold);" onclick="runBackfillMigration()">Migrate Old Trade Records</button>
+    </div>
   </div>
-</div>
 </div>
 
 <!-- MODAL -->
@@ -1094,6 +1097,104 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2200);
 }
+
+// ── ONE-TIME MIGRATION ────────────────────────────────────────────
+var STEP_MIGRATIONS = {
+  news:   [{m:'whipsaw',c:'kill'},{m:'normal',c:'pass'}],
+  gap:    [{m:'gap present',c:'yes'},{m:'no gap',c:'no'}],
+  gpos:   [{m:'organic',c:'before'},{m:'driven',c:'after'}],
+  htf:    [{m:'no htf',c:'pass'},{m:'h4 only',c:'med'},{m:'d1',c:'kill'}],
+  mssq1:  [{m:'disagree',c:'yes'},{m:'agree',c:'no'}],
+  mssq2:  [{m:'yes',c:'yes'},{m:'no',c:'no'}],
+  mssq3:  [{m:'swept',c:'yes'},{m:'no structural',c:'no'},{m:'no',c:'no'}],
+  zdepth: [{m:'consolidation',c:'deep-sw'},{m:'deep',c:'deep-h1'},
+           {m:'m45',c:'shallow-m45'},{m:'shallow',c:'shallow-none'}],
+  zliq:   [{m:'overlap',c:'overlap'},{m:'clean',c:'clean'}],
+  asian:  [{m:'coincide',c:'yes'},{m:'independent',c:'no'}],
+  dba:    [{m:'rejected',c:'kill'},{m:'no',c:'pass'}],
+  dbh:    [{m:'reached',c:'kill'},{m:'no',c:'pass'}],
+  hist:   [{m:'2 to 3',c:'med'},{m:'fresh',c:'pass'}],
+  loc:    [{m:'pdh / pdl',c:'prime'},{m:'near',c:'good'},{m:'62',c:'good'},
+           {m:'50',c:'good'},{m:'40',c:'mid'},{m:'30',c:'weak'},{m:'20',c:'weak'}],
+  candle: [{m:'pin',c:'pos'},{m:'balanced',c:'pos'},{m:'directional',c:'neu'},
+           {m:'indecisive',c:'neg'},{m:'dbi sweep',c:'med'}]
+};
+
+function migrateStepValue(key, stored) {
+  if (!stored) return null;
+  var shortCodes = ['kill','pass','yes','no','before','after','med',
+    'deep-h1','deep-sw','shallow-m45','shallow-none',
+    'overlap','clean','prime','good','mid','weak','pos','neu','neg'];
+  if (shortCodes.indexOf(stored) > -1) return stored;
+  var rules = STEP_MIGRATIONS[key];
+  if (!rules) return stored;
+  var lower = stored.toLowerCase();
+  for (var i = 0; i < rules.length; i++) {
+    if (lower.indexOf(rules[i].m) > -1) return rules[i].c;
+  }
+  return stored;
+}
+
+window.runBackfillMigration = async function() {
+  var shortCodes = ['kill','pass','yes','no','before','after','med',
+    'deep-h1','deep-sw','shallow-m45','shallow-none',
+    'overlap','clean','prime','good','mid','weak','pos','neu','neg'];
+  var keys = ['news','gap','gpos','htf','mssq1','mssq2','mssq3',
+              'zdepth','zliq','asian','dba','dbh','hist','loc','candle'];
+
+  var needsMigration = allTrades.filter(function(t) {
+    if (!t.steps) return false;
+    return keys.some(function(k) {
+      return t.steps[k] && shortCodes.indexOf(t.steps[k]) === -1;
+    });
+  });
+
+  if (!needsMigration.length) {
+    showToast('No trades need migration — all steps already use short codes');
+    return;
+  }
+
+  showToast('Migrating ' + needsMigration.length + ' trades...');
+
+  var errors = 0;
+
+  for (var i = 0; i < needsMigration.length; i++) {
+    var t = needsMigration[i];
+    var oldSteps = t.steps || {};
+    var newSteps = Object.assign({}, oldSteps);
+
+    keys.forEach(function(k) {
+      var migrated = migrateStepValue(k, oldSteps[k]);
+      if (migrated) newSteps[k] = migrated;
+    });
+
+    // Preserve original label text in _labels for modal display
+    if (!newSteps._labels) {
+      var labels = {};
+      keys.forEach(function(k) {
+        labels[k] = oldSteps[k] || null;
+      });
+      if (oldSteps.imp) labels.imp = oldSteps.imp;
+      if (oldSteps.adr) labels.adr = oldSteps.adr;
+      newSteps._labels = labels;
+    }
+
+    try {
+      await supaUpdate(String(t.id), { steps: newSteps });
+    } catch(err) {
+      errors++;
+      console.error('Migration failed for trade', t.id, err.message);
+    }
+  }
+
+  if (errors) {
+    showToast('Migration complete — ' + errors + ' errors, check console');
+  } else {
+    showToast('Migration complete — ' + needsMigration.length + ' trades updated');
+  }
+
+  await loadTrades();
+};
 
 // ── INIT ──────────────────────────────────────────────────────────
 loadTrades();
