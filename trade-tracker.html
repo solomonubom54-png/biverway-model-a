@@ -401,7 +401,7 @@ function stepLabel(key, val) {
     dbh:{kill:'Prior failure — DBI H/L',pass:'No failure'},
     hist:{med:'Historical reference level',pass:'Fresh level'},
     loc:{prime:'PDH / PDL',near:'Near PDH / PDL','good-62':'62 – 79%','good-50':'50 – 62%',mid:'40 – 50%','weak-30':'30 – 40%','weak-20':'20 – 30%'},
-    candle:{pos:'Pin Bar / Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle'}
+    candle:{pin:'Pin Bar',bal:'Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle'},
   };
   return (map[key] && map[key][val]) || val;
 }
@@ -684,7 +684,7 @@ window.openEditModal = function(id) {
     var completedMs = new Date(t.completed_at).getTime();
     var nowMs = Date.now();
     var hoursElapsed = (nowMs - completedMs) / (1000 * 60 * 60);
-    if (hoursElapsed > 24) {
+    if (hoursElapsed > 336) {
       showToast('Editing locked — more than 24 hours since outcome was recorded');
       return;
     }
@@ -802,7 +802,8 @@ window.openEditModal = function(id) {
     radioRow('loc','weak-20','20 – 30%'));
 
   html += section('10','Previous Day Candle Type',
-    radioRow('candle','pos','Pin Bar or Balanced') +
+    radioRow('candle','pin','Pin Bar') +
+    radioRow('candle','bal','Balanced') +
     radioRow('candle','neu','Strong Directional') +
     radioRow('candle','neg','Indecisive') +
     radioRow('candle','med','DBI Sweep Candle — medium flag'));
@@ -983,7 +984,7 @@ function renderAnalytics() {
     {label:'Zone Depth',key:'zdepth',opts:[{v:'deep-h1',l:'Deep H1'},{v:'deep-sw',l:'Deep+Sideways'},{v:'shallow-m45',l:'Shallow M45'},{v:'shallow-none',l:'Shallow None'}]},
     {label:'Zone Liquidity',key:'zliq',opts:[{v:'clean',l:'Clean'},{v:'overlap',l:'Overlap'}]},
     {label:'Historical Ref',key:'hist',opts:[{v:'med',l:'Yes'},{v:'pass',l:'No'}]},
-    {label:'PD Candle',key:'candle',opts:[{v:'pos',l:'Pin/Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'},{v:'med',l:'DBI Sweep'}]},
+    {label:'PD Candle',key:'candle',opts:[{v:'pin',l:'Pin Bar'},{v:'bal',l:'Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'},{v:'med',l:'DBI Sweep'}]},
     {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'near',l:'Near PDH/PDL'},{v:'good-62',l:'62–79%'},{v:'good-50',l:'50–62%'},{v:'mid',l:'40–50%'},{v:'weak-30',l:'30–40%'},{v:'weak-20',l:'20–30%'}]},
   ];
 
