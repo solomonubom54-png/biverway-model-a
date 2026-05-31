@@ -1661,30 +1661,6 @@ function toggleDetail(id) {
   detail.classList.toggle('open', !isOpen);
   trigger.setAttribute('aria-expanded', String(!isOpen));
 }
-
-function toggleDF() {
-  var trigger = document.getElementById('df-trigger');
-  var panel   = document.getElementById('df-panel');
-  var isOpen  = panel.classList.contains('open');
-  panel.classList.toggle('open', !isOpen);
-  trigger.setAttribute('aria-expanded', String(!isOpen));
-}
-
-function dfTab(id, el) {
-  var tabBar = el.parentElement;
-  tabBar.querySelectorAll('.df-tab').forEach(function(t){ t.classList.remove('active'); });
-  tabBar.parentElement.querySelectorAll('.df-pane').forEach(function(p){ p.classList.remove('active'); });
-  el.classList.add('active');
-  document.getElementById('dfp-' + id).classList.add('active');
-}
-
-function toggleDetail(id) {
-  var trigger = document.getElementById('dft-' + id);
-  var detail  = document.getElementById('dfd-' + id);
-  var isOpen  = detail.classList.contains('open');
-  detail.classList.toggle('open', !isOpen);
-  trigger.setAttribute('aria-expanded', String(!isOpen));
-}
 </script>
 
 <script>
