@@ -1570,13 +1570,14 @@ window.saveToTracker = async function() {
 
   var steps = captureSteps();
   var flags = [];
-  if (steps.htf === 'med') flags.push('H4 HTF');
+  if (steps.htf === 'med') flags.push('H4 HTF opposing zone');
   if (steps.zliq === 'overlap') flags.push('Overlap');
-  if (steps.hist === 'med') flags.push('Historical Ref');
+  if (steps.hist === 'med') flags.push('Historical reference location');
   if (steps.candle === 'med') flags.push('DBI Sweep Candle');
   if (steps.imp && parseFloat(steps.imp) > 3.0) flags.push('Impulse >3.0');
   if (steps.adr && parseFloat(steps.adr) > 1.5) flags.push('ADR >1.5');
-  if (steps.mssq2 === 'yes' && steps.mssq3 !== 'yes') flags.push('D1 FVG Rejection');
+  if (steps.mssq1 === 'yes' && steps.mssq2 === 'no') flags.push('Broker inconsistency');
+  if (steps.mssq2 === 'yes' && steps.mssq3 === 'no') flags.push('D1 FVG rejection');
 
   var btn = document.getElementById('sp-save-btn');
   var savedEl = document.getElementById('sp-saved');
