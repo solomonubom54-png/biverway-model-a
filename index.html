@@ -1282,7 +1282,7 @@ function run(){
       mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');
     } else {
       // Q2 yes + Q3 yes — hard kill (regardless of Q1)
-      kills++;kr.push('MSS compound signature — D1 FVG rejection confirmed, broker inconsistency on MSS close, and structural sweep all present');sc('mss','sk');ss('mss','Skip','var(--red)');
+      kills++;kr.push('MSS compound signature — D1 FVG rejection confirmed' + (mssQ1==='yes'?' with broker inconsistency on MSS close':'') + ' and structural sweep present');sc('mss','sk');ss('mss','Skip','var(--red)');
     }
   }
 
