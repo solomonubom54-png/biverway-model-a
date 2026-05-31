@@ -475,9 +475,13 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <input type="radio" name="htf" id="htf-n" value="pass" onchange="run()">
         <label for="htf-n" class="opt opt-g">No HTF opposing zone</label>
         <input type="radio" name="htf" id="htf-h4" value="med" onchange="run()">
-        <label for="htf-h4" class="opt opt-a">H4 only — decisional or extreme</label>
+        <label for="htf-h4" class="opt opt-a">H4 standard — decisional or extreme</label>
+        <input type="radio" name="htf" id="htf-h4s" value="med-h4s" onchange="run()">
+        <label for="htf-h4s" class="opt opt-a">H4 synthetic — same timeframe internal range structure</label>
+        <input type="radio" name="htf" id="htf-d1s" value="med-d1s" onchange="run()">
+        <label for="htf-d1s" class="opt opt-a">D1 synthetic — same timeframe internal range structure</label>
         <input type="radio" name="htf" id="htf-d1" value="kill" onchange="run()">
-        <label for="htf-d1" class="opt opt-r">D1 involved — alone or combined with H4</label>
+        <label for="htf-d1" class="opt opt-r">D1 standard — alone or combined with H4</label>
       </div>
     </div>
   </div>
@@ -1259,8 +1263,10 @@ function run(){
   // ── Step 3 HTF ───────────────────────────────────────────────
   var hv=rv('htf');
   if(!hv){sc('htf','');ss('htf','—','var(--dim)');}
-  else if(hv==='kill'){kills++;kr.push('D1 opposing zone — impulse that created the zone reached into a D1 decisional or extreme opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
+  else if(hv==='kill'){kills++;kr.push('D1 standard opposing zone — impulse that created the zone reached into a D1 decisional or extreme opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
   else if(hv==='med'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
+  else if(hv==='med-h4s'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
+  else if(hv==='med-d1s'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
   else{sc('htf','pa');ss('htf','Clear','var(--green)');}
 
   // ── Step 4 MSS Quality ───────────────────────────────────────
@@ -1418,7 +1424,7 @@ function run(){
   if(hasKill){
     g('vp-dec').textContent='SKIP'; g('vp-dec').style.color='var(--red)';
     var skipKills=[...kr];
-    if(mf>=2){var flagNames=[];if(rv('htf')==='med')flagNames.push('H4 HTF zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(rv('hist')==='med')flagNames.push('Historical reference level');if(rv('candle')==='med')flagNames.push('DBI Sweep Candle');if(hasI&&impV>3.0)flagNames.push('Impulse above 3.0');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));}
+    if(mf>=2){var flagNames=[];if(rv('htf')==='med'||rv('htf')==='med-h4s'||rv('htf')==='med-d1s')flagNames.push('HTF opposing zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(rv('hist')==='med')flagNames.push('Historical reference level');if(rv('candle')==='med')flagNames.push('DBI Sweep Candle');if(hasI&&impV>3.0)flagNames.push('Impulse above 3.0');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));}
     g('vp-note').textContent=skipKills.join(' · ');
     g('vp').style.borderColor='rgba(224,80,80,0.3)';g('vp').style.boxShadow='0 0 30px rgba(224,80,80,0.05)';
     g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
@@ -1432,7 +1438,9 @@ function run(){
     var vbc=mf===0?'var(--gold)':'var(--green)';
     var vbb=mf===0?'rgba(201,151,58,0.4)':'rgba(45,184,130,0.4)';
     var activeFlags=[];
-    if(rv('htf')==='med')activeFlags.push('H4 HTF zone');
+    if(rv('htf')==='med')activeFlags.push('H4 standard opposing zone');
+    if(rv('htf')==='med-h4s')activeFlags.push('H4 synthetic opposing zone');
+    if(rv('htf')==='med-d1s')activeFlags.push('D1 synthetic opposing zone');
     if(rv('zliq')==='overlap')activeFlags.push('Overlap');
     if(rv('hist')==='med')activeFlags.push('Historical reference level');
     if(rv('candle')==='med')activeFlags.push('DBI Sweep Candle');
