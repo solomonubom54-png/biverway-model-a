@@ -1528,38 +1528,27 @@ window.previewBefore = function(input) {
 };
 
 function captureSteps() {
-  // Read exact label text to avoid ambiguous shared values
+  function rv2(n){ var e=document.querySelector('input[name="'+n+'"]:checked'); return e?e.value:null; }
   function rl(n){
     var e=document.querySelector('input[name="'+n+'"]:checked');
     if(!e) return null;
     var lbl=document.querySelector('label[for="'+e.id+'"]');
     return lbl ? lbl.textContent.trim() : e.value;
   }
-  function rv2(n){ var e=document.querySelector('input[name="'+n+'"]:checked'); return e?e.value:null; }
   return {
-    news:   rl('news'),
-    gap:    rl('gap'),
-    gpos:   rl('gpos'),
-    htf:    rl('htf'),
-    mssq1:  rl('mssq1'),
-    mssq2:  rl('mssq2'),
-    mssq3:  rl('mssq3'),
-    zdepth: rl('zdepth'),
-    zliq:   rl('zliq'),
-    asian:  rl('asian'),
-    dba:    rl('dba'),
-    dbh:    rl('dbh'),
-    hist:   rl('hist'),
-    imp:    document.getElementById('imp').value || null,
-    adr:    document.getElementById('adr').value || null,
-    loc:    rl('loc'),
-    candle: rl('candle'),
-    _values: {
-      news:rv2('news'),gap:rv2('gap'),gpos:rv2('gpos'),htf:rv2('htf'),
-      mssq1:rv2('mssq1'),mssq2:rv2('mssq2'),mssq3:rv2('mssq3'),
-      zdepth:rv2('zdepth'),zliq:rv2('zliq'),asian:rv2('asian'),
-      dba:rv2('dba'),dbh:rv2('dbh'),hist:rv2('hist'),
-      loc:rv2('loc'),candle:rv2('candle')
+    news:rv2('news'), gap:rv2('gap'), gpos:rv2('gpos'), htf:rv2('htf'),
+    mssq1:rv2('mssq1'), mssq2:rv2('mssq2'), mssq3:rv2('mssq3'),
+    zdepth:rv2('zdepth'), zliq:rv2('zliq'), asian:rv2('asian'),
+    dba:rv2('dba'), dbh:rv2('dbh'), hist:rv2('hist'),
+    imp:document.getElementById('imp').value || null,
+    adr:document.getElementById('adr').value || null,
+    loc:rv2('loc'), candle:rv2('candle'),
+    _labels:{
+      news:rl('news'), gap:rl('gap'), gpos:rl('gpos'), htf:rl('htf'),
+      mssq1:rl('mssq1'), mssq2:rl('mssq2'), mssq3:rl('mssq3'),
+      zdepth:rl('zdepth'), zliq:rl('zliq'), asian:rl('asian'),
+      dba:rl('dba'), dbh:rl('dbh'), hist:rl('hist'),
+      loc:rl('loc'), candle:rl('candle')
     }
   };
 }
