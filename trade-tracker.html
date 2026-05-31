@@ -392,7 +392,7 @@ function stepLabel(key, val, steps) {
     news:{kill:'Yes — whipsaw',pass:'No — normal'},
     gap:{yes:'Gap present',no:'No gap'},
     gpos:{before:'Post-Gap Organic',after:'Gap-Driven Structure'},
-    htf:{pass:'No HTF zone',med:'H4 only',kill:'D1 involved'},
+    htf:{pass:'No HTF zone',med:'H4 standard',kill:'D1 standard','med-h4s':'H4 synthetic','med-d1s':'D1 synthetic'},
     mssq1:{yes:'Brokers disagree',no:'Brokers agree'},
     mssq2:{yes:'D1 FVG: Yes',no:'D1 FVG: No'},
     mssq3:{yes:'DBI sweep: Yes',no:'DBI sweep: No'},
@@ -734,9 +734,11 @@ window.openEditModal = function(id) {
 
   html += section('03','HTF Opposing Zone',
     radioRow('htf','pass','No HTF opposing zone') +
-    radioRow('htf','med','H4 only — medium flag') +
-    radioRow('htf','kill','D1 involved — hard kill'));
-
+    radioRow('htf','med','H4 standard — decisional or extreme — medium flag') +
+    radioRow('htf','med-h4s','H4 synthetic — same timeframe internal range structure — medium flag') +
+    radioRow('htf','med-d1s','D1 synthetic — same timeframe internal range structure — medium flag') +
+    radioRow('htf','kill','D1 standard — alone or combined with H4 — hard kill'));
+  
   // S2 — Zone Structure
   html += section('04 MSS Q1','Broker Inconsistency',
     radioRow('mssq1','no','No — both platforms confirm the same close') +
@@ -847,8 +849,10 @@ window.computeEditVerdict = function() {
 
   if (getR('news')==='kill') kills.push('Post news whipsaw day');
   if (getR('gpos')==='after') kills.push('Gap-driven structure');
-  if (getR('htf')==='kill') kills.push('D1 HTF opposing zone');
-  if (getR('htf')==='med')  flags.push('H4 HTF opposing zone');
+  if (getR('htf')==='kill')    kills.push('D1 standard opposing zone');
+  if (getR('htf')==='med')     flags.push('H4 standard opposing zone');
+  if (getR('htf')==='med-h4s') flags.push('H4 synthetic opposing zone');
+  if (getR('htf')==='med-d1s') flags.push('D1 synthetic opposing zone');
 
   var q1=getR('mssq1'), q2=getR('mssq2'), q3=getR('mssq3');
   if (q2==='yes' && q3==='yes') kills.push('MSS compound signature');
@@ -980,7 +984,7 @@ function renderAnalytics() {
   var instHTML = instRows ? '<div class="an-sec"><div class="an-sec-title">By Instrument</div><div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;"><table class="breakdown-table"><tr><th>Instrument</th><th>Trades</th><th>Win Rate</th><th>RRR</th><th>Streak</th></tr>'+instRows+'</table></div></div>' : '';
 
   var filterDefs = [
-    {label:'HTF Zone',key:'htf',opts:[{v:'pass',l:'No HTF'},{v:'med',l:'H4 Only'},{v:'kill',l:'D1'}]},
+    {label:'HTF Zone',key:'htf',opts:[{v:'pass',l:'No HTF'},{v:'med',l:'H4 Standard'},{v:'med-h4s',l:'H4 Synthetic'},{v:'med-d1s',l:'D1 Synthetic'},{v:'kill',l:'D1 Standard'}]},
     {label:'MSS Broker (Q1)',key:'mssq1',opts:[{v:'yes',l:'Disagree'},{v:'no',l:'Agree'}]},
     {label:'MSS D1 FVG (Q2)',key:'mssq2',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
     {label:'Zone Depth',key:'zdepth',opts:[{v:'deep-h1',l:'Deep H1'},{v:'deep-sw',l:'Deep+Sideways'},{v:'shallow-m45',l:'Shallow M45'},{v:'shallow-none',l:'Shallow None'}]},
