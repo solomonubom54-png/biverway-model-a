@@ -384,8 +384,10 @@ function instFull(i) {
   return {EU:'EURUSD',GU:'GBPUSD',UC:'USDCHF',XU:'XAUUSD'}[i] || i || '—';
 }
 
-function stepLabel(key, val) {
+function stepLabel(key, val, steps) {
   if (!val) return null;
+  // Check _labels first — human readable text stored at save time
+  if (steps && steps._labels && steps._labels[key]) return steps._labels[key];
   var map = {
     news:{kill:'Yes — whipsaw',pass:'No — normal'},
     gap:{yes:'Gap present',no:'No gap'},
@@ -401,10 +403,10 @@ function stepLabel(key, val) {
     dbh:{kill:'Prior failure — DBI H/L',pass:'No failure'},
     hist:{med:'Historical reference level',pass:'Fresh level'},
     loc:{prime:'PDH / PDL',near:'Near PDH / PDL','good-62':'62 – 79%','good-50':'50 – 62%',mid:'40 – 50%','weak-30':'30 – 40%','weak-20':'20 – 30%'},
-    candle:{pin:'Pin Bar',bal:'Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle'},
+    candle:{pos:'Pin Bar / Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle'},
   };
   return (map[key] && map[key][val]) || val;
-}
+  }
 
 // ── RENDER LOG ────────────────────────────────────────────────────
 function renderLog() {
@@ -465,7 +467,7 @@ function openTrade(id) {
 
   var stepItems = stepDefs.map(function(d){
     var v = s[d[1]];
-    var lbl = stepLabel(d[1], v) || v;
+    var lbl = stepLabel(d[1], v, s) || v;
     if (!lbl) return '';
     return '<div class="detail-item"><div class="di-label">'+d[0]+'</div><div class="di-val">'+lbl+'</div></div>';
   }).filter(Boolean).join('');
@@ -684,7 +686,7 @@ window.openEditModal = function(id) {
     var completedMs = new Date(t.completed_at).getTime();
     var nowMs = Date.now();
     var hoursElapsed = (nowMs - completedMs) / (1000 * 60 * 60);
-    if (hoursElapsed > 336) {
+    if (hoursElapsed > 24) {
       showToast('Editing locked — more than 24 hours since outcome was recorded');
       return;
     }
