@@ -992,9 +992,19 @@ function renderAnalytics() {
     {label:'Historical Ref',key:'hist',opts:[{v:'med',l:'Yes'},{v:'pass',l:'No'}]},
     {label:'PD Candle',key:'candle',opts:[{v:'pin',l:'Pin Bar'},{v:'bal',l:'Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'},{v:'med',l:'DBI Sweep'}]},
     {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'near',l:'Near PDH/PDL'},{v:'good-62',l:'62–79%'},{v:'good-50',l:'50–62%'},{v:'mid',l:'40–50%'},{v:'weak-30',l:'30–40%'},{v:'weak-20',l:'20–30%'}]},
+    {label:'Impulse Ratio',key:'imp',opts:[{v:'above3',l:'Above 3.0'},{v:'below3',l:'Below 3.0'}],numeric:true,threshold:3.0},
+    {label:'ADR Ratio',key:'adr',opts:[{v:'above1.5',l:'Above 1.5'},{v:'below1.5',l:'Below 1.5'}],numeric:true,threshold:1.5},
   ];
 
   var filterRows = filterDefs.map(function(fd){
+    if (fd.numeric) {
+      var above = complete.filter(function(t){ return t.steps && parseFloat(t.steps[fd.key]) > fd.threshold; });
+      var below = complete.filter(function(t){ return t.steps && parseFloat(t.steps[fd.key]) <= fd.threshold && !isNaN(parseFloat(t.steps[fd.key])); });
+      var rows = '';
+      if (above.length) { var s=stats(above); rows+='<tr><td>'+fd.label+'</td><td>'+fd.opts[0].l+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td></tr>'; }
+      if (below.length) { var s=stats(below); rows+='<tr><td>'+fd.label+'</td><td>'+fd.opts[1].l+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td></tr>'; }
+      return rows;
+    }
     return fd.opts.map(function(opt){
       var ts = complete.filter(function(t){ return t.steps && t.steps[fd.key] === opt.v; });
       if (!ts.length) return '';
@@ -1002,7 +1012,7 @@ function renderAnalytics() {
       return '<tr><td>'+fd.label+'</td><td>'+opt.l+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td></tr>';
     }).join('');
   }).join('');
-
+  
   var filterHTML = filterRows ? '<div class="an-sec"><div class="an-sec-title">Filter Performance</div><div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;"><table class="breakdown-table"><tr><th>Filter</th><th>Answer</th><th>Trades</th><th>Win Rate</th><th>RRR</th></tr>'+filterRows+'</table></div></div>' : '';
 
   var MIN_SAMPLE=10, DEV=15;
