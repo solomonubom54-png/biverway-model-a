@@ -540,6 +540,28 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         </div>
       </div>
 
+      <!-- Q4 — W1 FVG rejection (always shown after Q2 is answered) -->
+      <div class="mss-q" id="mss-q4" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
+        <div class="sq">Q4 — Did the M15 impulse leg tap into a Weekly (W1) Fair Value Gap and reject from it?</div>
+        <div class="opts">
+          <input type="radio" name="mssq4" id="mssq4-y" value="yes" onchange="onMSS(4,'yes')">
+          <label for="mssq4-y" class="opt opt-a">Yes</label>
+          <input type="radio" name="mssq4" id="mssq4-n" value="no" onchange="onMSS(4,'no')">
+          <label for="mssq4-n" class="opt opt-g">No</label>
+        </div>
+      </div>
+
+      <!-- Q5 — W1 structural sweep (only shown when Q4 = Yes) -->
+      <div class="mss-q" id="mss-q5" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
+        <div class="sq">Q5 — Did the rejecting leg also sweep a structural level — a weekly high or low or a significant prior swing — in the process of that W1 FVG rejection?</div>
+        <div class="opts">
+          <input type="radio" name="mssq5" id="mssq5-y" value="yes" onchange="onMSS(5,'yes')">
+          <label for="mssq5-y" class="opt opt-r">Yes — structural sweep present</label>
+          <input type="radio" name="mssq5" id="mssq5-n" value="no" onchange="onMSS(5,'no')">
+          <label for="mssq5-n" class="opt opt-g">No — rejection only, no sweep</label>
+        </div>
+      </div>
+
       <!-- Reference panel -->
       <div class="mss-ref" style="margin-top:14px;">
         <div class="mss-ref-hdr">Reference</div>
@@ -555,9 +577,17 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="mss-ref-term">DBI or 2–3 day sweep (Q3)</div>
           <div class="mss-ref-desc">The rejecting leg clears the Day-Before-It's high or low, or a high or low from 2 to 3 days prior. Only checked when Q2 is confirmed. Determines whether the condition escalates from medium flag to hard kill.</div>
         </div>
+        <div class="mss-ref-row">
+          <div class="mss-ref-term">W1 FVG (Q4)</div>
+          <div class="mss-ref-desc">A fair value gap on the Weekly timeframe. The M15 impulse leg taps this gap and rejects from it. Carries medium flag weight. Higher timeframe than D1 FVG so the opposing energy is stronger.</div>
+        </div>
+        <div class="mss-ref-row">
+          <div class="mss-ref-term">W1 structural sweep (Q5)</div>
+          <div class="mss-ref-desc">The rejecting leg sweeps a weekly high or low or significant prior swing. Only checked when Q4 is confirmed. Escalates W1 FVG rejection from medium flag to hard kill — compound signature.</div>
+        </div>
         <div class="mss-ref-row" style="border-bottom:none;">
           <div class="mss-ref-term">Outcome map</div>
-          <div class="mss-ref-desc">Q1 No, Q2 No → clean pass. Q1 Yes, Q2 No → medium flag. Q1 No, Q2 Yes, Q3 No → medium flag. Q1 Yes, Q2 Yes, Q3 No → medium flag. Q2 Yes, Q3 Yes (either Q1) → hard kill. Five observations, zero wins on hard kill. Under active monitoring.</div>
+          <div class="mss-ref-desc">Q1 No, Q2 No, Q4 No → clean pass. Q1 Yes, Q2 No → medium flag. Q2 Yes, Q3 No → medium flag. Q2 Yes, Q3 Yes → hard kill. Q4 Yes, Q5 No → medium flag. Q4 Yes, Q5 Yes → hard kill.</div>
         </div>
       </div>
 
@@ -597,6 +627,19 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         </div>
       </div>
 
+    <!-- Layer 3 — D1 FVG At SL Boundary (only shown when HTF flag is present from Step 03) -->
+      <div class="layer-div" id="zone-l3">
+        <div class="ltitle">Layer 3 — D1 FVG At SL Boundary</div>
+        <div class="sq" style="margin-bottom:10px;">Is there an unfilled D1 Fair Value Gap sitting below or above this zone — such that the zone's SL boundary overlaps with or rests on the FVG?</div>
+        <div class="opts">
+          <input type="radio" name="d1fvgsl" id="d1fvgsl-n" value="no" onchange="run()">
+          <label for="d1fvgsl-n" class="opt opt-g">No — no D1 FVG at SL boundary</label>
+          <input type="radio" name="d1fvgsl" id="d1fvgsl-y" value="yes" onchange="run()">
+          <label for="d1fvgsl-y" class="opt opt-r">Yes — D1 FVG present at SL boundary</label>
+        </div>
+        <div style="margin-top:10px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">Hard kill when HTF opposing zone is present. The HTF zone pushes price back while the D1 FVG draws price through the zone SL boundary — two forces with the same destructive outcome.</div>
+      </div>
+
     </div>
   </div>
 
@@ -630,7 +673,8 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="crow"><div class="cdot" id="exc-ov-dot"></div><div class="clabel" id="exc-ov-lbl">Overlap — reading from Zone Condition</div></div>
         <div class="crow"><div class="cdot" id="exc-adr-dot"></div><div class="clabel" id="exc-adr-lbl">ADR above 1.5 — enter ADR in Market State</div></div>
         <div class="crow"><div class="cdot" id="exc-imp-dot"></div><div class="clabel" id="exc-imp-lbl">Impulse above 3.0 — enter Impulse in Market State</div></div>
-        <div style="margin-top:9px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">All three clear — proceed. Any one present — hard kill.</div>
+        <div class="crow"><div class="cdot" id="exc-hist-dot"></div><div class="clabel" id="exc-hist-lbl">Historical reference location — reading from Step 06d</div></div>
+        <div style="margin-top:9px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">All four clear — proceed. Any one present — hard kill.</div>
       </div>
     </div>
   </div>
@@ -886,11 +930,11 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <div class="df-panel" id="df-panel" role="region">
     <div class="df-hdr">
       <div class="df-hdr-left">
-        <div class="df-title">71 Trades Dataset</div>
+        <div class="df-title">85 Trades Dataset</div>
       </div>
       <div class="df-size">
         Dec 2024 – Mar 2025<br>
-        Nov 2025 – Mar 2026
+        Nov 2025 – May 2026
       </div>
     </div>
 
@@ -904,27 +948,27 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     <div class="df-pane active" id="dfp-forex">
       <div class="df-compare">
         <div class="df-block">
-          <div class="df-block-label">Baseline — all 59 taken</div>
-          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">29</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">30</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">49.2%</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+57R</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">5</span></div>
+          <div class="df-block-label">Baseline — all 75 taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">30</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">45</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">40.0%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+45R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">13</span></div>
         </div>
         <div class="df-block">
-          <div class="df-block-label">Filtered — 31 trades taken</div>
-          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">25</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">6</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">80.6%</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+69R</span></div>
+          <div class="df-block-label">Filtered — 22 trades taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">19</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">3</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">86.4%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+54R</span></div>
           <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
         </div>
       </div>
       <div class="df-filter-row">
-        <div class="df-mini"><div class="df-mini-l">Skipped</div><div class="df-mini-v" style="color:var(--text3)">28</div></div>
-        <div class="df-mini"><div class="df-mini-l">Losses Avoided</div><div class="df-mini-v" style="color:var(--green)">24</div></div>
-        <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">4</div></div>
-        <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">85.7%</div></div>
+        <div class="df-mini"><div class="df-mini-l">Skipped</div><div class="df-mini-v" style="color:var(--text3)">53</div></div>
+        <div class="df-mini"><div class="df-mini-l">Losses Avoided</div><div class="df-mini-v" style="color:var(--green)">42</div></div>
+        <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">11</div></div>
+        <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">79.2%</div></div>
       </div>
       <button class="df-detail-trigger" id="dft-forex" aria-expanded="false" onclick="toggleDetail('forex')">
         <div class="df-chevron">&#8964;</div><span>View Detailed Metrics</span>
@@ -933,20 +977,20 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="df-grade-grid" style="margin-top:12px;">
           <div class="df-grade-block">
             <div class="df-grade-eye">Grade</div><div class="df-grade-name prime">PRIME</div>
-            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">10</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">10</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">8</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">8</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">0</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
           </div>
           <div class="df-grade-block">
             <div class="df-grade-eye">Grade</div><div class="df-grade-name take">VALID</div>
-            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">21</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">15</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">6</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">71.4%</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">14</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">11</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">3</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">78.6%</span></div>
           </div>
         </div>
-        <div class="df-note">PRIME = zero medium flags. 10 trades, 10 wins, 0 losses. The cleanest signal the system produces.<br>VALID = one medium flag. 21 trades, 15W / 6L at 71.4% win rate.<br>28 skipped — 24 were losses. The filter protects more than it costs.</div>
+        <div class="df-note">PRIME = zero medium flags. 8 trades, 8 wins, 0 losses. The cleanest signal the system produces.<br>VALID = one medium flag. 14 trades, 11W / 3L at 78.6% win rate.<br>53 skipped — 42 were losses. The filter protects more than it costs.</div>
       </div>
     </div>
 
@@ -954,20 +998,20 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     <div class="df-pane" id="dfp-gold">
       <div class="df-compare">
         <div class="df-block">
-          <div class="df-block-label">Baseline — all 12 taken</div>
+          <div class="df-block-label">Baseline — all 10 taken</div>
           <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">5</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">7</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">41.7%</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+8R</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">5</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">50.0%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+10R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
         </div>
         <div class="df-block">
-          <div class="df-block-label">Filtered — 8 trades taken</div>
+          <div class="df-block-label">Filtered — 6 trades taken</div>
           <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">4</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">4</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">50.0%</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+8R</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">2</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">66.7%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+10R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
         </div>
       </div>
       <div class="df-filter-row">
@@ -990,13 +1034,13 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           </div>
           <div class="df-grade-block">
             <div class="df-grade-eye">Grade</div><div class="df-grade-name take">VALID</div>
-            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">6</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">4</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">2</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">4</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">33.3%</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">2</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">50.0%</span></div>
           </div>
         </div>
-        <div class="df-note">12 trades. Smaller sample — interpret with weight proportional to size.<br>PRIME held clean: both trades resolved as wins. VALID carries the dataset variance.<br>Gold operates under the same unified rules as forex. No separate filter set.</div>
+        <div class="df-note">10 trades. Smaller sample — interpret with weight proportional to size.<br>PRIME held clean: both trades resolved as wins. VALID carries the dataset variance.<br>Gold operates under the same unified rules as forex. No separate filter set.</div>
       </div>
     </div>
 
@@ -1004,27 +1048,27 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     <div class="df-pane" id="dfp-all">
       <div class="df-compare">
         <div class="df-block">
-          <div class="df-block-label">Baseline — all 71 taken</div>
-          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">34</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">37</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">47.9%</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+65R</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">5</span></div>
+          <div class="df-block-label">Baseline — all 85 taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val neu">35</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">50</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val neu">41.2%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val neu">+55R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">19</span></div>
         </div>
         <div class="df-block">
-          <div class="df-block-label">Filtered — 39 trades taken</div>
-          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">29</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">10</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">74.4%</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+77R</span></div>
-          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">3</span></div>
+          <div class="df-block-label">Filtered — 28 trades taken</div>
+          <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">23</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">5</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">82.1%</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">RRR at 1:3</span><span class="df-stat-val gld">+64R</span></div>
+          <div class="df-stat-row"><span class="df-stat-name">Max Losing Streak</span><span class="df-stat-val neu">2</span></div>
         </div>
       </div>
       <div class="df-filter-row">
-        <div class="df-mini"><div class="df-mini-l">Skipped</div><div class="df-mini-v" style="color:var(--text3)">32</div></div>
-        <div class="df-mini"><div class="df-mini-l">Losses Avoided</div><div class="df-mini-v" style="color:var(--green)">27</div></div>
-        <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">5</div></div>
-        <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">84.4%</div></div>
+        <div class="df-mini"><div class="df-mini-l">Skipped</div><div class="df-mini-v" style="color:var(--text3)">57</div></div>
+        <div class="df-mini"><div class="df-mini-l">Losses Avoided</div><div class="df-mini-v" style="color:var(--green)">45</div></div>
+        <div class="df-mini"><div class="df-mini-l">Wins Skipped</div><div class="df-mini-v" style="color:var(--amber)">12</div></div>
+        <div class="df-mini"><div class="df-mini-l">Skip Accuracy</div><div class="df-mini-v" style="color:var(--text3)">78.9%</div></div>
       </div>
       <button class="df-detail-trigger" id="dft-all" aria-expanded="false" onclick="toggleDetail('all')">
         <div class="df-chevron">&#8964;</div><span>View Detailed Metrics</span>
@@ -1033,20 +1077,20 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="df-grade-grid" style="margin-top:12px;">
           <div class="df-grade-block">
             <div class="df-grade-eye">Grade</div><div class="df-grade-name prime">PRIME</div>
-            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">12</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">12</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">8</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">8</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neu">0</span></div>
             <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val gld">100%</span></div>
           </div>
           <div class="df-grade-block">
             <div class="df-grade-eye">Grade</div><div class="df-grade-name take">VALID</div>
-            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">27</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">17</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">10</span></div>
-            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">63.0%</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Trades</span><span class="df-stat-val neu">20</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Wins</span><span class="df-stat-val pos">15</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Losses</span><span class="df-stat-val neg">5</span></div>
+            <div class="df-stat-row"><span class="df-stat-name">Win Rate</span><span class="df-stat-val pos">75.0%</span></div>
           </div>
         </div>
-        <div class="df-note">12 PRIME trades across all instruments. Zero losses. When every filter clears, the dataset has held 100%.<br>32 trades skipped — 27 were losses. The system removes noise, not opportunity.<br>47.9% baseline becomes 74.4% filtered. The edge is in the selection, not the setup.</div>
+        <div class="df-note">8 PRIME trades across all instruments. Zero losses. When every filter clears, the dataset has held 100%.<br>57 trades skipped — 45 were losses. The system removes noise, not opportunity.<br>41.2% baseline becomes 82.1% filtered. The edge is in the selection, not the setup.</div>
       </div>
     </div>
 
@@ -1157,23 +1201,39 @@ function showOrderError(requiredStep){
 }
 
 function onMSS(q, val){
-  // Q1=broker inconsistency (always), Q2=D1 FVG (always after Q1), Q3=DBI sweep (only if Q2=yes)
   var q2el=document.getElementById('mss-q2');
   var q3el=document.getElementById('mss-q3');
+  var q4el=document.getElementById('mss-q4');
+  var q5el=document.getElementById('mss-q5');
   if(q===1){
-    // Q1 answered — always reveal Q2, reset Q2+Q3
-    document.querySelectorAll('input[name="mssq2"],input[name="mssq3"]').forEach(function(r){r.checked=false;});
+    // Q1 answered — always reveal Q2, reset Q2+Q3+Q4+Q5
+    document.querySelectorAll('input[name="mssq2"],input[name="mssq3"],input[name="mssq4"],input[name="mssq5"]').forEach(function(r){r.checked=false;});
     q2el.style.display='block';
     q3el.style.display='none';
+    q4el.style.display='none';
+    q5el.style.display='none';
   }
   if(q===2){
-    // Q2 answered — reset Q3, only reveal if yes
-    document.querySelectorAll('input[name="mssq3"]').forEach(function(r){r.checked=false;});
+    // Q2 answered — reset Q3+Q4+Q5. Reveal Q3 only if yes. Always reveal Q4.
+    document.querySelectorAll('input[name="mssq3"],input[name="mssq4"],input[name="mssq5"]').forEach(function(r){r.checked=false;});
     q3el.style.display= val==='yes' ? 'block' : 'none';
+    q4el.style.display='block';
+    q5el.style.display='none';
+  }
+  if(q===3){
+    // Q3 answered — no change to Q4/Q5 visibility
+  }
+  if(q===4){
+    // Q4 answered — reset Q5, reveal Q5 only if yes
+    document.querySelectorAll('input[name="mssq5"]').forEach(function(r){r.checked=false;});
+    q5el.style.display= val==='yes' ? 'block' : 'none';
+  }
+  if(q===5){
+    // Q5 answered — nothing further to reveal
   }
   run();
   updateLocks();
-}
+  }
 
 function sc(id,cls){var el=g('c-'+id);if(el)el.className='sub'+(cls?' '+cls:'');}
 function ss(id,t,c){var el=g('st-'+id);if(el){el.textContent=t;el.style.color=c;}}
@@ -1199,23 +1259,32 @@ function stepDone(s){
   if(s==='gap'){var gv=rv('gap');if(!gv)return false;if(gv==='no')return true;return !!rv('gpos');}
   if(s==='inst') return !!_selectedInst;
   if(s==='mss'){
-    // Q1 (broker) always required
+    // Q1 always required
     var q1=rv('mssq1');
     if(!q1) return false;
-    // Q2 (FVG) always required once Q1 answered
+    // Q2 always required once Q1 answered
     var q2=rv('mssq2');
     if(!q2) return false;
-    // Q3 (DBI sweep) only required if Q2=yes
-    if(q2==='no') return true;
-    var q3=rv('mssq3');
-    return !!q3;
+    // Q3 only required if Q2=yes
+    if(q2==='yes'){var q3=rv('mssq3');if(!q3) return false;}
+    // Q4 always required once Q2 answered
+    var q4=rv('mssq4');
+    if(!q4) return false;
+    // Q5 only required if Q4=yes
+    if(q4==='yes'){var q5=rv('mssq5');if(!q5) return false;}
+    return true;
   }
   if(s==='htf') return !!rv('htf');
   if(s==='zone'){
     var dv=rv('zdepth');if(!dv)return false;
-    if(dv==='shallow-none')return true;// hard kill path — no liq needed
-    return !!rv('zliq');
-  }
+    if(dv==='shallow-none')return true;
+    if(!rv('zliq'))return false;
+    // Layer 3 only required when HTF flag is present in Step 03
+    var hv=rv('htf');
+    var htfHasFlag=(hv==='med'||hv==='med-h4s'||hv==='med-d1s');
+    if(htfHasFlag){var l3=rv('d1fvgsl');if(!l3)return false;}
+    return true;
+      }
   if(s==='asian'){
     var av=rv('asian');if(!av)return false;
     // Selecting either option counts as done — conditional check resolves live as steps 6/7 fill
@@ -1292,7 +1361,28 @@ function run(){
     }
   }
 
+  // ── W1 FVG Q4 / Q5 ───────────────────────────────────────────
+  var mssQ4=rv('mssq4'),mssQ5=rv('mssq5');
+  if(mssQ4==='yes'){
+    if(!mssQ5){
+      // Q5 not yet answered — pending, no flag added yet
+    } else if(mssQ5==='no'){
+      // W1 FVG rejection, no structural sweep — medium flag
+      mf++;
+    } else {
+      // W1 FVG rejection + structural sweep — hard kill
+      kills++;kr.push('W1 FVG compound signature — Weekly FVG rejection with structural sweep confirmed');
+    }
+  }
+  // mssQ4==='no' or null — pass, no flag
+
   // ── Step 4 Zone ──────────────────────────────────────────────
+  // Layer 3 visibility — only show when HTF flag present and zone depth + liquidity confirmed
+  var htfHasFlag=(hv==='med'||hv==='med-h4s'||hv==='med-d1s');
+  var showL3=htfHasFlag&&depthV&&depthV!=='shallow-none'&&!!liqV;
+  g('zone-l3').className='layer-div'+(showL3?' show':'');
+  if(!showL3){document.querySelectorAll('input[name="d1fvgsl"]').forEach(function(r){r.checked=false;});}
+
   var isForexShNone=(depthV==='shallow-none');
   var showL2=depthV&&!isForexShNone;
   g('zone-l2').className='layer-div'+(showL2?' show':'');
@@ -1326,6 +1416,12 @@ function run(){
     else{sc('zone','');ss('zone','—','var(--dim)');}
   }
 
+  // ── D1 FVG At SL Boundary (Layer 3) — fires when HTF flag + D1 FVG at SL ──
+  var d1fvgslV=rv('d1fvgsl');
+  if(showL3&&d1fvgslV==='yes'){
+    kills++;kr.push('D1 FVG at SL Boundary — HTF opposing zone present and D1 FVG sits at the zone SL boundary. Two forces with the same destructive outcome');
+  }
+
   // ── Step 5a Asian ────────────────────────────────────────────
   var asv=rv('asian');
   g('asian-cond').className='cond'+(asv==='yes'?' show':'');
@@ -1337,15 +1433,29 @@ function run(){
     else{g('exc-adr-dot').className='cdot';g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';}
     if(hasI){g('exc-imp-dot').className='cdot '+(impFlag?'bad':'ok');g('exc-imp-lbl').textContent='Impulse '+impV+(impFlag?' — above 3.0, kill condition':' — below 3.0, clear');g('exc-imp-lbl').style.color=impFlag?'var(--red)':'var(--green)';}
     else{g('exc-imp-dot').className='cdot';g('exc-imp-lbl').textContent='Impulse above 3.0 — enter Impulse in Market State';g('exc-imp-lbl').style.color='var(--dim)';}
+    var histAnswered=!!rv('hist');var histIsKill=rv('hist')==='med';
+    if(g('exc-hist-dot')&&g('exc-hist-lbl')){
+      if(histAnswered){g('exc-hist-dot').className='cdot '+(histIsKill?'bad':'ok');g('exc-hist-lbl').textContent=histIsKill?'Historical reference location — kill condition triggered':'Historical reference location — clear';g('exc-hist-lbl').style.color=histIsKill?'var(--red)':'var(--green)';}
+      else{g('exc-hist-dot').className='cdot';g('exc-hist-lbl').textContent='Historical reference location — complete Step 06d first';g('exc-hist-lbl').style.color='var(--dim)';}
+    }
   }
   if(!asv){sc('asian','');ss('asian','—','var(--dim)');}
   else if(asv==='no'){sc('asian','pa');ss('asian','Clear','var(--green)');}
   else{
     var hz2=depthV&&(depthV==='shallow-none'||!!liqV);
-    if(!hz2||!hasI||!hasA){sc('asian','au');ss('asian','Pending','var(--gold)');}
+    var histDone=!!rv('hist');
+    if(!hz2||!hasI||!hasA||!histDone){sc('asian','au');ss('asian','Pending','var(--gold)');}
     else{
-      var ak=hasOv||adrFlag||impFlag;
-      if(ak){kills++;kr.push('Asian range coincide — ' + (hasOv?'overlap present':'') + (hasOv&&(adrFlag||impFlag)?' + ':'') + (adrFlag?'ADR above 1.5':'') + (impFlag?'impulse above 3.0':''));sc('asian','sk');ss('asian','Skip','var(--red)');}
+      var histKill=rv('hist')==='med';
+      var ak=hasOv||adrFlag||impFlag||histKill;
+      if(ak){
+        var akReasons=[];
+        if(hasOv)akReasons.push('overlap present');
+        if(adrFlag)akReasons.push('ADR above 1.5');
+        if(impFlag)akReasons.push('impulse above 3.0');
+        if(histKill)akReasons.push('historical reference location');
+        kills++;kr.push('Asian range coincide — '+akReasons.join(', '));sc('asian','sk');ss('asian','Skip','var(--red)');
+  }
       else{sc('asian','au');ss('asian','Conditional','var(--gold)');}
     }
   }
@@ -1479,11 +1589,15 @@ function resetAll(){
   g('zone-l2').className='layer-div';
   g('asian-cond').className='cond';
   ['mssq1','mssq2','mssq3'].forEach(function(n){document.querySelectorAll('input[name="'+n+'"]').forEach(function(r){r.checked=false;});});
-  ['mss-q2','mss-q3'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['mss-q2','mss-q3','mss-q4','mss-q5'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   ['exc-ov-dot','exc-adr-dot','exc-imp-dot'].forEach(function(id){var el=g(id);if(el)el.className='cdot';});
   g('exc-ov-lbl').textContent='Overlap — reading from Zone Condition';g('exc-ov-lbl').style.color='var(--dim)';
   g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';
   g('exc-imp-lbl').textContent='Impulse above 3.0 — enter Impulse in Market State';g('exc-imp-lbl').style.color='var(--dim)';
+  if(g('exc-hist-dot'))g('exc-hist-dot').className='cdot';
+  if(g('exc-hist-lbl')){g('exc-hist-lbl').textContent='Historical reference location — reading from Step 06d';g('exc-hist-lbl').style.color='var(--dim)';}
+  g('zone-l3').className='layer-div';
+  document.querySelectorAll('input[name="mssq4"],input[name="mssq5"],input[name="d1fvgsl"]').forEach(function(r){r.checked=false;});
   g('imp-dot').className='cdot';g('imp-txt').textContent='Enter value to evaluate';g('imp-txt').style.color='var(--dim)';
   g('adr-dot').className='cdot';g('adr-txt').textContent='Enter value to evaluate';g('adr-txt').style.color='var(--dim)';
   ['mp1','mp2','mp3'].forEach(function(id){g(id).className='fcpip';});
@@ -1546,7 +1660,9 @@ function captureSteps() {
   return {
     news:rv2('news'), gap:rv2('gap'), gpos:rv2('gpos'), htf:rv2('htf'),
     mssq1:rv2('mssq1'), mssq2:rv2('mssq2'), mssq3:rv2('mssq3'),
-    zdepth:rv2('zdepth'), zliq:rv2('zliq'), asian:rv2('asian'),
+    mssq4:rv2('mssq4'), mssq5:rv2('mssq5'),
+    zdepth:rv2('zdepth'), zliq:rv2('zliq'), d1fvgsl:rv2('d1fvgsl'),
+    asian:rv2('asian'),
     dba:rv2('dba'), dbh:rv2('dbh'), hist:rv2('hist'),
     imp:document.getElementById('imp').value || null,
     adr:document.getElementById('adr').value || null,
@@ -1554,7 +1670,9 @@ function captureSteps() {
     _labels:{
       news:rl('news'), gap:rl('gap'), gpos:rl('gpos'), htf:rl('htf'),
       mssq1:rl('mssq1'), mssq2:rl('mssq2'), mssq3:rl('mssq3'),
-      zdepth:rl('zdepth'), zliq:rl('zliq'), asian:rl('asian'),
+      mssq4:rl('mssq4'), mssq5:rl('mssq5'),
+      zdepth:rl('zdepth'), zliq:rl('zliq'), d1fvgsl:rl('d1fvgsl'),
+      asian:rl('asian'),
       dba:rl('dba'), dbh:rl('dbh'), hist:rl('hist'),
       loc:rl('loc'), candle:rl('candle')
     }
@@ -1586,7 +1704,9 @@ window.saveToTracker = async function() {
   if (steps.adr && parseFloat(steps.adr) > 1.5) flags.push('ADR >1.5');
   if (steps.mssq1 === 'yes' && steps.mssq2 === 'no') flags.push('Broker inconsistency');
   if (steps.mssq2 === 'yes' && steps.mssq3 === 'no') flags.push('D1 FVG rejection');
-
+  if (steps.mssq4 === 'yes' && steps.mssq5 !== 'yes') flags.push('W1 FVG rejection');
+  if (steps.mssq4 === 'yes' && steps.mssq5 === 'yes') flags.push('W1 FVG + structural sweep');
+  if (steps.d1fvgsl === 'yes') flags.push('D1 FVG at SL Boundary');
   var btn = document.getElementById('sp-save-btn');
   var savedEl = document.getElementById('sp-saved');
   if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
