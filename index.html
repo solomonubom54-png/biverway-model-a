@@ -1534,7 +1534,8 @@ function run(){
   if(hasKill){
     g('vp-dec').textContent='SKIP'; g('vp-dec').style.color='var(--red)';
     var skipKills=[...kr];
-    if(mf>=2){var flagNames=[];if(rv('htf')==='med'||rv('htf')==='med-h4s'||rv('htf')==='med-d1s')flagNames.push('HTF opposing zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(rv('hist')==='med')flagNames.push('Historical reference level');if(rv('candle')==='med')flagNames.push('DBI Sweep Candle');if(hasI&&impV>3.0)flagNames.push('Impulse above 3.0');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(rv('mssq4')==='yes'&&rv('mssq5')!=='yes')flagNames.push('W1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));
+    if(mf>=2){var flagNames=[];if(rv('htf')==='med'||rv('htf')==='med-h4s'||rv('htf')==='med-d1s')flagNames.push('HTF opposing zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(rv('hist')==='med')flagNames.push('Historical reference level');if(rv('candle')==='med')flagNames.push('DBI Sweep Candle');if(hasI&&impV>3.0)flagNames.push('Impulse above 3.0');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(rv('mssq4')==='yes'&&rv('mssq5')!=='yes')flagNames.push('W1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));}
+    g('vp-note').textContent=skipKills.join(' · ');
     g('vp-note').textContent=skipKills.join(' · ');
     g('vp').style.borderColor='rgba(224,80,80,0.3)';g('vp').style.boxShadow='0 0 30px rgba(224,80,80,0.05)';
     g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
