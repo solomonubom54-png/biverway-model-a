@@ -396,6 +396,9 @@ function stepLabel(key, val, steps) {
     mssq1:{yes:'Brokers disagree',no:'Brokers agree'},
     mssq2:{yes:'D1 FVG: Yes',no:'D1 FVG: No'},
     mssq3:{yes:'DBI sweep: Yes',no:'DBI sweep: No'},
+    mssq4:{yes:'W1 FVG: Yes',no:'W1 FVG: No'},
+    mssq5:{yes:'W1 structural sweep: Yes',no:'W1 structural sweep: No'},
+    d1fvgsl:{yes:'D1 FVG at SL boundary: Yes',no:'D1 FVG at SL boundary: No'},
     zdepth:{'deep-h1':'Deep H1','deep-sw':'Deep H1 + Sideways','shallow-m45':'Shallow M45','shallow-none':'Shallow — No validation'},
     zliq:{clean:'Clean',overlap:'Overlapping'},
     asian:{yes:'Coincides with Asian range',no:'Independent'},
@@ -459,7 +462,8 @@ function openTrade(id) {
   var stepDefs = [
     ['01 Post News Whipsaw','news'],['02 Gap Day','gap'],['02 Gap Zone Type','gpos'],
     ['03 HTF Opposing Zone','htf'],['04 MSS Q1 Broker','mssq1'],['04 MSS Q2 D1 FVG','mssq2'],
-    ['04 MSS Q3 DBI Sweep','mssq3'],['05 Zone Depth','zdepth'],['05 Zone Liquidity','zliq'],
+    ['04 MSS Q3 DBI Sweep','mssq3'],['04 MSS Q4 W1 FVG','mssq4'],['04 MSS Q5 W1 Sweep','mssq5'],
+    ['05 Zone Depth','zdepth'],['05 Zone Liquidity','zliq'],['05 D1 FVG At SL Boundary','d1fvgsl'],
     ['06a Asian Coincide','asian'],['06b DBI Asian Range','dba'],['06c DBI H/L','dbh'],
     ['06d Historical Ref','hist'],['07 Impulse Ratio','imp'],['08 ADR Ratio','adr'],
     ['09 Zone Location','loc'],['10 PD Candle Type','candle']
@@ -752,6 +756,14 @@ window.openEditModal = function(id) {
     radioRow('mssq3','no','No') +
     radioRow('mssq3','yes','Yes — structural level swept'));
 
+  html += section('04 MSS Q4','W1 FVG Rejection',
+    radioRow('mssq4','no','No') +
+    radioRow('mssq4','yes','Yes — Weekly FVG tapped and rejected'));
+
+  html += section('04 MSS Q5','W1 Structural Sweep',
+    radioRow('mssq5','no','No') +
+    radioRow('mssq5','yes','Yes — structural sweep present — hard kill'));
+
   html += section('05','Zone Depth',
     radioRow('zdepth','deep-h1','Deep — H1 validated') +
     radioRow('zdepth','deep-sw','Deep — H1 + Clean Sideways Base') +
@@ -761,6 +773,10 @@ window.openEditModal = function(id) {
   html += section('05','Zone Liquidity',
     radioRow('zliq','clean','Clean — no overlap') +
     radioRow('zliq','overlap','Overlapping — medium flag'));
+
+  html += section('05','D1 FVG At SL Boundary',
+    radioRow('d1fvgsl','no','No — no D1 FVG at SL boundary') +
+    radioRow('d1fvgsl','yes','Yes — D1 FVG present at SL boundary (hard kill when HTF flag present)'));
 
   html += section('06a','PD Asian Range Coincidence',
     radioRow('asian','no','No — independent of PD Asian range') +
@@ -855,20 +871,30 @@ window.computeEditVerdict = function() {
   if (getR('htf')==='med-d1s') flags.push('D1 synthetic opposing zone');
 
   var q1=getR('mssq1'), q2=getR('mssq2'), q3=getR('mssq3');
+  var q4=getR('mssq4'), q5=getR('mssq5');
   if (q2==='yes' && q3==='yes') kills.push('MSS compound signature');
   else if (q2==='yes' && q3==='no') flags.push('D1 FVG rejection');
   else if (q1==='yes' && q2==='no') flags.push('Broker inconsistency');
-
+  if (q4==='yes' && q5==='yes') kills.push('W1 FVG compound signature — Weekly FVG rejection with structural sweep');
+  else if (q4==='yes' && q5==='no') flags.push('W1 FVG rejection');
+  
   var zd=getR('zdepth'), zl=getR('zliq');
   if (zd==='shallow-none') kills.push('Shallow — no validation');
   else if (zd==='shallow-m45' && zl==='overlap') kills.push('Shallow M45 + Overlap');
   else if (zl==='overlap') flags.push('Overlap');
 
+  // D1 FVG At SL Boundary — hard kill only when HTF flag present
+  var d1fvgslV=getR('d1fvgsl');
+  var htfV=getR('htf');
+  var htfHasFlag=(htfV==='med'||htfV==='med-h4s'||htfV==='med-d1s');
+  if(d1fvgslV==='yes'&&htfHasFlag) kills.push('D1 FVG at SL Boundary — HTF opposing zone present');
+
   var asian=getR('asian');
   if (asian==='yes') {
     var imp=getN('imp'), adr=getN('adr');
     var hasOv=(zl==='overlap'), impFlag=!isNaN(imp)&&imp>3.0, adrFlag=!isNaN(adr)&&adr>1.5;
-    if (hasOv||impFlag||adrFlag) kills.push('Asian coincide condition triggered');
+    var histKill=getR('hist')==='med';
+    if (hasOv||impFlag||adrFlag||histKill) kills.push('Asian coincide condition triggered');
   }
 
   if (getR('dba')==='kill') kills.push('Prior failure at DBI Asian range');
@@ -916,7 +942,7 @@ window.saveEdit = async function(id) {
   function getN(eid)  { var el=document.getElementById('er_'+eid); return el&&el.value?el.value:null; }
 
   var newSteps = Object.assign({}, t.steps||{});
-  ['news','gap','gpos','htf','mssq1','mssq2','mssq3','zdepth','zliq','asian','dba','dbh','hist','loc','candle'].forEach(function(k){
+  ['news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'].forEach(function(k){
     var v=getR(k); if(v) newSteps[k]=v;
   });
   var impVal=getN('imp'); if(impVal) newSteps.imp=impVal;
@@ -994,6 +1020,9 @@ function renderAnalytics() {
     {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'near',l:'Near PDH/PDL'},{v:'good-62',l:'62–79%'},{v:'good-50',l:'50–62%'},{v:'mid',l:'40–50%'},{v:'weak-30',l:'30–40%'},{v:'weak-20',l:'20–30%'}]},
     {label:'Impulse Ratio',key:'imp',opts:[{v:'above3',l:'Above 3.0'},{v:'below3',l:'Below 3.0'}],numeric:true,threshold:3.0},
     {label:'ADR Ratio',key:'adr',opts:[{v:'above1.5',l:'Above 1.5'},{v:'below1.5',l:'Below 1.5'}],numeric:true,threshold:1.5},
+    {label:'W1 FVG Rejection',key:'mssq4',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
+    {label:'W1 Structural Sweep',key:'mssq5',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
+    {label:'D1 FVG At SL Boundary',key:'d1fvgsl',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
   ];
 
   var filterRows = filterDefs.map(function(fd){
@@ -1043,12 +1072,12 @@ window.doExport = function() {
   var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
   if (!complete.length) { alert('No complete records to export.'); return; }
   var headers = ['id','instrument','created_at','verdict','outcome','flags','kill_reason','imp','adr',
-    'news','gap','gpos','htf','mssq1','mssq2','mssq3','zdepth','zliq','asian','dba','dbh','hist','loc','candle',
+    'news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle',
     'before_image','after_image','notes','triggered_at','completed_at'];
   var rows = complete.map(function(t){
     return headers.map(function(h){
       if (h==='flags') return (t.flags||[]).join('; ');
-      if (['news','gap','gpos','htf','mssq1','mssq2','mssq3','zdepth','zliq','asian','dba','dbh','hist','loc','candle','imp','adr'].includes(h))
+      if (['news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle','imp','adr'].includes(h))
         return (t.steps && t.steps[h]) || '';
       return (t[h]||'').toString().replace(/,/g,'|');
     });
@@ -1137,7 +1166,10 @@ var STEP_MIGRATIONS = {
   loc:    [{m:'pdh / pdl',c:'prime'},{m:'near',c:'good'},{m:'62',c:'good'},
            {m:'50',c:'good'},{m:'40',c:'mid'},{m:'30',c:'weak'},{m:'20',c:'weak'}],
   candle: [{m:'pin',c:'pos'},{m:'balanced',c:'pos'},{m:'directional',c:'neu'},
-           {m:'indecisive',c:'neg'},{m:'dbi sweep',c:'med'}]
+           {m:'indecisive',c:'neg'},{m:'dbi sweep',c:'med'}],
+  mssq4:  [{m:'yes',c:'yes'},{m:'no',c:'no'}],
+  mssq5:  [{m:'yes',c:'yes'},{m:'no',c:'no'}],
+  d1fvgsl:[{m:'yes',c:'yes'},{m:'no',c:'no'}]
 };
 
 function migrateStepValue(key, stored) {
@@ -1159,9 +1191,8 @@ window.runBackfillMigration = async function() {
   var shortCodes = ['kill','pass','yes','no','before','after','med',
     'deep-h1','deep-sw','shallow-m45','shallow-none',
     'overlap','clean','prime','good','mid','weak','pos','neu','neg'];
-  var keys = ['news','gap','gpos','htf','mssq1','mssq2','mssq3',
-              'zdepth','zliq','asian','dba','dbh','hist','loc','candle'];
-
+  var keys = ['news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5',
+              'zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'];
   var needsMigration = allTrades.filter(function(t) {
     if (!t.steps) return false;
     return keys.some(function(k) {
