@@ -389,7 +389,6 @@ function stepLabel(key, val, steps) {
   // Check _labels first — human readable text stored at save time
   if (steps && steps._labels && steps._labels[key]) return steps._labels[key];
   var map = {
-    news:{kill:'Yes — whipsaw',pass:'No — normal'},
     gap:{yes:'Gap present',no:'No gap'},
     gpos:{before:'Post-Gap Organic',after:'Gap-Driven Structure'},
     htf:{pass:'No HTF zone',med:'H4 standard',kill:'D1 standard','med-h4s':'H4 synthetic','med-d1s':'D1 synthetic'},
@@ -460,13 +459,13 @@ function openTrade(id) {
 
   var s = t.steps || {};
   var stepDefs = [
-    ['01 Post News Whipsaw','news'],['02 Gap Day','gap'],['02 Gap Zone Type','gpos'],
-    ['03 HTF Opposing Zone','htf'],['04 MSS Q1 Broker','mssq1'],['04 MSS Q2 D1 FVG','mssq2'],
-    ['04 MSS Q3 DBI Sweep','mssq3'],['04 MSS Q4 W1 FVG','mssq4'],['04 MSS Q5 W1 Sweep','mssq5'],
-    ['05 Zone Depth','zdepth'],['05 Zone Liquidity','zliq'],['05 D1 FVG At SL Boundary','d1fvgsl'],
-    ['06a Asian Coincide','asian'],['06b DBI Asian Range','dba'],['06c DBI H/L','dbh'],
-    ['06d Historical Ref','hist'],['07 Impulse Ratio','imp'],['08 ADR Ratio','adr'],
-    ['09 Zone Location','loc'],['10 PD Candle Type','candle']
+    ['01 Gap Day','gap'],['01 Gap Zone Type','gpos'],
+    ['02 HTF Opposing Zone','htf'],['03 MSS Q1 Broker','mssq1'],['03 MSS Q2 D1 FVG','mssq2'],
+    ['03 MSS Q3 DBI Sweep','mssq3'],['03 MSS Q4 W1 FVG','mssq4'],['03 MSS Q5 W1 Sweep','mssq5'],
+    ['04 Zone Depth','zdepth'],['04 Zone Liquidity','zliq'],['04 D1 FVG At SL Boundary','d1fvgsl'],
+    ['05a Asian Coincide','asian'],['05b DBI Asian Range','dba'],['05c DBI H/L','dbh'],
+    ['05d Historical Ref','hist'],['06 Impulse Ratio','imp'],['07 ADR Ratio','adr'],
+    ['08 Zone Location','loc'],['09 PD Candle Type','candle']
   ];
 
   var stepItems = stepDefs.map(function(d){
@@ -725,18 +724,14 @@ window.openEditModal = function(id) {
     +instFull(t.instrument)+' &nbsp;·&nbsp; '+fmtDate(t.created_at)+'</div>';
 
   // S1 — Market Conditions
-  html += section('01','Post News Whipsaw Day',
-    radioRow('news','kill','Yes — whipsaw day confirmed') +
-    radioRow('news','pass','No — normal day'));
-
-  html += section('02','Gap Day',
+  html += section('01','Gap Day',
     radioRow('gap','no','No gap') +
     radioRow('gap','yes','Yes — gap present') +
     '<div style="font-family:Space Mono,monospace;font-size:7px;color:var(--dim);margin:6px 0 4px;letter-spacing:0.08em;">If yes — zone origin:</div>' +
     radioRow('gpos','before','Post-Gap Organic Structure — new MSS after gap absorbed') +
     radioRow('gpos','after','Gap-Driven Structure — hard kill'));
 
-  html += section('03','HTF Opposing Zone',
+  html += section('02','HTF Opposing Zone',
     radioRow('htf','pass','No HTF opposing zone') +
     radioRow('htf','med','H4 standard — decisional or extreme — medium flag') +
     radioRow('htf','med-h4s','H4 synthetic — same timeframe internal range structure — medium flag') +
@@ -744,59 +739,59 @@ window.openEditModal = function(id) {
     radioRow('htf','kill','D1 standard — alone or combined with H4 — hard kill'));
   
   // S2 — Zone Structure
-  html += section('04 MSS Q1','Broker Inconsistency',
+  html += section('03 MSS Q1','Broker Inconsistency',
     radioRow('mssq1','no','No — both platforms confirm the same close') +
     radioRow('mssq1','yes','Yes — Pepperstone and IC Markets disagree'));
 
-  html += section('04 MSS Q2','D1 FVG Tap and Rejection',
+  html += section('03 MSS Q2','D1 FVG Tap and Rejection',
     radioRow('mssq2','no','No') +
     radioRow('mssq2','yes','Yes — D1 FVG tapped and rejected'));
 
-  html += section('04 MSS Q3','DBI or 2–3 Day Structural Sweep',
+  html += section('03 MSS Q3','DBI or 2–3 Day Structural Sweep',
     radioRow('mssq3','no','No') +
     radioRow('mssq3','yes','Yes — structural level swept'));
 
-  html += section('04 MSS Q4','W1 FVG Rejection',
+  html += section('03 MSS Q4','W1 FVG Rejection',
     radioRow('mssq4','no','No') +
     radioRow('mssq4','yes','Yes — Weekly FVG tapped and rejected'));
 
-  html += section('04 MSS Q5','W1 Structural Sweep',
+  html += section('03 MSS Q5','W1 Structural Sweep',
     radioRow('mssq5','no','No') +
     radioRow('mssq5','yes','Yes — structural sweep present — hard kill'));
 
-  html += section('05','Zone Depth',
+  html += section('04','Zone Depth',
     radioRow('zdepth','deep-h1','Deep — H1 validated') +
     radioRow('zdepth','deep-sw','Deep — H1 + Clean Sideways Base') +
     radioRow('zdepth','shallow-m45','Shallow — M45 validated') +
     radioRow('zdepth','shallow-none','Shallow — no validation — hard kill'));
 
-  html += section('05','Zone Liquidity',
+  html += section('04','Zone Liquidity',
     radioRow('zliq','clean','Clean — no overlap') +
     radioRow('zliq','overlap','Overlapping — medium flag'));
 
-  html += section('05','D1 FVG At SL Boundary',
+  html += section('04','D1 FVG At SL Boundary',
     radioRow('d1fvgsl','no','No — no D1 FVG at SL boundary') +
     radioRow('d1fvgsl','yes','Yes — D1 FVG present at SL boundary (hard kill when HTF flag present)'));
 
-  html += section('06a','PD Asian Range Coincidence',
+  html += section('05a','PD Asian Range Coincidence',
     radioRow('asian','no','No — independent of PD Asian range') +
     radioRow('asian','yes','Yes — coincides with PD Asian range'));
 
-  html += section('06b','Prior Failure at DBI Asian Range',
+  html += section('05b','Prior Failure at DBI Asian Range',
     radioRow('dba','pass','No failure — or fresh zone') +
     radioRow('dba','kill','Yes — rejected at DBI Asian range — hard kill'));
 
-  html += section('06c','Prior Failure at DBI High / Low',
+  html += section('05c','Prior Failure at DBI High / Low',
     radioRow('dbh','pass','No failure — or fresh zone') +
     radioRow('dbh','kill','Yes — reached DBI high or low without convincing break — hard kill'));
 
-  html += section('06d','Historical Reference Location',
+  html += section('05d','Historical Reference Location',
     radioRow('hist','pass','No — fresh or PD structural level') +
     radioRow('hist','med','Yes — 2 to 3 day old reference level — medium flag'));
 
   // S3 — Market State
   html += '<div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);">'
-    +'<div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:8px;">07 · Impulse Ratio</div>'
+    +'<div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:8px;">06 · Impulse Ratio</div>'
     +'<input type="number" id="er_imp" step="0.01" min="0" placeholder="e.g. 1.8" value="'+(s.imp||'')+'" '
     +'style="font-family:Space Mono,monospace;font-size:12px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);'
     +'border-radius:7px;color:var(--text);width:160px;outline:none;" oninput="computeEditVerdict()">'
@@ -804,7 +799,7 @@ window.openEditModal = function(id) {
     +'</div>';
 
   html += '<div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);">'
-    +'<div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:8px;">08 · ADR Ratio</div>'
+    +'<div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:8px;">07 · ADR Ratio</div>'
     +'<input type="number" id="er_adr" step="0.01" min="0" placeholder="e.g. 0.94" value="'+(s.adr||'')+'" '
     +'style="font-family:Space Mono,monospace;font-size:12px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);'
     +'border-radius:7px;color:var(--text);width:160px;outline:none;" oninput="computeEditVerdict()">'
@@ -812,7 +807,7 @@ window.openEditModal = function(id) {
     +'</div>';
 
   // S4 — Context
-  html += section('09','Zone Location in PD Range',
+  html += section('08','Zone Location in PD Range',
     radioRow('loc','prime','PDH / PDL') +
     radioRow('loc','near','Near PDH / PDL') +
     radioRow('loc','good-62','62 – 79%') +
@@ -821,7 +816,7 @@ window.openEditModal = function(id) {
     radioRow('loc','weak-30','30 – 40%') +
     radioRow('loc','weak-20','20 – 30%'));
 
-  html += section('10','Previous Day Candle Type',
+  html += section('09','Previous Day Candle Type',
     radioRow('candle','pin','Pin Bar') +
     radioRow('candle','bal','Balanced') +
     radioRow('candle','neu','Strong Directional') +
@@ -863,7 +858,6 @@ window.computeEditVerdict = function() {
   var kills = [];
   var flags = [];
 
-  if (getR('news')==='kill') kills.push('Post news whipsaw day');
   if (getR('gpos')==='after') kills.push('Gap-driven structure');
   if (getR('htf')==='kill')    kills.push('D1 standard opposing zone');
   if (getR('htf')==='med')     flags.push('H4 standard opposing zone');
@@ -942,7 +936,7 @@ window.saveEdit = async function(id) {
   function getN(eid)  { var el=document.getElementById('er_'+eid); return el&&el.value?el.value:null; }
 
   var newSteps = Object.assign({}, t.steps||{});
-  ['news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'].forEach(function(k){
+  ['gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'].forEach(function(k){
     var v=getR(k); if(v) newSteps[k]=v;
   });
   var impVal=getN('imp'); if(impVal) newSteps.imp=impVal;
@@ -1072,12 +1066,12 @@ window.doExport = function() {
   var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
   if (!complete.length) { alert('No complete records to export.'); return; }
   var headers = ['id','instrument','created_at','verdict','outcome','flags','kill_reason','imp','adr',
-    'news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle',
+    'gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle',
     'before_image','after_image','notes','triggered_at','completed_at'];
   var rows = complete.map(function(t){
     return headers.map(function(h){
       if (h==='flags') return (t.flags||[]).join('; ');
-      if (['news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle','imp','adr'].includes(h))
+      if (['gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle','imp','adr'].includes(h))
         return (t.steps && t.steps[h]) || '';
       return (t[h]||'').toString().replace(/,/g,'|');
     });
@@ -1149,7 +1143,6 @@ function showToast(msg) {
 
 // ── ONE-TIME MIGRATION ────────────────────────────────────────────
 var STEP_MIGRATIONS = {
-  news:   [{m:'whipsaw',c:'kill'},{m:'normal',c:'pass'}],
   gap:    [{m:'gap present',c:'yes'},{m:'no gap',c:'no'}],
   gpos:   [{m:'organic',c:'before'},{m:'driven',c:'after'}],
   htf:    [{m:'no htf',c:'pass'},{m:'h4 only',c:'med'},{m:'d1',c:'kill'}],
@@ -1191,7 +1184,7 @@ window.runBackfillMigration = async function() {
   var shortCodes = ['kill','pass','yes','no','before','after','med',
     'deep-h1','deep-sw','shallow-m45','shallow-none',
     'overlap','clean','prime','good','mid','weak','pos','neu','neg'];
-  var keys = ['news','gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5',
+  var keys = ['gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5',
               'zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'];
   var needsMigration = allTrades.filter(function(t) {
     if (!t.steps) return false;
