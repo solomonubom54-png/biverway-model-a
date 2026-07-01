@@ -432,13 +432,27 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <label for="gap-n" class="opt opt-g">No gap</label>
       </div>
       <div class="cond" id="gap-cond">
-        <div class="ctitle">Nature of the zone relative to the gap</div>
-        <div class="sq" style="margin-bottom:10px;">Was this zone created by a gap-driven MSS, or is it a new organic structure formed after the gap was absorbed?</div>
+        <div class="ctitle">Nature of the MSS relative to the gap</div>
+        <div class="sq" style="margin-bottom:10px;">Was the MSS that created this zone gap-concerned or gap-independent?</div>
         <div class="opts">
-          <input type="radio" name="gpos" id="gpos-b" value="before" onchange="run()">
-          <label for="gpos-b" class="opt opt-g">Post-Gap Organic Structure — new independent MSS after gap absorption</label>
-          <input type="radio" name="gpos" id="gpos-a" value="after" onchange="run()">
-          <label for="gpos-a" class="opt opt-r">Gap-Driven Structure — zone origin is a gap-initiated MSS</label>
+          <input type="radio" name="gpos" id="gpos-b" value="independent" onchange="onGapMSS('independent')">
+          <label for="gpos-b" class="opt opt-g">Gap-Independent — the MSS formed on its own, unrelated to the gap</label>
+          <input type="radio" name="gpos" id="gpos-a" value="concerned" onchange="onGapMSS('concerned')">
+          <label for="gpos-a" class="opt opt-a">Gap-Concerned — the gap played a role in how this MSS formed</label>
+        </div>
+
+        <!-- Sub-question 2 — only shown when Gap-Concerned is selected -->
+        <div class="cond" id="gap-detail-cond">
+          <div class="ctitle">How was the gap involved?</div>
+          <div class="sq" style="margin-bottom:10px;">How exactly did the gap contribute to the MSS?</div>
+          <div class="opts">
+            <input type="radio" name="gdetail" id="gdetail-jump" value="jump" onchange="run()">
+            <label for="gdetail-jump" class="opt opt-r">The gap itself broke the structural level — no candle did it, candles afterward just continued from there</label>
+            <input type="radio" name="gdetail" id="gdetail-near" value="near" onchange="run()">
+            <label for="gdetail-near" class="opt opt-r">The first or second candle after the gap caused the MSS — still gap-influenced momentum</label>
+            <input type="radio" name="gdetail" id="gdetail-organic" value="organic" onchange="run()">
+            <label for="gdetail-organic" class="opt opt-g">Several candles printed organically after the gap before the MSS eventually formed</label>
+          </div>
         </div>
       </div>
     </div>
@@ -1181,6 +1195,18 @@ function showOrderError(requiredStep){
   },2200);
 }
 
+function onGapMSS(val){
+  var detailEl=document.getElementById('gap-detail-cond');
+  if(val==='concerned'){
+    detailEl.className='cond show';
+  } else {
+    detailEl.className='cond';
+    document.querySelectorAll('input[name="gdetail"]').forEach(function(r){r.checked=false;});
+  }
+  run();
+  updateLocks();
+}
+
 function onMSS(q, val){
   var q2el=document.getElementById('mss-q2');
   var q3el=document.getElementById('mss-q3');
@@ -1236,7 +1262,13 @@ function onDepth(){
 }
 
 function stepDone(s){
-  if(s==='gap'){var gv=rv('gap');if(!gv)return false;if(gv==='no')return true;return !!rv('gpos');}
+  if(s==='gap'){
+    var gv=rv('gap');if(!gv)return false;
+    if(gv==='no')return true;
+    var gp=rv('gpos');if(!gp)return false;
+    if(gp==='independent')return true;
+    return !!rv('gdetail');
+  }
   if(s==='inst') return !!_selectedInst;
   if(s==='mss'){
     // Q1 always required
@@ -1293,14 +1325,21 @@ function run(){
   var impFlag=hasI&&impV>3.0,adrFlag=hasA&&adrV>1.5;
 
   // ── Step 1 Gap ───────────────────────────────────────────────
-  var gv=rv('gap'),gpv=rv('gpos');
+  var gv=rv('gap'),gpv=rv('gpos'),gdv=rv('gdetail');
   g('gap-cond').className='cond'+(gv==='yes'?' show':'');
   if(!gv){sc('gap','');ss('gap','—','var(--dim)');}
   else if(gv==='no'){sc('gap','pa');ss('gap','Clear','var(--green)');}
   else{
     if(!gpv){sc('gap','');ss('gap','Select','var(--amber)');}
-    else if(gpv==='before'){sc('gap','pa');ss('gap','Organic','var(--green)');}
-    else{kills++;kr.push('Gap-driven structure — zone origin is a gap-initiated MSS');sc('gap','sk');ss('gap','Skip','var(--red)');}
+    else if(gpv==='independent'){sc('gap','pa');ss('gap','Independent','var(--green)');}
+    else{
+      if(!gdv){sc('gap','');ss('gap','Select','var(--amber)');}
+      else if(gdv==='organic'){sc('gap','pa');ss('gap','Organic','var(--green)');}
+      else{
+        var gReason=gdv==='jump'?'the gap itself broke the structural level — no candle did it':'the first or second candle after the gap caused the MSS';
+        kills++;kr.push('Gap-concerned MSS — '+gReason);sc('gap','sk');ss('gap','Skip','var(--red)');
+      }
+    }
   }
 
   // ── Step 3 HTF ───────────────────────────────────────────────
@@ -1562,6 +1601,8 @@ function resetAll(){
   document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
   ['gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
   g('gap-cond').className='cond';
+  if(g('gap-detail-cond'))g('gap-detail-cond').className='cond';
+  document.querySelectorAll('input[name="gdetail"]').forEach(function(r){r.checked=false;});
   g('zone-l2').className='layer-div';
   g('asian-cond').className='cond';
   ['mssq1','mssq2','mssq3'].forEach(function(n){document.querySelectorAll('input[name="'+n+'"]').forEach(function(r){r.checked=false;});});
@@ -1634,7 +1675,7 @@ function captureSteps() {
     return lbl ? lbl.textContent.trim() : e.value;
   }
   return {
-    gap:rv2('gap'), gpos:rv2('gpos'), htf:rv2('htf'),
+    gap:rv2('gap'), gpos:rv2('gpos'), gdetail:rv2('gdetail'), htf:rv2('htf'),
     mssq1:rv2('mssq1'), mssq2:rv2('mssq2'), mssq3:rv2('mssq3'),
     mssq4:rv2('mssq4'), mssq5:rv2('mssq5'),
     zdepth:rv2('zdepth'), zliq:rv2('zliq'), d1fvgsl:rv2('d1fvgsl'),
@@ -1683,6 +1724,8 @@ window.saveToTracker = async function() {
   if (steps.mssq4 === 'yes' && steps.mssq5 !== 'yes') flags.push('W1 FVG rejection');
   if (steps.mssq4 === 'yes' && steps.mssq5 === 'yes') flags.push('W1 FVG + structural sweep');
   if (steps.d1fvgsl === 'yes') flags.push('D1 FVG at SL Boundary');
+  if (steps.gpos === 'concerned' && steps.gdetail === 'jump') flags.push('Gap-concerned MSS — gap itself broke structural level');
+  if (steps.gpos === 'concerned' && steps.gdetail === 'near') flags.push('Gap-concerned MSS — first or second candle after gap caused MSS');
   var btn = document.getElementById('sp-save-btn');
   var savedEl = document.getElementById('sp-saved');
   if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }
