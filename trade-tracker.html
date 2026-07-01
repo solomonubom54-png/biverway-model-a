@@ -390,7 +390,8 @@ function stepLabel(key, val, steps) {
   if (steps && steps._labels && steps._labels[key]) return steps._labels[key];
   var map = {
     gap:{yes:'Gap present',no:'No gap'},
-    gpos:{before:'Post-Gap Organic',after:'Gap-Driven Structure'},
+    gdetail:{jump:'Gap itself broke level — hard kill',near:'1st/2nd candle after gap — hard kill',organic:'Several organic candles — pass'},
+    gpos:{independent:'Gap-independent MSS',concerned:'Gap-concerned MSS'},
     htf:{pass:'No HTF zone',med:'H4 standard',kill:'D1 standard','med-h4s':'H4 synthetic','med-d1s':'D1 synthetic'},
     mssq1:{yes:'Brokers disagree',no:'Brokers agree'},
     mssq2:{yes:'D1 FVG: Yes',no:'D1 FVG: No'},
@@ -459,7 +460,7 @@ function openTrade(id) {
 
   var s = t.steps || {};
   var stepDefs = [
-    ['01 Gap Day','gap'],['01 Gap Zone Type','gpos'],
+    ['01 Gap Day','gap'],['01 Gap MSS Type','gpos'],['01 Gap Detail','gdetail'],
     ['02 HTF Opposing Zone','htf'],['03 MSS Q1 Broker','mssq1'],['03 MSS Q2 D1 FVG','mssq2'],
     ['03 MSS Q3 DBI Sweep','mssq3'],['03 MSS Q4 W1 FVG','mssq4'],['03 MSS Q5 W1 Sweep','mssq5'],
     ['04 Zone Depth','zdepth'],['04 Zone Liquidity','zliq'],['04 D1 FVG At SL Boundary','d1fvgsl'],
@@ -726,10 +727,16 @@ window.openEditModal = function(id) {
   // S1 — Market Conditions
   html += section('01','Gap Day',
     radioRow('gap','no','No gap') +
-    radioRow('gap','yes','Yes — gap present') +
-    '<div style="font-family:Space Mono,monospace;font-size:7px;color:var(--dim);margin:6px 0 4px;letter-spacing:0.08em;">If yes — zone origin:</div>' +
-    radioRow('gpos','before','Post-Gap Organic Structure — new MSS after gap absorbed') +
-    radioRow('gpos','after','Gap-Driven Structure — hard kill'));
+    radioRow('gap','yes','Yes — gap present'));
+
+  html += section('01','Gap MSS Type',
+    radioRow('gpos','independent','Gap-Independent — the MSS formed on its own, unrelated to the gap') +
+    radioRow('gpos','concerned','Gap-Concerned — the gap played a role in how this MSS formed'));
+
+  html += section('01','Gap Detail — How was the gap involved?',
+    radioRow('gdetail','jump','The gap itself broke the structural level — no candle did it') +
+    radioRow('gdetail','near','The first or second candle after the gap caused the MSS') +
+    radioRow('gdetail','organic','Several candles printed organically after the gap before MSS formed'));
 
   html += section('02','HTF Opposing Zone',
     radioRow('htf','pass','No HTF opposing zone') +
@@ -858,7 +865,9 @@ window.computeEditVerdict = function() {
   var kills = [];
   var flags = [];
 
-  if (getR('gpos')==='after') kills.push('Gap-driven structure');
+  var gposV=getR('gpos'),gdetailV=getR('gdetail');
+  if(gposV==='concerned'&&gdetailV==='jump') kills.push('Gap-concerned MSS — gap itself broke structural level');
+  if(gposV==='concerned'&&gdetailV==='near') kills.push('Gap-concerned MSS — first or second candle after gap caused MSS');
   if (getR('htf')==='kill')    kills.push('D1 standard opposing zone');
   if (getR('htf')==='med')     flags.push('H4 standard opposing zone');
   if (getR('htf')==='med-h4s') flags.push('H4 synthetic opposing zone');
@@ -936,7 +945,7 @@ window.saveEdit = async function(id) {
   function getN(eid)  { var el=document.getElementById('er_'+eid); return el&&el.value?el.value:null; }
 
   var newSteps = Object.assign({}, t.steps||{});
-  ['gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'].forEach(function(k){
+  ['gap','gpos','gdetail','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'].forEach(function(k){
     var v=getR(k); if(v) newSteps[k]=v;
   });
   var impVal=getN('imp'); if(impVal) newSteps.imp=impVal;
@@ -1066,12 +1075,12 @@ window.doExport = function() {
   var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
   if (!complete.length) { alert('No complete records to export.'); return; }
   var headers = ['id','instrument','created_at','verdict','outcome','flags','kill_reason','imp','adr',
-    'gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle',
+    'gap','gpos','gdetail','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle',
     'before_image','after_image','notes','triggered_at','completed_at'];
   var rows = complete.map(function(t){
     return headers.map(function(h){
       if (h==='flags') return (t.flags||[]).join('; ');
-      if (['gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle','imp','adr'].includes(h))
+      if (['gap','gpos','gdetail','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle','imp','adr'].includes(h))
         return (t.steps && t.steps[h]) || '';
       return (t[h]||'').toString().replace(/,/g,'|');
     });
@@ -1144,6 +1153,8 @@ function showToast(msg) {
 // ── ONE-TIME MIGRATION ────────────────────────────────────────────
 var STEP_MIGRATIONS = {
   gap:    [{m:'gap present',c:'yes'},{m:'no gap',c:'no'}],
+  gpos:   [{m:'independent',c:'independent'},{m:'concerned',c:'concerned'},{m:'before',c:'independent'},{m:'after',c:'concerned'}],
+  gdetail:[{m:'jump',c:'jump'},{m:'near',c:'near'},{m:'organic',c:'organic'}],
   gpos:   [{m:'organic',c:'before'},{m:'driven',c:'after'}],
   htf:    [{m:'no htf',c:'pass'},{m:'h4 only',c:'med'},{m:'d1',c:'kill'}],
   mssq1:  [{m:'disagree',c:'yes'},{m:'agree',c:'no'}],
@@ -1184,7 +1195,7 @@ window.runBackfillMigration = async function() {
   var shortCodes = ['kill','pass','yes','no','before','after','med',
     'deep-h1','deep-sw','shallow-m45','shallow-none',
     'overlap','clean','prime','good','mid','weak','pos','neu','neg'];
-  var keys = ['gap','gpos','htf','mssq1','mssq2','mssq3','mssq4','mssq5',
+  var keys = ['gap','gpos','gdetail','htf','mssq1','mssq2','mssq3','mssq4','mssq5',
               'zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'];
   var needsMigration = allTrades.filter(function(t) {
     if (!t.steps) return false;
