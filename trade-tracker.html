@@ -406,7 +406,7 @@ function stepLabel(key, val, steps) {
     dbh:{kill:'Prior failure — DBI H/L',pass:'No failure'},
     hist:{med:'Historical reference level',pass:'Fresh level'},
     loc:{prime:'PDH / PDL',near:'Near PDH / PDL','good-62':'62 – 79%','good-50':'50 – 62%',mid:'40 – 50%','weak-30':'30 – 40%','weak-20':'20 – 30%'},
-    candle:{pin:'Pin Bar',bal:'Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle'},
+    candle:{pin:'Pin Bar',bal:'Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle (retired)'},
   };
   return (map[key] && map[key][val]) || val;
   }
@@ -524,7 +524,7 @@ function openTrade(id) {
   }
 
   document.getElementById('modal-body').innerHTML =
-    '<div class="modal-section"><div class="modal-sec-title">Summary</div><div class="detail-grid"><div class="detail-item"><div class="di-label">Instrument</div><div class="di-val">'+instFull(t.instrument)+'</div></div><div class="detail-item"><div class="di-label">Date</div><div class="di-val">'+fmtDate(t.created_at)+'</div></div><div class="detail-item"><div class="di-label">Verdict</div><div class="di-val" style="color:'+(t.verdict==='PRIME'?'var(--gold)':t.verdict==='TAKE'?'var(--green)':'var(--red)')+'">'+t.verdict+'</div></div><div class="detail-item"><div class="di-label">Status / Outcome</div><div class="di-val" style="color:'+(t.outcome==='Win'?'var(--green)':t.outcome==='Loss'?'var(--red)':'var(--dim)')+'">'+((t.outcome||t.status)||'—')+'</div></div><div class="detail-item full"><div class="di-label">Active Flags</div><div class="di-val" style="margin-top:3px;">'+flagHtml+'</div></div>'+killHtml+discardHtml+'</div></div>'+
+    '<div class="modal-section"><div class="modal-sec-title">Summary</div><div class="detail-grid"><div class="detail-item"><div class="di-label">Instrument</div><div class="di-val">'+instFull(t.instrument)+'</div></div><div class="detail-item"><div class="di-label">Date</div><div class="di-val">'+fmtDate(t.created_at)+'</div></div><div class="detail-item"><div class="di-label">Verdict</div><div class="di-val" style="color:'+(t.verdict==='PRIME'?'var(--gold)':(t.verdict==='VALID'||t.verdict==='TAKE')?'var(--green)':'var(--red)')+'">'+t.verdict+'</div></div><div class="detail-item"><div class="di-label">Status / Outcome</div><div class="di-val" style="color:'+(t.outcome==='Win'?'var(--green)':t.outcome==='Loss'?'var(--red)':'var(--dim)')+'">'+((t.outcome||t.status)||'—')+'</div></div><div class="detail-item full"><div class="di-label">Active Flags</div><div class="di-val" style="margin-top:3px;">'+flagHtml+'</div></div>'+killHtml+discardHtml+'</div></div>'+
     '<div class="modal-section"><div class="modal-sec-title">Step Answers</div><div class="detail-grid">'+stepItems+'</div></div>'+
     '<div class="modal-section"><div class="modal-sec-title">Charts</div><div class="img-pair"><div class="img-slot">'+beforeHtml+'</div><div class="img-slot">'+afterHtml+'</div></div></div>'+
     (actionsHtml ? '<div class="modal-section">'+actionsHtml+'</div>' : '');
@@ -827,8 +827,7 @@ window.openEditModal = function(id) {
     radioRow('candle','pin','Pin Bar') +
     radioRow('candle','bal','Balanced') +
     radioRow('candle','neu','Strong Directional') +
-    radioRow('candle','neg','Indecisive') +
-    radioRow('candle','med','DBI Sweep Candle — medium flag'));
+    radioRow('candle','neg','Indecisive'));
 
   // Computed verdict preview
   html += '<div id="edit-verdict-preview" style="margin-bottom:16px;padding:10px 14px;border-radius:8px;'
@@ -907,7 +906,6 @@ window.computeEditVerdict = function() {
   var imp=getN('imp'), adr=getN('adr');
   if (!isNaN(imp) && imp>3.0) flags.push('Impulse ratio above 3.0');
   if (!isNaN(adr) && adr>1.5) flags.push('ADR ratio above 1.5');
-  if (getR('candle')==='med') flags.push('DBI Sweep Candle');
 
   var verdict, color, detail;
   if (kills.length > 0) {
@@ -966,7 +964,7 @@ window.saveEdit = async function(id) {
     notes:    updatedNotes
   };
   // Only include kill_reason if kills present
-  if (newKills.length) updatePayload.kill_reason = newKills.join(' · ');
+  updatePayload.kill_reason = newKills.length ? newKills.join(' · ') : null;
 
   try {
     await supaUpdate(id, updatePayload);
@@ -1019,7 +1017,7 @@ function renderAnalytics() {
     {label:'Zone Depth',key:'zdepth',opts:[{v:'deep-h1',l:'Deep H1'},{v:'deep-sw',l:'Deep+Sideways'},{v:'shallow-m45',l:'Shallow M45'},{v:'shallow-none',l:'Shallow None'}]},
     {label:'Zone Liquidity',key:'zliq',opts:[{v:'clean',l:'Clean'},{v:'overlap',l:'Overlap'}]},
     {label:'Historical Ref',key:'hist',opts:[{v:'med',l:'Yes'},{v:'pass',l:'No'}]},
-    {label:'PD Candle',key:'candle',opts:[{v:'pin',l:'Pin Bar'},{v:'bal',l:'Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'},{v:'med',l:'DBI Sweep'}]},
+    {label:'PD Candle',key:'candle',opts:[{v:'pin',l:'Pin Bar'},{v:'bal',l:'Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'}]},
     {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'near',l:'Near PDH/PDL'},{v:'good-62',l:'62–79%'},{v:'good-50',l:'50–62%'},{v:'mid',l:'40–50%'},{v:'weak-30',l:'30–40%'},{v:'weak-20',l:'20–30%'}]},
     {label:'Impulse Ratio',key:'imp',opts:[{v:'above3',l:'Above 3.0'},{v:'below3',l:'Below 3.0'}],numeric:true,threshold:3.0},
     {label:'ADR Ratio',key:'adr',opts:[{v:'above1.5',l:'Above 1.5'},{v:'below1.5',l:'Below 1.5'}],numeric:true,threshold:1.5},
@@ -1151,11 +1149,15 @@ function showToast(msg) {
 }
 
 // ── ONE-TIME MIGRATION ────────────────────────────────────────────
+// Every value the tool can currently store. Anything in this list is left untouched by the migration.
+var VALID_STEP_CODES = ['kill','pass','yes','no','before','after','med','med-h4s','med-d1s',
+  'independent','concerned','jump','near','organic',
+  'deep-h1','deep-sw','shallow-m45','shallow-none','overlap','clean',
+  'prime','good','good-62','good-50','mid','weak','weak-30','weak-20','pos','neu','neg','bal','pin'];
 var STEP_MIGRATIONS = {
   gap:    [{m:'gap present',c:'yes'},{m:'no gap',c:'no'}],
-  gpos:   [{m:'independent',c:'independent'},{m:'concerned',c:'concerned'},{m:'before',c:'independent'},{m:'after',c:'concerned'}],
+  gpos:   [{m:'independent',c:'independent'},{m:'concerned',c:'concerned'},{m:'before',c:'independent'},{m:'after',c:'concerned'},{m:'organic',c:'before'},{m:'driven',c:'after'}],
   gdetail:[{m:'jump',c:'jump'},{m:'near',c:'near'},{m:'organic',c:'organic'}],
-  gpos:   [{m:'organic',c:'before'},{m:'driven',c:'after'}],
   htf:    [{m:'no htf',c:'pass'},{m:'h4 only',c:'med'},{m:'d1',c:'kill'}],
   mssq1:  [{m:'disagree',c:'yes'},{m:'agree',c:'no'}],
   mssq2:  [{m:'yes',c:'yes'},{m:'no',c:'no'}],
@@ -1178,9 +1180,7 @@ var STEP_MIGRATIONS = {
 
 function migrateStepValue(key, stored) {
   if (!stored) return null;
-  var shortCodes = ['kill','pass','yes','no','before','after','med',
-    'deep-h1','deep-sw','shallow-m45','shallow-none',
-    'overlap','clean','prime','good','mid','weak','pos','neu','neg'];
+  var shortCodes = VALID_STEP_CODES;
   if (shortCodes.indexOf(stored) > -1) return stored;
   var rules = STEP_MIGRATIONS[key];
   if (!rules) return stored;
@@ -1192,9 +1192,7 @@ function migrateStepValue(key, stored) {
 }
 
 window.runBackfillMigration = async function() {
-  var shortCodes = ['kill','pass','yes','no','before','after','med',
-    'deep-h1','deep-sw','shallow-m45','shallow-none',
-    'overlap','clean','prime','good','mid','weak','pos','neu','neg'];
+  var shortCodes = VALID_STEP_CODES;
   var keys = ['gap','gpos','gdetail','htf','mssq1','mssq2','mssq3','mssq4','mssq5',
               'zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'];
   var needsMigration = allTrades.filter(function(t) {
