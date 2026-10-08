@@ -85,7 +85,6 @@ header{padding:28px 0 20px;border-bottom:1px solid var(--line);}
 .st-kill{background:rgba(224,80,80,0.08);color:#c06060;border:1px solid rgba(224,80,80,0.18);}
 .st-zone{background:rgba(201,151,58,0.08);color:var(--gold-lo);border:1px solid rgba(201,151,58,0.18);}
 .st-state{background:rgba(74,143,212,0.06);color:#5880a8;border:1px solid rgba(74,143,212,0.15);}
-.st-ctx{background:rgba(45,184,130,0.06);color:#408868;border:1px solid rgba(45,184,130,0.15);}
 
 /* ── SUBSECTION ── */
 .sub{border-top:1px solid var(--line);overflow:hidden;transition:border-color 0.3s;}
@@ -153,19 +152,6 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
 .fcpip.warn{background:var(--amber);border-color:var(--amber);box-shadow:0 0 7px var(--amber);}
 .fcpip.kill{background:var(--red);border-color:var(--red);box-shadow:0 0 7px var(--red);}
 .fctxt{font-family:'Space Mono',monospace;font-size:9px;flex:1;transition:color 0.25s;}
-
-/* ── CANDLE REF ── */
-.cref{margin-top:14px;border:1px solid var(--line);border-radius:9px;overflow:hidden;opacity:0.75;}
-.cref-hdr{padding:7px 12px;background:var(--surf2);border-bottom:1px solid var(--line);}
-.cref-hdr-txt{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);letter-spacing:0.16em;text-transform:uppercase;}
-.cref-grid{display:grid;grid-template-columns:1fr 1fr;}
-.cref-row{padding:9px 12px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);}
-.cref-row:nth-child(even){border-right:none;}
-.cref-row.full{grid-column:1/-1;border-right:none;}
-.cref-row:last-child{border-bottom:none;}
-.cref-row:nth-last-child(2):nth-child(odd){border-bottom:none;}
-.cref-name{font-family:'Space Mono',monospace;font-size:8px;color:var(--ref-name);font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
-.cref-desc{font-size:9px;color:var(--ref-txt);line-height:1.5;}
 
 /* ── GOLD NOTE ── */
 .gnote{display:none;font-family:'Space Mono',monospace;font-size:8px;color:var(--gold-lo);line-height:1.7;letter-spacing:0.03em;padding:9px 13px;background:rgba(201,151,58,0.03);border:1px solid rgba(201,151,58,0.12);border-radius:8px;margin-bottom:10px;}
@@ -756,8 +742,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <div class="iresult" id="imp-res">
         <div class="cdot" id="imp-dot"></div>
         <span id="imp-txt" style="color:var(--dim)">Enter value to evaluate</span>
-      </div>
-    </div>
+      </div>    </div>
   </div>
 
   <!-- S3 · Sub 2 — ADR -->
@@ -780,93 +765,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   </div>
 
 </div><!-- end section 3 -->
-
-
-<!-- ══════════════════════════════════════════════
-     SECTION 4 — CONTEXT
-══════════════════════════════════════════════ -->
-<div class="section">
-  <div class="section-hdr">
-    <span class="section-name">Context</span>
-    <span class="section-tag st-ctx">Soft / Medium Filter</span>
-  </div>
-
-  <!-- S4 · Sub 1 — Location -->
-  <div class="sub" id="c-loc">
-    <div class="sub-hdr">
-      <span class="sub-num">08</span>
-      <span class="sub-title">Zone's Location in PD Range</span>
-      <span class="sub-stat" id="st-loc" style="color:var(--dim)">—</span>
-    </div>
-    <div class="sub-body">
-      <div class="sq">Where does the zone sit within yesterday's range?</div>
-      <div class="opts">
-  <input type="radio" name="loc" id="l-pdhl" value="prime" onchange="run()">
-  <label for="l-pdhl" class="opt opt-au">PDH / PDL</label>
-  <input type="radio" name="loc" id="l-near" value="near" onchange="run()">
-  <label for="l-near" class="opt opt-g">Near PDH / PDL</label>
-  <input type="radio" name="loc" id="l-6279" value="good-62" onchange="run()">
-  <label for="l-6279" class="opt opt-g">62 – 79%</label>
-  <input type="radio" name="loc" id="l-5062" value="good-50" onchange="run()">
-  <label for="l-5062" class="opt opt-g">50 – 62%</label>
-  <input type="radio" name="loc" id="l-4050" value="mid" onchange="run()">
-  <label for="l-4050" class="opt opt-b">40 – 50%</label>
-  <input type="radio" name="loc" id="l-3040" value="weak-30" onchange="run()">
-  <label for="l-3040" class="opt opt-a">30 – 40%</label>
-  <input type="radio" name="loc" id="l-2030" value="weak-20" onchange="run()">
-  <label for="l-2030" class="opt opt-a">20 – 30%</label>
-      </div>
-    </div>
-  </div>
-
-  <!-- S4 · Sub 2 — Candle -->
-  <div class="sub" id="c-candle">
-    <div class="sub-hdr">
-      <span class="sub-num">09</span>
-      <span class="sub-title">Previous Day Candle Type</span>
-      <span class="sub-stat" id="st-candle" style="color:var(--dim)">—</span>
-    </div>
-    <div class="sub-body">
-      <div class="sq">What type of candle did yesterday close as?</div>
-      <div class="opts" style="margin-bottom:14px;">
-        <input type="radio" name="candle" id="c-pb" value="pin" onchange="run()">
-        <label for="c-pb" class="opt opt-g">Pin Bar</label>
-        <input type="radio" name="candle" id="c-bal" value="bal" onchange="run()">
-        <label for="c-bal" class="opt opt-g">Balanced</label>
-        <input type="radio" name="candle" id="c-sd" value="neu" onchange="run()">
-        <label for="c-sd" class="opt opt-b">Strong Directional</label>
-        <input type="radio" name="candle" id="c-ind" value="neg" onchange="run()">
-        <label for="c-ind" class="opt opt-a">Indecisive</label>
-      </div>
-
-      <!-- Candle reference -->
-      <div class="cref">
-        <div class="cref-hdr"><span class="cref-hdr-txt">Candle Type Reference</span></div>
-        <div class="cref-grid">
-          <div class="cref-row">
-            <div class="cref-name">Pin Bar</div>
-            <div class="cref-desc">Body under 35% of total range. One wick at least 2× the body. Opposing wick under 50% of body.</div>
-          </div>
-          <div class="cref-row">
-            <div class="cref-name">Balanced</div>
-            <div class="cref-desc">Body between 40% and 50% of total range. No single dominant wick.</div>
-          </div>
-          <div class="cref-row">
-            <div class="cref-name">Strong Directional</div>
-            <div class="cref-desc">Body above 60% of total range. Closes near candle extreme with clear directional intent.</div>
-          </div>
-          <div class="cref-row">
-            <div class="cref-name">Indecisive</div>
-            <div class="cref-desc">Small body, wicks present but not dominant. No clear direction. Includes doji.</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-</div><!-- end section 4 -->
-
 
 <!-- ── FLAG COUNTER ── -->
 <div class="fc">
@@ -1095,7 +993,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 // Unified system — no mode separation
 function g(id){return document.getElementById(id);}
 function rv(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:null;}
-var STEPS=['inst','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'];
+var STEPS=['inst','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr'];
 
 // Returns the index of the first incomplete step (0-based)
 function firstIncomplete(){
@@ -1132,8 +1030,7 @@ document.addEventListener('change',function(e){
     mssq1:'mss',mssq2:'mss',mssq3:'mss',mssq4:'mss',mssq5:'mss',
     zdepth:'zone',zliq:'zone',d1fvgsl:'zone',
     asian:'asian',dba:'dba',dbh:'dbh',hist:'hist',
-    imp:'imp',adr:'adr',
-    loc:'loc',candle:'candle'
+    imp:'imp',adr:'adr'
   };
   var name=e.target.name||(e.target.id==='imp'?'imp':e.target.id==='adr'?'adr':null);
   if(!name)return;
@@ -1174,9 +1071,7 @@ function showOrderError(requiredStep){
     dbh:'Step 05c — Prior Failure at DBI High / Low',
     hist:'Step 05d — Historical Reference Location',
     imp:'Step 06 — Impulse Ratio',
-    adr:'Step 07 — ADR Ratio',
-    loc:'Step 08 — Zone Location',
-    candle:'Step 09 — Previous Day Candle Type'
+    adr:'Step 07 — ADR Ratio'
   };
   var toast=g('order-toast');
   if(!toast)return;
@@ -1302,13 +1197,11 @@ function stepDone(s){
   if(s==='hist') return !!rv('hist');
   if(s==='imp') return !isNaN(parseFloat(g('imp').value));
   if(s==='adr') return !isNaN(parseFloat(g('adr').value));
-  if(s==='loc'){ if(rv('hist')==='med') return true; return !!rv('loc'); }
-  if(s==='candle') return !!rv('candle');
   return false;
 }
 
 function allDone(){
-  return['inst','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].every(stepDone);
+  return['inst','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr'].every(stepDone);
   }
   
 function run(){
@@ -1506,23 +1399,6 @@ function run(){
     ss('adr',adrFlag?'Flag':'Clear',adrFlag?'var(--amber)':'var(--green)');
   }else{sc('adr','');ss('adr','—','var(--dim)');g('adr-dot').className='cdot';g('adr-txt').textContent='Enter value to evaluate';g('adr-txt').style.color='var(--dim)';}
 
-  // ── Step 8 Location ──────────────────────────────────────────
-  var lv2=rv('loc');
-  var histIsRef = rv('hist')==='med';
-  if(histIsRef){
-    sc('loc','pa');ss('loc','N/A','var(--dim)');
-    g('c-loc').style.opacity='0.38';g('c-loc').style.pointerEvents='none';
-  } else {
-    g('c-loc').style.opacity='';g('c-loc').style.pointerEvents='';
-    if(lv2){sc('loc','pa');ss('loc','Noted','var(--green)');}
-    else{sc('loc','');ss('loc','—','var(--dim)');}
-  }
-
-  // ── Step 9 Candle ────────────────────────────────────────────
-  var cv=rv('candle');
-  if(cv){sc('candle','pa');ss('candle','Noted','var(--green)');}
-  else{sc('candle','');ss('candle','—','var(--dim)');}
-
   // ── Flag pips ────────────────────────────────────────────────
   var sf=Math.min(mf,3);
   ['mp1','mp2','mp3'].forEach(function(id,i){g(id).className='fcpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
@@ -1591,7 +1467,7 @@ function run(){
 function resetAll(){
   document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
   document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
-  ['gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr','loc','candle'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
+  ['gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
   g('gap-cond').className='cond';
   if(g('gap-detail-cond'))g('gap-detail-cond').className='cond';
   document.querySelectorAll('input[name="gdetail"]').forEach(function(r){r.checked=false;});
@@ -1626,7 +1502,6 @@ function resetAll(){
   ['EU','GU','UC','XU'].forEach(function(i){var hdr=document.getElementById('ic-'+i);if(hdr)hdr.className='inst-chip';var sp=document.getElementById('si-'+i);if(sp)sp.className='sp-inst-btn';});
   var saved=document.getElementById('sp-saved');if(saved)saved.style.display='none';
   var btn=document.getElementById('sp-save-btn');if(btn){btn.textContent='Save Record & Open Tracker';btn.disabled=false;}
-  var locEl=g('c-loc');if(locEl){locEl.style.opacity='';locEl.style.pointerEvents='';}
   _beforeImgFile=null;
   var prev=document.getElementById('before-img-preview');if(prev){prev.src='';prev.style.display='none';}
 }
@@ -1675,15 +1550,13 @@ function captureSteps() {
     dba:rv2('dba'), dbh:rv2('dbh'), hist:rv2('hist'),
     imp:document.getElementById('imp').value || null,
     adr:document.getElementById('adr').value || null,
-    loc:rv2('loc'), candle:rv2('candle'),
     _labels:{
       gap:rl('gap'), gpos:rl('gpos'), htf:rl('htf'),
       mssq1:rl('mssq1'), mssq2:rl('mssq2'), mssq3:rl('mssq3'),
       mssq4:rl('mssq4'), mssq5:rl('mssq5'),
       zdepth:rl('zdepth'), zliq:rl('zliq'), d1fvgsl:rl('d1fvgsl'),
       asian:rl('asian'),
-      dba:rl('dba'), dbh:rl('dbh'), hist:rl('hist'),
-      loc:rl('loc'), candle:rl('candle')
+      dba:rl('dba'), dbh:rl('dbh'), hist:rl('hist')
     }
   };
 }
