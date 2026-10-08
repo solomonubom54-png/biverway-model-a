@@ -405,8 +405,6 @@ function stepLabel(key, val, steps) {
     dba:{kill:'Prior failure — DBI Asian',pass:'No failure'},
     dbh:{kill:'Prior failure — DBI H/L',pass:'No failure'},
     hist:{med:'Historical reference level',pass:'Fresh level'},
-    loc:{prime:'PDH / PDL',near:'Near PDH / PDL','good-62':'62 – 79%','good-50':'50 – 62%',mid:'40 – 50%','weak-30':'30 – 40%','weak-20':'20 – 30%'},
-    candle:{pin:'Pin Bar',bal:'Balanced',neu:'Strong Directional',neg:'Indecisive',med:'DBI Sweep Candle (retired)'},
   };
   return (map[key] && map[key][val]) || val;
   }
@@ -465,8 +463,7 @@ function openTrade(id) {
     ['03 MSS Q3 DBI Sweep','mssq3'],['03 MSS Q4 W1 FVG','mssq4'],['03 MSS Q5 W1 Sweep','mssq5'],
     ['04 Zone Depth','zdepth'],['04 Zone Liquidity','zliq'],['04 D1 FVG At SL Boundary','d1fvgsl'],
     ['05a Asian Coincide','asian'],['05b DBI Asian Range','dba'],['05c DBI H/L','dbh'],
-    ['05d Historical Ref','hist'],['06 Impulse Ratio','imp'],['07 ADR Ratio','adr'],
-    ['08 Zone Location','loc'],['09 PD Candle Type','candle']
+    ['05d Historical Ref','hist'],['06 Impulse Ratio','imp'],['07 ADR Ratio','adr']
   ];
 
   var stepItems = stepDefs.map(function(d){
@@ -813,22 +810,6 @@ window.openEditModal = function(id) {
     +'<div style="font-family:Space Mono,monospace;font-size:7px;color:var(--dim);margin-top:4px;">Flag if above 1.5</div>'
     +'</div>';
 
-  // S4 — Context
-  html += section('08','Zone Location in PD Range',
-    radioRow('loc','prime','PDH / PDL') +
-    radioRow('loc','near','Near PDH / PDL') +
-    radioRow('loc','good-62','62 – 79%') +
-    radioRow('loc','good-50','50 – 62%') +
-    radioRow('loc','mid','40 – 50%') +
-    radioRow('loc','weak-30','30 – 40%') +
-    radioRow('loc','weak-20','20 – 30%'));
-
-  html += section('09','Previous Day Candle Type',
-    radioRow('candle','pin','Pin Bar') +
-    radioRow('candle','bal','Balanced') +
-    radioRow('candle','neu','Strong Directional') +
-    radioRow('candle','neg','Indecisive'));
-
   // Computed verdict preview
   html += '<div id="edit-verdict-preview" style="margin-bottom:16px;padding:10px 14px;border-radius:8px;'
     +'background:var(--surf2);border:1px solid var(--line);font-family:Space Mono,monospace;font-size:8px;color:var(--dim);">'
@@ -943,7 +924,7 @@ window.saveEdit = async function(id) {
   function getN(eid)  { var el=document.getElementById('er_'+eid); return el&&el.value?el.value:null; }
 
   var newSteps = Object.assign({}, t.steps||{});
-  ['gap','gpos','gdetail','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist','loc','candle'].forEach(function(k){
+  ['gap','gpos','gdetail','htf','mssq1','mssq2','mssq3','mssq4','mssq5','zdepth','zliq','d1fvgsl','asian','dba','dbh','hist'].forEach(function(k){
     var v=getR(k); if(v) newSteps[k]=v;
   });
   var impVal=getN('imp'); if(impVal) newSteps.imp=impVal;
@@ -1017,8 +998,6 @@ function renderAnalytics() {
     {label:'Zone Depth',key:'zdepth',opts:[{v:'deep-h1',l:'Deep H1'},{v:'deep-sw',l:'Deep+Sideways'},{v:'shallow-m45',l:'Shallow M45'},{v:'shallow-none',l:'Shallow None'}]},
     {label:'Zone Liquidity',key:'zliq',opts:[{v:'clean',l:'Clean'},{v:'overlap',l:'Overlap'}]},
     {label:'Historical Ref',key:'hist',opts:[{v:'med',l:'Yes'},{v:'pass',l:'No'}]},
-    {label:'PD Candle',key:'candle',opts:[{v:'pin',l:'Pin Bar'},{v:'bal',l:'Balanced'},{v:'neu',l:'Strong Dir'},{v:'neg',l:'Indecisive'}]},
-    {label:'Zone Location',key:'loc',opts:[{v:'prime',l:'PDH/PDL'},{v:'near',l:'Near PDH/PDL'},{v:'good-62',l:'62–79%'},{v:'good-50',l:'50–62%'},{v:'mid',l:'40–50%'},{v:'weak-30',l:'30–40%'},{v:'weak-20',l:'20–30%'}]},
     {label:'Impulse Ratio',key:'imp',opts:[{v:'above3',l:'Above 3.0'},{v:'below3',l:'Below 3.0'}],numeric:true,threshold:3.0},
     {label:'ADR Ratio',key:'adr',opts:[{v:'above1.5',l:'Above 1.5'},{v:'below1.5',l:'Below 1.5'}],numeric:true,threshold:1.5},
     {label:'W1 FVG Rejection',key:'mssq4',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
