@@ -1,6 +1,6 @@
 // Biverway Model A — Service Worker
-var CACHE = 'biverway-v1';
-var ASSETS = ['./', './index.html', './trade-tracker.html', './manifest.json', './icon-192.png', './icon-512.png'];
+var CACHE = 'biverway-v2';
+var ASSETS = ['./', './index.html', './trade-tracker.html', './manifest.json', './icon-512.png'];
 
 self.addEventListener('install', function(e) {
   e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(ASSETS); }));
@@ -15,7 +15,16 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
-  e.respondWith(fetch(e.request).catch(function(){
-    return caches.match(e.request);
-  }));
+  if (e.request.method !== 'GET' || e.request.url.indexOf(self.location.origin) !== 0) return;
+  e.respondWith(
+    fetch(e.request).then(function(res){
+      if (res && res.status === 200) {
+        var copy = res.clone();
+        caches.open(CACHE).then(function(c){ c.put(e.request, copy); });
+      }
+      return res;
+    }).catch(function(){
+      return caches.match(e.request);
+    })
+  );
 });
