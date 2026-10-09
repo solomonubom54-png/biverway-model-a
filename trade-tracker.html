@@ -127,6 +127,8 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 .alert-body{font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);line-height:1.6;}
 .sample-note{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);margin-top:3px;}
 .val-dim{color:var(--dim);}
+.ftable th,.ftable td{padding:7px 8px;}
+.ftable th:nth-child(n+2),.ftable td:nth-child(n+2){white-space:nowrap;}
 .alert-card.stop{background:rgba(224,80,80,0.05);border-color:rgba(224,80,80,0.3);}
 .alert-card.stop .alert-title{color:var(--red);}
 .alert-clear{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.04em;padding:2px 0;}
@@ -521,7 +523,7 @@ function openTrade(id) {
     return '<div class="detail-item"><div class="di-label">'+d[0]+'</div><div class="di-val">'+lbl+'</div></div>';
   }).filter(Boolean).join('');
 
-  var flagHtml = (t.flags||[]).map(function(f){ return '<span class="tc-flag" style="margin-right:4px;">'+f+'</span>'; }).join('') || '<span style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim)">None</span>';
+  var flagHtml = ((t.flags && t.flags.length) ? t.flags : mediumFlagsFromSteps(t.steps||{})).map(function(f){ return '<span class="tc-flag" style="margin-right:4px;">'+f+'</span>'; }).join('') || '<span style="font-family:\'Space Mono\',monospace;font-size:8px;color:var(--dim)">None</span>';
   var killHtml = t.kill_reason ? '<div class="detail-item full"><div class="di-label">Kill Reason</div><div class="di-val" style="color:var(--red)">'+t.kill_reason+'</div></div>' : '';
   var discardHtml = t.discard_reason ? '<div class="detail-item full"><div class="di-label">Discard Reason</div><div class="di-val" style="color:var(--amber)">'+t.discard_reason+'</div></div>' : '';
 
@@ -1006,6 +1008,23 @@ window.saveEdit = async function(id) {
   }
 };
 
+// ── FLAGS FROM SAVED ANSWERS ──────────────────────────────────────
+// Same rules as the decision engine, so older records whose saved flag list is incomplete still resolve correctly.
+function mediumFlagsFromSteps(st) {
+  var f = [];
+  if (st.htf === 'med') f.push('H4 standard opposing zone');
+  if (st.htf === 'med-h4s') f.push('H4 synthetic opposing zone');
+  if (st.htf === 'med-d1s') f.push('D1 synthetic opposing zone');
+  if (st.zliq === 'overlap') f.push('Overlap');
+  if (st.hist === 'med') f.push('Historical reference location');
+  if (st.imp && parseFloat(st.imp) > 3.0) f.push('Impulse >3.0');
+  if (st.adr && parseFloat(st.adr) > 1.5) f.push('ADR >1.5');
+  if (st.mssq1 === 'yes' && st.mssq2 === 'no') f.push('Broker inconsistency');
+  if (st.mssq2 === 'yes' && st.mssq3 === 'no') f.push('D1 FVG rejection');
+  if (st.mssq4 === 'yes' && st.mssq5 !== 'yes') f.push('W1 FVG rejection');
+  return f;
+}
+
 // ── ANALYTICS ─────────────────────────────────────────────────────
 function equitySVG(seq) {
   var pts = [0];
@@ -1098,7 +1117,7 @@ function renderAnalytics() {
   var perfHTML = '<div class="an-sec"><div class="an-sec-title">Performance</div><div class="analytics-grid">' +
     card('Record', all.w + 'W ' + all.l + 'L', all.n + ' finished trades' + (open ? ' · ' + open + ' open' : ''), 'var(--text)') +
     card('Win rate', all.wr + '%', all.n < 30 ? 'small sample, under 30 trades' : all.n + ' trades', 'var(--text)') +
-    card('Total R', (all.r > 0 ? '+' : '') + all.r + 'R', 'wins count 3R, losses 1R', rColor) +
+    card('Total R', (all.r > 0 ? '+' : '') + all.r + 'R', '1R = what you risk per trade', rColor) +
     card('Current streak', curText, 'in a row', curType === 'Win' ? 'var(--green)' : 'var(--red)') +
     card('Longest winning streak', String(bestW), bestW === 1 ? 'trade' : 'trades in a row', 'var(--green)') +
     card('Longest losing streak', String(bestL), bestL === 1 ? 'trade' : 'trades in a row', bestL ? 'var(--red)' : 'var(--text3)') +
@@ -1127,32 +1146,40 @@ function renderAnalytics() {
   var prime = complete.filter(function(t){ return t.verdict === 'PRIME'; });
   var valid = complete.filter(function(t){ return t.verdict !== 'PRIME'; });
   var P = rec(prime), V = rec(valid);
+  var FLAG_LIST = ['H4 standard opposing zone', 'H4 synthetic opposing zone', 'D1 synthetic opposing zone',
+    'Overlap', 'Historical reference location', 'Impulse >3.0', 'ADR >1.5',
+    'Broker inconsistency', 'D1 FVG rejection', 'W1 FVG rejection'];
   var legacyFlag = { 'H4 HTF opposing zone': 'H4 standard opposing zone' };
   var byFlag = {};
+  FLAG_LIST.forEach(function(f){ byFlag[f] = []; });
+  var unrecorded = [];
   valid.forEach(function(t){
-    var f = (t.flags && t.flags.length) ? t.flags[0] : 'No flag recorded';
-    f = legacyFlag[f] || f;
-    (byFlag[f] = byFlag[f] || []).push(t);
+    var fl = mediumFlagsFromSteps(t.steps || {});
+    if (!fl.length && t.flags && t.flags.length) fl = [legacyFlag[t.flags[0]] || t.flags[0]];
+    var f = fl[0];
+    if (f && byFlag[f]) byFlag[f].push(t); else unrecorded.push(t);
   });
-  var flagList = Object.keys(byFlag).map(function(k){ return { label: k, s: rec(byFlag[k]) }; })
-    .sort(function(a, b){ return b.s.n - a.s.n; });
 
   function vsPrime(s) {
-    if (s.n < 10) return '<span class="val-dim">too few trades</span>';
-    if (!P.n) return '<span class="val-dim">no PRIME trades yet</span>';
+    if (s.n < 10) return '<span class="val-dim">too few</span>';
+    if (!P.n) return '<span class="val-dim">no PRIME yet</span>';
     var d = s.wr - P.wr;
     return '<span class="' + (d < 0 ? 'val-neg' : 'val-pos') + '">' + (d > 0 ? '+' : d < 0 ? '-' : '') + Math.abs(d) + ' pts</span>';
   }
   function fRow(label, s, vs, indent) {
-    return '<tr><td' + (indent ? ' style="padding-left:20px;"' : '') + '>' + label + '</td><td class="val-neu">' + wl(s) + '</td>' +
+    return '<tr><td' + (indent ? ' style="padding-left:18px;"' : '') + '>' + label + '</td><td class="val-neu">' + wl(s) + '</td>' +
            '<td class="' + (s.n >= 10 ? '' : 'val-dim') + '">' + s.wr + '%</td><td>' + vs + '</td></tr>';
+  }
+  function emptyRow(label) {
+    return '<tr><td style="padding-left:18px;">' + label + '</td><td class="val-dim">—</td><td class="val-dim">—</td><td><span class="val-dim">none yet</span></td></tr>';
   }
   var filterRows = fRow('PRIME', P, '<span class="val-dim">—</span>', false) +
                    fRow('VALID', V, vsPrime(V), false) +
-                   flagList.map(function(f){ return fRow(f.label, f.s, vsPrime(f.s), true); }).join('');
+                   FLAG_LIST.map(function(f){ return byFlag[f].length ? fRow(f, rec(byFlag[f]), vsPrime(rec(byFlag[f])), true) : emptyRow(f); }).join('') +
+                   (unrecorded.length ? fRow('Flag not recorded', rec(unrecorded), vsPrime(rec(unrecorded)), true) : '');
   var filterHTML = '<div class="an-sec"><div class="an-sec-title">Filter Performance</div>' +
     '<div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;">' +
-    '<table class="breakdown-table"><tr><th>Group</th><th>Trades</th><th>Win rate</th><th>vs PRIME</th></tr>' + filterRows + '</table></div>' +
+    '<table class="breakdown-table ftable"><tr><th>Group</th><th>Trades</th><th>Win rate</th><th>vs PRIME</th></tr>' + filterRows + '</table></div>' +
     '<div class="sample-note" style="margin-top:6px;">Each VALID trade counts under the one flag it carried. Rows under 10 trades are too small to judge.</div></div>';
 
   el.innerHTML = alertsHTML + perfHTML + instHTML + filterHTML;
