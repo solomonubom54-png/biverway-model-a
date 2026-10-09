@@ -126,6 +126,10 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 .alert-title{font-family:'Space Mono',monospace;font-size:8px;color:var(--amber);font-weight:700;letter-spacing:0.04em;margin-bottom:4px;}
 .alert-body{font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);line-height:1.6;}
 .sample-note{font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);margin-top:3px;}
+.val-dim{color:var(--dim);}
+.alert-card.stop{background:rgba(224,80,80,0.05);border-color:rgba(224,80,80,0.3);}
+.alert-card.stop .alert-title{color:var(--red);}
+.alert-clear{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.04em;padding:2px 0;}
 .export-section{background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:18px;}
 .export-desc{font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.7;letter-spacing:0.04em;margin-bottom:16px;}
 .export-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:10px 20px;border-radius:8px;border:1px solid rgba(45,184,130,0.3);background:rgba(45,184,130,0.07);color:var(--green);cursor:pointer;transition:all 0.2s;}
@@ -191,12 +195,29 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
         <option value="">All Grades</option>
         <option value="PRIME">PRIME</option>
         <option value="VALID">VALID</option>
-        <option value="SKIP">SKIP</option>
       </select>
       <select class="fsel" id="f-outcome" onchange="renderLog()">
         <option value="">All Outcomes</option>
         <option value="Win">Win</option>
         <option value="Loss">Loss</option>
+      </select>
+      <select class="fsel" id="f-year" onchange="renderLog()">
+        <option value="">All Years</option>
+      </select>
+      <select class="fsel" id="f-month" onchange="renderLog()">
+        <option value="">All Months</option>
+        <option value="0">January</option>
+        <option value="1">February</option>
+        <option value="2">March</option>
+        <option value="3">April</option>
+        <option value="4">May</option>
+        <option value="5">June</option>
+        <option value="6">July</option>
+        <option value="7">August</option>
+        <option value="8">September</option>
+        <option value="9">October</option>
+        <option value="10">November</option>
+        <option value="11">December</option>
       </select>
     </div>
     <div class="trade-list" id="trade-list"><div class="loading">Loading...</div></div>
@@ -410,7 +431,25 @@ function stepLabel(key, val, steps) {
   }
 
 // ── RENDER LOG ────────────────────────────────────────────────────
+function syncYearOptions() {
+  var sel = document.getElementById('f-year');
+  var seen = {};
+  allTrades.forEach(function(t){
+    if (t.status !== 'discarded' && t.created_at) seen[new Date(t.created_at).getFullYear()] = true;
+  });
+  var years = Object.keys(seen).sort(function(a, b){ return b - a; });
+  var key = years.join(',');
+  if (sel.getAttribute('data-years') === key) return;
+  var cur = sel.value;
+  sel.innerHTML = '<option value="">All Years</option>' + years.map(function(y){ return '<option value="' + y + '">' + y + '</option>'; }).join('');
+  sel.value = years.indexOf(cur) > -1 ? cur : '';
+  sel.setAttribute('data-years', key);
+}
+
 function renderLog() {
+  syncYearOptions();
+  var yr = document.getElementById('f-year').value;
+  var mo = document.getElementById('f-month').value;
   var sf = document.getElementById('f-status').value;
   var inst = document.getElementById('f-inst').value;
   var grade = document.getElementById('f-grade').value;
@@ -423,6 +462,15 @@ function renderLog() {
   if (inst)    list = list.filter(function(t){ return t.instrument === inst; });
   if (grade)   list = list.filter(function(t){ return t.verdict === grade; });
   if (outcome) list = list.filter(function(t){ return t.outcome === outcome; });
+  if (yr || mo !== '') {
+    list = list.filter(function(t){
+      if (!t.created_at) return false;
+      var d = new Date(t.created_at);
+      if (yr && d.getFullYear() !== parseInt(yr, 10)) return false;
+      if (mo !== '' && d.getMonth() !== parseInt(mo, 10)) return false;
+      return true;
+    });
+  }
 
   document.getElementById('log-count').textContent = list.length + ' records';
   var el = document.getElementById('trade-list');
@@ -959,92 +1007,155 @@ window.saveEdit = async function(id) {
 };
 
 // ── ANALYTICS ─────────────────────────────────────────────────────
-function renderAnalytics() {
-  var complete = allTrades.filter(function(t){ return t.status === 'complete'; });
-  var el = document.getElementById('analytics-content');
-  if (!complete.length) { el.innerHTML = '<div class="empty-state" style="padding-top:40px;">No complete records yet.</div>'; return; }
+function equitySVG(seq) {
+  var pts = [0];
+  seq.forEach(function(o){ pts.push(pts[pts.length-1] + (o === 'Win' ? 3 : -1)); });
+  var W = 320, H = 140, padL = 30, padR = 34, padT = 14, padB = 20;
+  var min = Math.min.apply(null, pts), max = Math.max.apply(null, pts);
+  if (min > 0) min = 0;
+  if (max < 0) max = 0;
+  if (max === min) max = min + 1;
+  function x(i) { return padL + i * (W - padL - padR) / (pts.length - 1); }
+  function y(v) { return padT + (max - v) * (H - padT - padB) / (max - min); }
+  var d = pts.map(function(v, i){ return (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(v).toFixed(1); }).join(' ');
+  var dots = seq.map(function(o, i){
+    var col = o === 'Win' ? 'var(--green)' : 'var(--red)';
+    return '<circle cx="' + x(i+1).toFixed(1) + '" cy="' + y(pts[i+1]).toFixed(1) + '" r="2.6" style="fill:' + col + ';"/>';
+  }).join('');
+  var labelVals = {};
+  labelVals[max] = true; labelVals[0] = true; labelVals[min] = true;
+  var ylabels = Object.keys(labelVals).map(function(k){
+    var v = parseInt(k, 10);
+    return '<text x="' + (padL - 5) + '" y="' + (y(v) + 2.5).toFixed(1) + '" text-anchor="end" style="fill:var(--dim);font-family:Space Mono,monospace;font-size:7px;">' + v + '</text>';
+  }).join('');
+  var last = pts[pts.length-1];
+  var endLabel = '<text x="' + (x(pts.length-1) + 5).toFixed(1) + '" y="' + (y(last) + 2.5).toFixed(1) + '" style="fill:var(--text2);font-family:Space Mono,monospace;font-size:7.5px;">' + (last > 0 ? '+' : '') + last + 'R</text>';
+  var zero = '<line x1="' + padL + '" y1="' + y(0).toFixed(1) + '" x2="' + (W - padR) + '" y2="' + y(0).toFixed(1) + '" style="stroke:var(--line2);stroke-width:1;stroke-dasharray:3 3;"/>';
+  var base = '<text x="' + padL + '" y="' + (H - 5) + '" style="fill:var(--dim);font-family:Space Mono,monospace;font-size:7px;">trade 1</text>' +
+             '<text x="' + (W - padR) + '" y="' + (H - 5) + '" text-anchor="end" style="fill:var(--dim);font-family:Space Mono,monospace;font-size:7px;">trade ' + seq.length + '</text>';
+  return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;" role="img" aria-label="Equity curve in R">' +
+         zero + '<path d="' + d + '" style="fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linejoin:round;"/>' + dots + ylabels + endLabel + base + '</svg>';
+}
 
-  function stats(arr) {
-    var w = arr.filter(function(t){return t.outcome==='Win';}).length;
-    var l = arr.length - w;
-    var wr = arr.length ? Math.round(w/arr.length*100) : 0;
-    var rrr = w*3 - l;
-    var ms=0,cs=0;
-    arr.forEach(function(t){ if(t.outcome==='Loss'){cs++;ms=Math.max(ms,cs);}else cs=0; });
-    return {w:w,l:l,n:arr.length,wr:wr,rrr:rrr,ms:ms};
+function renderAnalytics() {
+  var el = document.getElementById('analytics-content');
+  function isTaken(t) { return t.verdict === 'PRIME' || t.verdict === 'VALID' || t.verdict === 'TAKE'; }
+  function when(t) { return new Date(t.completed_at || t.triggered_at || t.created_at); }
+
+  var complete = allTrades.filter(function(t){
+    return t.status === 'complete' && isTaken(t) && (t.outcome === 'Win' || t.outcome === 'Loss');
+  }).sort(function(a, b){ return when(a) - when(b); });
+  var open = allTrades.filter(function(t){
+    return (t.status === 'pending' || t.status === 'triggered') && isTaken(t);
+  }).length;
+
+  if (!complete.length) {
+    el.innerHTML = '<div class="empty-state" style="padding-top:40px;">No finished PRIME or VALID trades yet.</div>';
+    return;
   }
 
-  var all   = stats(complete);
-  var prime = stats(complete.filter(function(t){return t.verdict==='PRIME';}));
-  var take  = stats(complete.filter(function(t){return t.verdict==='VALID'||t.verdict==='TAKE';}));
-  var filtered = complete.filter(function(t){ return t.verdict==='PRIME'||t.verdict==='VALID'||t.verdict==='TAKE'; });
-  var allFilt = stats(filtered);
+  function rec(arr) {
+    var w = arr.filter(function(t){ return t.outcome === 'Win'; }).length;
+    var n = arr.length;
+    return { w: w, l: n - w, n: n, wr: n ? Math.round(w / n * 100) : 0, r: w * 3 - (n - w) };
+  }
+  function wl(s) { return s.n + ' (' + s.w + 'W ' + s.l + 'L)'; }
 
-  var aggHTML = '<div class="an-sec"><div class="an-sec-title">Aggregate Performance · '+complete.length+' complete records</div><div class="analytics-grid"><div class="stat-card"><div class="stat-eye">Win Rate</div><div class="stat-val" style="color:'+(all.wr>=70?'var(--green)':all.wr>=50?'var(--amber)':'var(--red)')+'">'+all.wr+'%</div><div class="stat-sub">'+all.w+'W / '+all.l+'L</div></div><div class="stat-card"><div class="stat-eye">Net RRR at 1:3</div><div class="stat-val" style="color:'+(all.rrr>0?'var(--gold)':'var(--red)')+'">'+( all.rrr>0?'+':'')+all.rrr+'R</div><div class="stat-sub">'+complete.length+' trades</div></div><div class="stat-card"><div class="stat-eye">PRIME</div><div class="stat-val" style="color:var(--gold)">'+(prime.n?prime.wr+'%':'—')+'</div><div class="stat-sub">'+prime.n+' trades · '+prime.w+'W / '+prime.l+'L</div></div><div class="stat-card"><div class="stat-eye">VALID</div><div class="stat-val" style="color:var(--green)">'+(take.n?take.wr+'%':'—')+'</div><div class="stat-sub">'+take.n+' trades · '+take.w+'W / '+take.l+'L</div></div><div class="stat-card"><div class="stat-eye">Max Losing Streak</div><div class="stat-val" style="color:var(--text3)">'+all.ms+'</div><div class="stat-sub">Complete records</div></div></div></div>';
+  var all = rec(complete);
 
-  var instRows = ['EU','GU','UC','XU'].map(function(i){
-    var ts = complete.filter(function(t){return t.instrument===i;});
-    if (!ts.length) return '';
-    var s = stats(ts);
-    return '<tr><td>'+instFull(i)+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td><td class="val-neu">'+s.ms+'</td></tr>';
-  }).join('');
-
-  var instHTML = instRows ? '<div class="an-sec"><div class="an-sec-title">By Instrument</div><div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;"><table class="breakdown-table"><tr><th>Instrument</th><th>Trades</th><th>Win Rate</th><th>RRR</th><th>Streak</th></tr>'+instRows+'</table></div></div>' : '';
-
-  var filterDefs = [
-    {label:'HTF Zone',key:'htf',opts:[{v:'pass',l:'No HTF'},{v:'med',l:'H4 Standard'},{v:'med-h4s',l:'H4 Synthetic'},{v:'med-d1s',l:'D1 Synthetic'},{v:'kill',l:'D1 Standard'}]},
-    {label:'MSS Broker (Q1)',key:'mssq1',opts:[{v:'yes',l:'Disagree'},{v:'no',l:'Agree'}]},
-    {label:'MSS D1 FVG (Q2)',key:'mssq2',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
-    {label:'Zone Depth',key:'zdepth',opts:[{v:'deep-h1',l:'Deep H1'},{v:'deep-sw',l:'Deep+Sideways'},{v:'shallow-m45',l:'Shallow M45'},{v:'shallow-none',l:'Shallow None'}]},
-    {label:'Zone Liquidity',key:'zliq',opts:[{v:'clean',l:'Clean'},{v:'overlap',l:'Overlap'}]},
-    {label:'Historical Ref',key:'hist',opts:[{v:'med',l:'Yes'},{v:'pass',l:'No'}]},
-    {label:'Impulse Ratio',key:'imp',opts:[{v:'above3',l:'Above 3.0'},{v:'below3',l:'Below 3.0'}],numeric:true,threshold:3.0},
-    {label:'ADR Ratio',key:'adr',opts:[{v:'above1.5',l:'Above 1.5'},{v:'below1.5',l:'Below 1.5'}],numeric:true,threshold:1.5},
-    {label:'W1 FVG Rejection',key:'mssq4',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
-    {label:'W1 Structural Sweep',key:'mssq5',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
-    {label:'D1 FVG At SL Boundary',key:'d1fvgsl',opts:[{v:'yes',l:'Yes'},{v:'no',l:'No'}]},
-  ];
-
-  var filterRows = filterDefs.map(function(fd){
-    if (fd.numeric) {
-      var above = complete.filter(function(t){ return t.steps && parseFloat(t.steps[fd.key]) > fd.threshold; });
-      var below = complete.filter(function(t){ return t.steps && parseFloat(t.steps[fd.key]) <= fd.threshold && !isNaN(parseFloat(t.steps[fd.key])); });
-      var rows = '';
-      if (above.length) { var s=stats(above); rows+='<tr><td>'+fd.label+'</td><td>'+fd.opts[0].l+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td></tr>'; }
-      if (below.length) { var s=stats(below); rows+='<tr><td>'+fd.label+'</td><td>'+fd.opts[1].l+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td></tr>'; }
-      return rows;
-    }
-    return fd.opts.map(function(opt){
-      var ts = complete.filter(function(t){ return t.steps && t.steps[fd.key] === opt.v; });
-      if (!ts.length) return '';
-      var s = stats(ts);
-      return '<tr><td>'+fd.label+'</td><td>'+opt.l+'</td><td class="val-neu">'+s.n+'</td><td class="'+(s.wr>=65?'val-pos':s.wr>=50?'val-neu':'val-neg')+'">'+s.wr+'%</td><td class="'+(s.rrr>0?'val-gld':'val-neg')+'">'+( s.rrr>0?'+':'')+s.rrr+'R</td></tr>';
-    }).join('');
-  }).join('');
-  
-  var filterHTML = filterRows ? '<div class="an-sec"><div class="an-sec-title">Filter Performance</div><div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;"><table class="breakdown-table"><tr><th>Filter</th><th>Answer</th><th>Trades</th><th>Win Rate</th><th>RRR</th></tr>'+filterRows+'</table></div></div>' : '';
-
-  var MIN_SAMPLE=10, DEV=15;
-  var alerts = [];
-  filterDefs.forEach(function(fd){
-    fd.opts.forEach(function(opt){
-      var ts = complete.filter(function(t){ return t.steps && t.steps[fd.key] === opt.v; });
-      if (ts.length < MIN_SAMPLE) return;
-      var s = stats(ts);
-      if (s.wr < all.wr - DEV) alerts.push({title:fd.label+' — '+opt.l,body:'Win rate '+s.wr+'% ('+s.n+' trades). System average '+all.wr+'%. '+DEV+'pt+ below — review this condition.',n:s.n});
-    });
+  // streaks: after the loop, runType / run hold the current streak
+  var runType = null, run = 0, bestW = 0, bestL = 0;
+  complete.forEach(function(t){
+    if (t.outcome === runType) run++; else { runType = t.outcome; run = 1; }
+    if (runType === 'Win') bestW = Math.max(bestW, run); else bestL = Math.max(bestL, run);
   });
+  var curType = runType, curLen = run;
 
-  var alertsHTML = alerts.length
-    ? '<div class="an-sec"><div class="an-sec-title">Pattern Alerts</div>'+alerts.map(function(a){ return '<div class="alert-card"><div class="alert-title">'+a.title+'</div><div class="alert-body">'+a.body+'</div><div class="sample-note">Sample: '+a.n+' trades</div></div>'; }).join('')+'</div>'
-    : '<div class="an-sec"><div class="an-sec-title">Pattern Alerts</div><div class="empty-state" style="padding:16px 0;text-align:left;">No patterns flagged. Threshold: '+MIN_SAMPLE+' trades, '+DEV+'pt deviation.</div></div>';
+  // ── Alerts ──
+  var alerts = [];
+  if (curType === 'Loss' && curLen >= 4) {
+    alerts.push({ stop: true, title: curLen + ' losses in a row — stop', body: 'No new trades until you have done your review.' });
+  } else if (curType === 'Loss' && curLen === 3) {
+    alerts.push({ stop: false, title: '3 losses in a row — caution', body: 'Re-check the inputs on your last 3 trades before taking the next one.' });
+  }
+  if (all.n >= 10 && all.w * 2 <= all.n) {
+    alerts.push({ stop: false, title: 'Win rate is 50% or lower after ' + all.n + ' trades', body: 'Current win rate is ' + all.wr + '%. Review your last trades for grading mistakes and check Total R below.' });
+  }
+  var alertsHTML = '<div class="an-sec"><div class="an-sec-title">Alerts</div>' +
+    (alerts.length
+      ? alerts.map(function(a){
+          return '<div class="alert-card' + (a.stop ? ' stop' : '') + '"><div class="alert-title">' + a.title + '</div><div class="alert-body">' + a.body + '</div></div>';
+        }).join('')
+      : '<div class="alert-clear">No active alerts.</div>') +
+    '</div>';
 
-  var compBlock = (function(){
-    var s = all; var sf = allFilt;
-    function sRow(lbl,bv,fv,c){ return '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px;"><span style="font-family:Space Mono,monospace;font-size:8px;color:#5a6a84;">'+lbl+'</span><span style="display:flex;gap:14px;"><span style="font-family:Space Mono,monospace;font-size:8px;color:var(--text2);">'+bv+'</span><span style="font-family:Space Mono,monospace;font-size:9px;font-weight:700;color:'+c+';">'+fv+'</span></span></div>'; }
-    return '<div class="an-sec"><div class="an-sec-title">Live Performance &mdash; Baseline vs Filtered</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;"><div style="background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:12px 14px;"><div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Baseline &mdash; '+s.n+' total</div>'+sRow('Win Rate',s.wr+'%','','')+sRow('W / L',s.w+' / '+s.l,'','').replace('<span style="font-family:Space Mono,monospace;font-size:9px;font-weight:700;color:;"></span>','')+sRow('RRR',(s.rrr>0?'+':'')+s.rrr+'R','','')+sRow('Streak',s.ms,'','')+'</div><div style="background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:12px 14px;"><div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Filtered &mdash; '+sf.n+' taken</div>'+sRow('Win Rate','',sf.wr+'%',(sf.wr>=65?'var(--green)':'var(--text3)'))+sRow('W / L','',sf.w+' / '+sf.l,'var(--text3)')+sRow('RRR','',(sf.rrr>0?'+':'')+sf.rrr+'R',(sf.rrr>0?'var(--gold)':'var(--red)'))+sRow('Streak','',sf.ms,'var(--text3)')+'</div></div></div>';
-  })();
-  el.innerHTML = compBlock + aggHTML + instHTML + filterHTML + alertsHTML;
+  // ── Performance ──
+  function card(label, val, sub, color) {
+    return '<div class="stat-card"><div class="stat-eye">' + label + '</div><div class="stat-val" style="color:' + color + ';">' + val + '</div><div class="stat-sub">' + sub + '</div></div>';
+  }
+  var rColor = all.r > 0 ? 'var(--gold)' : all.r < 0 ? 'var(--red)' : 'var(--text3)';
+  var curText = curLen + (curType === 'Win' ? (curLen === 1 ? ' win' : ' wins') : (curLen === 1 ? ' loss' : ' losses'));
+  var perfHTML = '<div class="an-sec"><div class="an-sec-title">Performance</div><div class="analytics-grid">' +
+    card('Record', all.w + 'W ' + all.l + 'L', all.n + ' finished trades' + (open ? ' · ' + open + ' open' : ''), 'var(--text)') +
+    card('Win rate', all.wr + '%', all.n < 30 ? 'small sample, under 30 trades' : all.n + ' trades', 'var(--text)') +
+    card('Total R', (all.r > 0 ? '+' : '') + all.r + 'R', 'wins count 3R, losses 1R', rColor) +
+    card('Current streak', curText, 'in a row', curType === 'Win' ? 'var(--green)' : 'var(--red)') +
+    card('Longest winning streak', String(bestW), bestW === 1 ? 'trade' : 'trades in a row', 'var(--green)') +
+    card('Longest losing streak', String(bestL), bestL === 1 ? 'trade' : 'trades in a row', bestL ? 'var(--red)' : 'var(--text3)') +
+    '</div>' +
+    '<div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;padding:12px 14px 8px;">' +
+      '<div class="stat-eye">Equity curve in R</div>' +
+      equitySVG(complete.map(function(t){ return t.outcome; })) +
+    '</div></div>';
+
+  // ── By Instrument ──
+  var instRows = ['EU', 'GU', 'UC', 'XU'].map(function(i){
+    var ts = complete.filter(function(t){ return t.instrument === i; });
+    if (!ts.length) return '';
+    var s = rec(ts);
+    var rc = s.r > 0 ? 'val-gld' : s.r < 0 ? 'val-neg' : 'val-neu';
+    return '<tr><td>' + instFull(i) + '</td><td class="val-neu">' + wl(s) + '</td>' +
+           '<td class="' + (s.n >= 10 ? '' : 'val-dim') + '">' + s.wr + '%</td>' +
+           '<td class="' + rc + '">' + (s.r > 0 ? '+' : '') + s.r + 'R</td></tr>';
+  }).join('');
+  var instHTML = '<div class="an-sec"><div class="an-sec-title">By Instrument</div>' +
+    '<div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;">' +
+    '<table class="breakdown-table"><tr><th>Instrument</th><th>Trades</th><th>Win rate</th><th>Total R</th></tr>' + instRows + '</table></div>' +
+    '<div class="sample-note" style="margin-top:6px;">Win rate stays grey until an instrument has 10 trades.</div></div>';
+
+  // ── Filter Performance ──
+  var prime = complete.filter(function(t){ return t.verdict === 'PRIME'; });
+  var valid = complete.filter(function(t){ return t.verdict !== 'PRIME'; });
+  var P = rec(prime), V = rec(valid);
+  var legacyFlag = { 'H4 HTF opposing zone': 'H4 standard opposing zone' };
+  var byFlag = {};
+  valid.forEach(function(t){
+    var f = (t.flags && t.flags.length) ? t.flags[0] : 'No flag recorded';
+    f = legacyFlag[f] || f;
+    (byFlag[f] = byFlag[f] || []).push(t);
+  });
+  var flagList = Object.keys(byFlag).map(function(k){ return { label: k, s: rec(byFlag[k]) }; })
+    .sort(function(a, b){ return b.s.n - a.s.n; });
+
+  function vsPrime(s) {
+    if (s.n < 10) return '<span class="val-dim">too few trades</span>';
+    if (!P.n) return '<span class="val-dim">no PRIME trades yet</span>';
+    var d = s.wr - P.wr;
+    return '<span class="' + (d < 0 ? 'val-neg' : 'val-pos') + '">' + (d > 0 ? '+' : d < 0 ? '-' : '') + Math.abs(d) + ' pts</span>';
+  }
+  function fRow(label, s, vs, indent) {
+    return '<tr><td' + (indent ? ' style="padding-left:20px;"' : '') + '>' + label + '</td><td class="val-neu">' + wl(s) + '</td>' +
+           '<td class="' + (s.n >= 10 ? '' : 'val-dim') + '">' + s.wr + '%</td><td>' + vs + '</td></tr>';
+  }
+  var filterRows = fRow('PRIME', P, '<span class="val-dim">—</span>', false) +
+                   fRow('VALID', V, vsPrime(V), false) +
+                   flagList.map(function(f){ return fRow(f.label, f.s, vsPrime(f.s), true); }).join('');
+  var filterHTML = '<div class="an-sec"><div class="an-sec-title">Filter Performance</div>' +
+    '<div style="background:var(--surf2);border:1px solid var(--line);border-radius:9px;overflow:hidden;">' +
+    '<table class="breakdown-table"><tr><th>Group</th><th>Trades</th><th>Win rate</th><th>vs PRIME</th></tr>' + filterRows + '</table></div>' +
+    '<div class="sample-note" style="margin-top:6px;">Each VALID trade counts under the one flag it carried. Rows under 10 trades are too small to judge.</div></div>';
+
+  el.innerHTML = alertsHTML + perfHTML + instHTML + filterHTML;
 }
 
 // ── EXPORT ────────────────────────────────────────────────────────
