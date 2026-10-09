@@ -1117,7 +1117,7 @@ function renderAnalytics() {
   var perfHTML = '<div class="an-sec"><div class="an-sec-title">Performance</div><div class="analytics-grid">' +
     card('Record', all.w + 'W ' + all.l + 'L', all.n + ' finished trades' + (open ? ' · ' + open + ' open' : ''), 'var(--text)') +
     card('Win rate', all.wr + '%', all.n < 30 ? 'small sample, under 30 trades' : all.n + ' trades', 'var(--text)') +
-    card('Total R', (all.r > 0 ? '+' : '') + all.r + 'R', '1R = what you risk per trade', rColor) +
+    card('Total R', (all.r > 0 ? '+' : '') + all.r + 'R', 'win +3R, loss -1R', rColor) +
     card('Current streak', curText, 'in a row', curType === 'Win' ? 'var(--green)' : 'var(--red)') +
     card('Longest winning streak', String(bestW), bestW === 1 ? 'trade' : 'trades in a row', 'var(--green)') +
     card('Longest losing streak', String(bestL), bestL === 1 ? 'trade' : 'trades in a row', bestL ? 'var(--red)' : 'var(--text3)') +
