@@ -654,9 +654,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="ctitle">Conditional check — any one triggers a hard kill</div>
         <div class="crow"><div class="cdot" id="exc-ov-dot"></div><div class="clabel" id="exc-ov-lbl">Overlap — reading from Zone Condition</div></div>
         <div class="crow"><div class="cdot" id="exc-adr-dot"></div><div class="clabel" id="exc-adr-lbl">ADR above 1.5 — enter ADR in Market State</div></div>
-        <div class="crow"><div class="cdot" id="exc-imp-dot"></div><div class="clabel" id="exc-imp-lbl">Impulse above 3.0 — enter Impulse in Market State</div></div>
-        <div class="crow"><div class="cdot" id="exc-hist-dot"></div><div class="clabel" id="exc-hist-lbl">Historical reference location — reading from Step 05d</div></div>
-        <div style="margin-top:9px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">All four clear — proceed. Any one present — hard kill.</div>
+        <div style="margin-top:9px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">Both clear — proceed. Either present — hard kill.</div>
       </div>
     </div>
   </div>
@@ -697,24 +695,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     </div>
   </div>
 
-  <!-- S2 · Sub 6 — 5d Historical ref -->
-  <div class="sub" id="c-hist">
-    <div class="sub-hdr">
-      <span class="sub-num">05d</span>
-      <span class="sub-title">Historical Reference Location</span>
-      <span class="sub-stat" id="st-hist" style="color:var(--dim)">—</span>
-    </div>
-    <div class="sub-body">
-      <div class="sq">Is this zone sourced from a 2–3 day old high or low rather than a fresh structural level of yesterday's range?</div>
-      <div class="opts">
-        <input type="radio" name="hist" id="hist-y" value="med" onchange="run()">
-        <label for="hist-y" class="opt opt-a">Yes — 2 to 3 day old reference level</label>
-        <input type="radio" name="hist" id="hist-n" value="pass" onchange="run()">
-        <label for="hist-n" class="opt opt-g">No — fresh or PD structural level</label>
-      </div>
-    </div>
-  </div>
-
 </div><!-- end section 2 -->
 
 
@@ -727,28 +707,10 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     <span class="section-tag st-state">Medium Flag</span>
   </div>
 
-  <!-- S3 · Sub 1 — Impulse -->
-  <div class="sub" id="c-imp">
-    <div class="sub-hdr">
-      <span class="sub-num">06</span>
-      <span class="sub-title">Impulse Ratio</span>
-      <span class="sub-stat" id="st-imp" style="color:var(--dim)">—</span>
-    </div>
-    <div class="sub-body">
-      <div class="sq">Enter the impulse ratio.</div>
-      <div class="iblock">
-        <input type="number" id="imp" step="0.01" min="0" placeholder="e.g. 1.8" oninput="run()">
-      </div>
-      <div class="iresult" id="imp-res">
-        <div class="cdot" id="imp-dot"></div>
-        <span id="imp-txt" style="color:var(--dim)">Enter value to evaluate</span>
-      </div>    </div>
-  </div>
-
-  <!-- S3 · Sub 2 — ADR -->
+  <!-- S3 · Sub 1 — ADR -->
   <div class="sub" id="c-adr">
     <div class="sub-hdr">
-      <span class="sub-num">07</span>
+      <span class="sub-num">06</span>
       <span class="sub-title">ADR Ratio</span>
       <span class="sub-stat" id="st-adr" style="color:var(--dim)">—</span>
     </div>
@@ -993,7 +955,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 // Unified system — no mode separation
 function g(id){return document.getElementById(id);}
 function rv(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:null;}
-var STEPS=['inst','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr'];
+var STEPS=['inst','gap','htf','mss','zone','asian','dba','dbh','adr'];
 
 // Returns the index of the first incomplete step (0-based)
 function firstIncomplete(){
@@ -1029,10 +991,10 @@ document.addEventListener('change',function(e){
     inst_chip:'inst',
     mssq1:'mss',mssq2:'mss',mssq3:'mss',mssq4:'mss',mssq5:'mss',
     zdepth:'zone',zliq:'zone',d1fvgsl:'zone',
-    asian:'asian',dba:'dba',dbh:'dbh',hist:'hist',
-    imp:'imp',adr:'adr'
+    asian:'asian',dba:'dba',dbh:'dbh',
+    adr:'adr'
   };
-  var name=e.target.name||(e.target.id==='imp'?'imp':e.target.id==='adr'?'adr':null);
+  var name=e.target.name||(e.target.id==='adr'?'adr':null);
   if(!name)return;
   var step=stepMap[name];
   if(!step)return;
@@ -1049,7 +1011,7 @@ document.addEventListener('change',function(e){
 // Also intercept number inputs for serial enforcement
 document.addEventListener('input',function(e){
   if(e.target.type!=='number')return;
-  var stepMap={imp:'imp',adr:'adr'};
+  var stepMap={adr:'adr'};
   var step=stepMap[e.target.id];
   if(!step)return;
   var stepIdx=STEPS.indexOf(step);
@@ -1069,9 +1031,7 @@ function showOrderError(requiredStep){
     asian:'Step 05a — PD Asian Range Coincidence',
     dba:'Step 05b — Prior Failure at DBI Asian Range',
     dbh:'Step 05c — Prior Failure at DBI High / Low',
-    hist:'Step 05d — Historical Reference Location',
-    imp:'Step 06 — Impulse Ratio',
-    adr:'Step 07 — ADR Ratio'
+    adr:'Step 06 — ADR Ratio'
   };
   var toast=g('order-toast');
   if(!toast)return;
@@ -1189,28 +1149,26 @@ function stepDone(s){
       }
   if(s==='asian'){
     var av=rv('asian');if(!av)return false;
-    // Selecting either option counts as done — conditional check resolves live as steps 6/7 fill
+    // Selecting either option counts as done — conditional check resolves live as Step 04 and Step 06 fill
     return true;
   }
   if(s==='dba') return !!rv('dba');
   if(s==='dbh') return !!rv('dbh');
-  if(s==='hist') return !!rv('hist');
-  if(s==='imp') return !isNaN(parseFloat(g('imp').value));
   if(s==='adr') return !isNaN(parseFloat(g('adr').value));
   return false;
 }
 
 function allDone(){
-  return['inst','gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr'].every(stepDone);
+  return['inst','gap','htf','mss','zone','asian','dba','dbh','adr'].every(stepDone);
   }
   
 function run(){
   var kills=0,mf=0,kr=[];
-  var impV=parseFloat(g('imp').value),adrV=parseFloat(g('adr').value);
-  var hasI=!isNaN(impV),hasA=!isNaN(adrV);
+  var adrV=parseFloat(g('adr').value);
+  var hasA=!isNaN(adrV);
   var depthV=rv('zdepth'),liqV=rv('zliq');
   var hasOv=(liqV==='overlap');
-  var impFlag=hasI&&impV>3.0,adrFlag=hasA&&adrV>1.5;
+  var adrFlag=hasA&&adrV>1.5;
 
   // ── Step 1 Gap ───────────────────────────────────────────────
   var gv=rv('gap'),gpv=rv('gpos'),gdv=rv('gdetail');
@@ -1332,29 +1290,18 @@ function run(){
     else{g('exc-ov-dot').className='cdot';g('exc-ov-lbl').textContent='Overlap — complete Zone Condition first';g('exc-ov-lbl').style.color='var(--dim)';}
     if(hasA){g('exc-adr-dot').className='cdot '+(adrFlag?'bad':'ok');g('exc-adr-lbl').textContent='ADR '+adrV+(adrFlag?' — above 1.5, kill condition':' — below 1.5, clear');g('exc-adr-lbl').style.color=adrFlag?'var(--red)':'var(--green)';}
     else{g('exc-adr-dot').className='cdot';g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';}
-    if(hasI){g('exc-imp-dot').className='cdot '+(impFlag?'bad':'ok');g('exc-imp-lbl').textContent='Impulse '+impV+(impFlag?' — above 3.0, kill condition':' — below 3.0, clear');g('exc-imp-lbl').style.color=impFlag?'var(--red)':'var(--green)';}
-    else{g('exc-imp-dot').className='cdot';g('exc-imp-lbl').textContent='Impulse above 3.0 — enter Impulse in Market State';g('exc-imp-lbl').style.color='var(--dim)';}
-    var histAnswered=!!rv('hist');var histIsKill=rv('hist')==='med';
-    if(g('exc-hist-dot')&&g('exc-hist-lbl')){
-      if(histAnswered){g('exc-hist-dot').className='cdot '+(histIsKill?'bad':'ok');g('exc-hist-lbl').textContent=histIsKill?'Historical reference location — kill condition triggered':'Historical reference location — clear';g('exc-hist-lbl').style.color=histIsKill?'var(--red)':'var(--green)';}
-      else{g('exc-hist-dot').className='cdot';g('exc-hist-lbl').textContent='Historical reference location — complete Step 05d first';g('exc-hist-lbl').style.color='var(--dim)';}
-    }
   }
   if(!asv){sc('asian','');ss('asian','—','var(--dim)');}
   else if(asv==='no'){sc('asian','pa');ss('asian','Clear','var(--green)');}
   else{
     var hz2=depthV&&(depthV==='shallow-none'||!!liqV);
-    var histDone=!!rv('hist');
-    if(!hz2||!hasI||!hasA||!histDone){sc('asian','au');ss('asian','Pending','var(--gold)');}
+    if(!hz2||!hasA){sc('asian','au');ss('asian','Pending','var(--gold)');}
     else{
-      var histKill=rv('hist')==='med';
-      var ak=hasOv||adrFlag||impFlag||histKill;
+      var ak=hasOv||adrFlag;
       if(ak){
         var akReasons=[];
         if(hasOv)akReasons.push('overlap present');
         if(adrFlag)akReasons.push('ADR above 1.5');
-        if(impFlag)akReasons.push('impulse above 3.0');
-        if(histKill)akReasons.push('historical reference location');
         kills++;kr.push('Asian range coincide — '+akReasons.join(', '));sc('asian','sk');ss('asian','Skip','var(--red)');
   }
       else{sc('asian','au');ss('asian','Conditional','var(--gold)');}
@@ -1373,23 +1320,7 @@ function run(){
   else if(dbhv==='kill'){kills++;kr.push('Prior failure at DBI high or low — prior visit reached DBI high or low without convincing break');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
   else{sc('dbh','pa');ss('dbh','Clear','var(--green)');}
 
-  // ── Step 5d Hist ─────────────────────────────────────────────
-  var hiv=rv('hist');
-  if(!hiv){sc('hist','');ss('hist','—','var(--dim)');}
-  else if(hiv==='med'){mf++;sc('hist','wa');ss('hist','Flag','var(--amber)');}
-  else{sc('hist','pa');ss('hist','Clear','var(--green)');}
-
-  // ── Step 6 Impulse ───────────────────────────────────────────
-  if(hasI){
-    if(impFlag)mf++;
-    g('imp-dot').className='cdot '+(impFlag?'bad':'ok');
-    g('imp-txt').textContent=impFlag?'Impulse '+impV+' — above 3.0, medium flag':'Impulse '+impV+' — below 3.0, clear';
-    g('imp-txt').style.color=impFlag?'var(--amber)':'var(--green)';
-    sc('imp',impFlag?'wa':'pa');
-    ss('imp',impFlag?'Flag':'Clear',impFlag?'var(--amber)':'var(--green)');
-  }else{sc('imp','');ss('imp','—','var(--dim)');g('imp-dot').className='cdot';g('imp-txt').textContent='Enter value to evaluate';g('imp-txt').style.color='var(--dim)';}
-
-  // ── Step 7 ADR ───────────────────────────────────────────────
+  // ── Step 6 ADR ───────────────────────────────────────────────
   if(hasA){
     if(adrFlag)mf++;
     g('adr-dot').className='cdot '+(adrFlag?'bad':'ok');
@@ -1417,7 +1348,7 @@ function run(){
   if(hasKill){
     g('vp-dec').textContent='SKIP'; g('vp-dec').style.color='var(--red)';
     var skipKills=[...kr];
-    if(mf>=2){var flagNames=[];if(rv('htf')==='med'||rv('htf')==='med-h4s'||rv('htf')==='med-d1s')flagNames.push('HTF opposing zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(rv('hist')==='med')flagNames.push('Historical reference level');if(hasI&&impV>3.0)flagNames.push('Impulse above 3.0');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(rv('mssq4')==='yes'&&rv('mssq5')!=='yes')flagNames.push('W1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));}
+    if(mf>=2){var flagNames=[];if(rv('htf')==='med'||rv('htf')==='med-h4s'||rv('htf')==='med-d1s')flagNames.push('HTF opposing zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(rv('mssq4')==='yes'&&rv('mssq5')!=='yes')flagNames.push('W1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));}
     g('vp-note').textContent=skipKills.join(' · ');
     g('vp').style.borderColor='rgba(224,80,80,0.3)';g('vp').style.boxShadow='0 0 30px rgba(224,80,80,0.05)';
     g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
@@ -1435,8 +1366,6 @@ function run(){
     if(rv('htf')==='med-h4s')activeFlags.push('H4 synthetic opposing zone');
     if(rv('htf')==='med-d1s')activeFlags.push('D1 synthetic opposing zone');
     if(rv('zliq')==='overlap')activeFlags.push('Overlap');
-    if(rv('hist')==='med')activeFlags.push('Historical reference level');
-    if(hasI&&impV>3.0)activeFlags.push('Impulse above 3.0');
     if(hasA&&adrV>1.5)activeFlags.push('ADR above 1.5');
     if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')activeFlags.push('D1 FVG rejection');
     if(rv('mssq4')==='yes'&&rv('mssq5')!=='yes')activeFlags.push('W1 FVG rejection');
@@ -1467,7 +1396,7 @@ function run(){
 function resetAll(){
   document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
   document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
-  ['gap','htf','mss','zone','asian','dba','dbh','hist','imp','adr'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
+  ['gap','htf','mss','zone','asian','dba','dbh','adr'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
   g('gap-cond').className='cond';
   if(g('gap-detail-cond'))g('gap-detail-cond').className='cond';
   document.querySelectorAll('input[name="gdetail"]').forEach(function(r){r.checked=false;});
@@ -1475,15 +1404,11 @@ function resetAll(){
   g('asian-cond').className='cond';
   ['mssq1','mssq2','mssq3'].forEach(function(n){document.querySelectorAll('input[name="'+n+'"]').forEach(function(r){r.checked=false;});});
   ['mss-q2','mss-q3','mss-q4','mss-q5'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
-  ['exc-ov-dot','exc-adr-dot','exc-imp-dot'].forEach(function(id){var el=g(id);if(el)el.className='cdot';});
+  ['exc-ov-dot','exc-adr-dot'].forEach(function(id){var el=g(id);if(el)el.className='cdot';});
   g('exc-ov-lbl').textContent='Overlap — reading from Zone Condition';g('exc-ov-lbl').style.color='var(--dim)';
   g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';
-  g('exc-imp-lbl').textContent='Impulse above 3.0 — enter Impulse in Market State';g('exc-imp-lbl').style.color='var(--dim)';
-  if(g('exc-hist-dot'))g('exc-hist-dot').className='cdot';
-  if(g('exc-hist-lbl')){g('exc-hist-lbl').textContent='Historical reference location — reading from Step 05d';g('exc-hist-lbl').style.color='var(--dim)';}
   g('zone-l3').className='layer-div';
   document.querySelectorAll('input[name="mssq4"],input[name="mssq5"],input[name="d1fvgsl"]').forEach(function(r){r.checked=false;});
-  g('imp-dot').className='cdot';g('imp-txt').textContent='Enter value to evaluate';g('imp-txt').style.color='var(--dim)';
   g('adr-dot').className='cdot';g('adr-txt').textContent='Enter value to evaluate';g('adr-txt').style.color='var(--dim)';
   ['mp1','mp2','mp3'].forEach(function(id){g(id).className='fcpip';});
   ['fp1','fp2','fp3'].forEach(function(id){g(id).className='fpip';});
@@ -1547,8 +1472,7 @@ function captureSteps() {
     mssq4:rv2('mssq4'), mssq5:rv2('mssq5'),
     zdepth:rv2('zdepth'), zliq:rv2('zliq'), d1fvgsl:rv2('d1fvgsl'),
     asian:rv2('asian'),
-    dba:rv2('dba'), dbh:rv2('dbh'), hist:rv2('hist'),
-    imp:document.getElementById('imp').value || null,
+    dba:rv2('dba'), dbh:rv2('dbh'),
     adr:document.getElementById('adr').value || null,
     _labels:{
       gap:rl('gap'), gpos:rl('gpos'), htf:rl('htf'),
@@ -1556,7 +1480,7 @@ function captureSteps() {
       mssq4:rl('mssq4'), mssq5:rl('mssq5'),
       zdepth:rl('zdepth'), zliq:rl('zliq'), d1fvgsl:rl('d1fvgsl'),
       asian:rl('asian'),
-      dba:rl('dba'), dbh:rl('dbh'), hist:rl('hist')
+      dba:rl('dba'), dbh:rl('dbh')
     }
   };
 }
@@ -1567,14 +1491,14 @@ function refreshPrompt() {
   var verdict = vp ? vp.textContent.trim() : '';
   var prompt = document.getElementById('save-prompt');
   if (!prompt) return;
-  prompt.className = (verdict && verdict !== '—') ? 'save-prompt show' : 'save-prompt';
+  prompt.className = (verdict === 'PRIME' || verdict === 'VALID') ? 'save-prompt show' : 'save-prompt';
 }
 
 window.saveToTracker = async function() {
   if (!_selectedInst) { alert('Please select an instrument first.'); return; }
   var vp = document.getElementById('vp-dec');
   var verdict = vp ? vp.textContent.trim() : '';
-  if (!verdict || verdict === '—') return;
+  if (verdict !== 'PRIME' && verdict !== 'VALID') return;
 
   var steps = captureSteps();
   var flags = [];
@@ -1583,8 +1507,6 @@ window.saveToTracker = async function() {
   if (steps.htf === 'med-d1s') flags.push('D1 synthetic opposing zone');
   if (steps.htf === 'kill') flags.push('D1 standard opposing zone');
   if (steps.zliq === 'overlap') flags.push('Overlap');
-  if (steps.hist === 'med') flags.push('Historical reference location');
-  if (steps.imp && parseFloat(steps.imp) > 3.0) flags.push('Impulse >3.0');
   if (steps.adr && parseFloat(steps.adr) > 1.5) flags.push('ADR >1.5');
   if (steps.mssq1 === 'yes' && steps.mssq2 === 'no') flags.push('Broker inconsistency');
   if (steps.mssq2 === 'yes' && steps.mssq3 === 'no') flags.push('D1 FVG rejection');
