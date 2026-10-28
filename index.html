@@ -328,7 +328,11 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 }
 /* ── MSS REFERENCE ── */
 .mss-ref{margin-top:14px;border:1px solid var(--line);border-radius:9px;overflow:hidden;opacity:0.72;}
-.mss-ref-hdr{padding:7px 12px;background:var(--surf2);border-bottom:1px solid var(--line);font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);letter-spacing:0.16em;text-transform:uppercase;}
+.mss-ref-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surf2);border-bottom:1px solid var(--line);font-family:'Space Mono',monospace;font-size:7px;color:var(--dim);letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent;user-select:none;}
+.mss-ref-hdr::-webkit-details-marker{display:none;}
+.mss-ref:not([open]) .mss-ref-hdr{border-bottom:none;}
+.mss-ref-chev{font-size:11px;line-height:1;transition:transform .2s;}
+.mss-ref[open] .mss-ref-chev{transform:rotate(180deg);}
 .mss-ref-row{padding:9px 12px;border-bottom:1px solid var(--line);}
 .mss-ref-term{font-family:'Space Mono',monospace;font-size:8px;color:var(--ref-name);font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
 .mss-ref-desc{font-size:9px;color:var(--ref-txt);line-height:1.55;}
@@ -545,8 +549,8 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       </div>
 
       <!-- Reference panel -->
-      <div class="mss-ref" style="margin-top:14px;">
-        <div class="mss-ref-hdr">Reference</div>
+      <details class="mss-ref" style="margin-top:14px;">
+        <summary class="mss-ref-hdr">Reference<span class="mss-ref-chev">&#8964;</span></summary>
         <div class="mss-ref-row">
           <div class="mss-ref-term">Broker inconsistency (Q1)</div>
           <div class="mss-ref-desc">Pepperstone and IC Markets disagree on whether the MSS candle closed as a body beyond the swing high or low, or swept it as a wick. One confirms the body close, the other reads it as a wick. Both platforms are already open during analysis — this check is instantaneous.</div>
@@ -571,7 +575,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="mss-ref-term">Outcome map</div>
           <div class="mss-ref-desc">Q1 No, Q2 No, Q4 No → clean pass. Q1 Yes, Q2 No → medium flag. Q2 Yes, Q3 No → medium flag. Q2 Yes, Q3 Yes → hard kill. Q4 Yes, Q5 No → medium flag. Q4 Yes, Q5 Yes → hard kill.</div>
         </div>
-      </div>
+      </details>
 
     </div>
   </div>
@@ -1394,6 +1398,7 @@ function run(){
 }
 
 function resetAll(){
+  var mssRef=document.querySelector('.mss-ref');if(mssRef)mssRef.removeAttribute('open');
   document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
   document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
   ['gap','htf','mss','zone','asian','dba','dbh','adr'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
