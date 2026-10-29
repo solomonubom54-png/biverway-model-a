@@ -108,6 +108,7 @@ header{padding:28px 0 20px;border-bottom:1px solid var(--line);}
 /* ── CHIPS ── */
 input[type="radio"]{display:none;}
 .opts{display:flex;flex-wrap:wrap;gap:7px;}
+.opts.stack{flex-direction:column;align-items:flex-start;}
 .olabel{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;width:100%;margin-top:12px;margin-bottom:3px;padding-top:10px;border-top:1px solid var(--line);}
 .olabel:first-child{margin-top:0;border-top:none;padding-top:0;}
 .opt{display:inline-flex;align-items:center;padding:8px 14px;border-radius:8px;border:1px solid var(--line2);background:var(--bg);cursor:pointer;font-family:'Space Mono',monospace;font-size:10px;color:var(--opt-txt);transition:all 0.15s;user-select:none;line-height:1.3;letter-spacing:0.02em;}
@@ -446,15 +447,15 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     </div>
     <div class="sub-body">
       <div class="sq">Did the impulse leg that caused the M15 MSS — the same impulse that created your zone — reach into a D1 or H4 decisional or extreme opposing zone?</div>
-      <div class="opts">
+      <div class="opts stack">
         <input type="radio" name="htf" id="htf-n" value="pass" onchange="run()">
         <label for="htf-n" class="opt opt-g">No HTF opposing zone</label>
-        <input type="radio" name="htf" id="htf-h4" value="med" onchange="run()">
-        <label for="htf-h4" class="opt opt-a">H4 standard — decisional or extreme</label>
         <input type="radio" name="htf" id="htf-h4s" value="med-h4s" onchange="run()">
         <label for="htf-h4s" class="opt opt-a">H4 synthetic</label>
         <input type="radio" name="htf" id="htf-d1s" value="med-d1s" onchange="run()">
         <label for="htf-d1s" class="opt opt-a">D1 synthetic</label>
+        <input type="radio" name="htf" id="htf-h4" value="med" onchange="run()">
+        <label for="htf-h4" class="opt opt-a">H4 standard — decisional or extreme</label>
         <input type="radio" name="htf" id="htf-d1" value="kill" onchange="run()">
         <label for="htf-d1" class="opt opt-r">D1 standard — decisional or extreme</label>
       </div>
@@ -473,7 +474,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     <span class="section-tag st-zone">Hard / Medium Filter</span>
   </div>
 
-  <!-- S2 · Sub 0 — MSS Quality -->
+  <!-- S2 · Sub 0 — MSS Quality (broker inconsistency only) -->
   <div class="sub" id="c-mss">
     <div class="sub-hdr">
       <span class="sub-num">03</span>
@@ -481,85 +482,85 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <span class="sub-stat" id="st-mss" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-
-      <!-- Q1 — Broker inconsistency (always shown first) -->
-      <div class="mss-q" id="mss-q1">
-        <div class="sq">Q1 — On the MSS candle close beyond the swing high or low: does Pepperstone show a confirmed body close while IC Markets shows a wick sweep, or vice versa — the two platforms disagree?</div>
-        <div class="opts">
-          <input type="radio" name="mssq1" id="mssq1-y" value="yes" onchange="onMSS(1,'yes')">
-          <label for="mssq1-y" class="opt opt-a">Yes — Pepperstone and IC Markets disagree on the close</label>
+      <div class="sq">Do Pepperstone and IC Markets agree on the MSS candle close?</div>
+      <div class="opts">
           <input type="radio" name="mssq1" id="mssq1-n" value="no" onchange="onMSS(1,'no')">
-          <label for="mssq1-n" class="opt opt-g">No — both platforms confirm the same close</label>
-        </div>
+          <label for="mssq1-n" class="opt opt-g">Agree — both show the same close</label>
+          <input type="radio" name="mssq1" id="mssq1-y" value="yes" onchange="onMSS(1,'yes')">
+          <label for="mssq1-y" class="opt opt-a">Disagree — one shows a body close, the other a wick sweep</label>
       </div>
+    </div>
+  </div>
 
-      <!-- Q2 — D1 FVG (always shown after Q1 answered) -->
-      <div class="mss-q" id="mss-q2" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
-        <div class="sq">Q2 — Did the M15 impulse leg tap into a D1 Fair Value Gap within the Daily impulse leg or Daily pullback leg, and reject from it?</div>
-        <div class="opts">
+  <!-- S2 · Sub 0b — D1 FVG Rejection -->
+  <div class="sub" id="c-d1f">
+    <div class="sub-hdr">
+      <span class="sub-num">04</span>
+      <span class="sub-title">D1 FVG Rejection</span>
+      <span class="sub-stat" id="st-d1f" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Did the M15 impulse leg tap into a D1 Fair Value Gap within the Daily impulse leg or Daily pullback leg, and reject from it?</div>
+      <div class="opts">
           <input type="radio" name="mssq2" id="mssq2-y" value="yes" onchange="onMSS(2,'yes')">
           <label for="mssq2-y" class="opt opt-a">Yes</label>
           <input type="radio" name="mssq2" id="mssq2-n" value="no" onchange="onMSS(2,'no')">
           <label for="mssq2-n" class="opt opt-g">No</label>
-        </div>
       </div>
-
-      <!-- Q3 — DBI sweep (only shown when Q2 = yes) -->
       <div class="mss-q" id="mss-q3" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
-        <div class="sq">Q3 — Did the rejecting leg sweep the DBI high or low, or a high or low from 2 to 3 days prior, in the process of that rejection?</div>
+        <div class="sq">Did the rejecting leg sweep the DBI high or low, or a high or low from 2 to 3 days before it, in the process of that rejection?</div>
         <div class="opts">
-          <input type="radio" name="mssq3" id="mssq3-y" value="yes" onchange="onMSS(3,'yes')">
-          <label for="mssq3-y" class="opt opt-a">Yes — structural level swept</label>
-          <input type="radio" name="mssq3" id="mssq3-n" value="no" onchange="onMSS(3,'no')">
-          <label for="mssq3-n" class="opt opt-g">No — no structural sweep</label>
+            <input type="radio" name="mssq3" id="mssq3-y" value="yes" onchange="onMSS(3,'yes')">
+            <label for="mssq3-y" class="opt opt-a">Yes — high or low swept</label>
+            <input type="radio" name="mssq3" id="mssq3-n" value="no" onchange="onMSS(3,'no')">
+            <label for="mssq3-n" class="opt opt-g">No — rejection only, no sweep</label>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Q4 — W1 FVG rejection (always shown after Q2 is answered) -->
-      <div class="mss-q" id="mss-q4" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
-        <div class="sq">Q4 — Did the M15 impulse leg tap into a Weekly (W1) Fair Value Gap and reject from it?</div>
-        <div class="opts">
+  <!-- S2 · Sub 0c — W1 FVG Rejection -->
+  <div class="sub" id="c-w1f">
+    <div class="sub-hdr">
+      <span class="sub-num">05</span>
+      <span class="sub-title">W1 FVG Rejection</span>
+      <span class="sub-stat" id="st-w1f" style="color:var(--dim)">—</span>
+    </div>
+    <div class="sub-body">
+      <div class="sq">Did the M15 impulse leg tap into a Weekly (W1) Fair Value Gap and reject from it?</div>
+      <div class="opts">
           <input type="radio" name="mssq4" id="mssq4-y" value="yes" onchange="onMSS(4,'yes')">
           <label for="mssq4-y" class="opt opt-a">Yes</label>
           <input type="radio" name="mssq4" id="mssq4-n" value="no" onchange="onMSS(4,'no')">
           <label for="mssq4-n" class="opt opt-g">No</label>
-        </div>
       </div>
-
-      <!-- Q5 — W1 structural sweep (only shown when Q4 = Yes) -->
       <div class="mss-q" id="mss-q5" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--line);">
-        <div class="sq">Q5 — Did the rejecting leg also sweep a structural level — a weekly high or low or a significant prior swing — in the process of that W1 FVG rejection?</div>
+        <div class="sq">Did the rejecting leg sweep the WBI high or low, or a high or low from 2 to 3 weeks before it, in the process of that W1 FVG rejection?</div>
         <div class="opts">
-          <input type="radio" name="mssq5" id="mssq5-y" value="yes" onchange="onMSS(5,'yes')">
-          <label for="mssq5-y" class="opt opt-r">Yes — structural sweep present</label>
-          <input type="radio" name="mssq5" id="mssq5-n" value="no" onchange="onMSS(5,'no')">
-          <label for="mssq5-n" class="opt opt-g">No — rejection only, no sweep</label>
+            <input type="radio" name="mssq5" id="mssq5-y" value="yes" onchange="onMSS(5,'yes')">
+            <label for="mssq5-y" class="opt opt-r">Yes — high or low swept</label>
+            <input type="radio" name="mssq5" id="mssq5-n" value="no" onchange="onMSS(5,'no')">
+            <label for="mssq5-n" class="opt opt-g">No — rejection only, no sweep</label>
         </div>
       </div>
-
-      <!-- Reference panel -->
-
     </div>
   </div>
 
   <!-- S2 · Sub 1 — Zone Condition -->
   <div class="sub" id="c-zone">
     <div class="sub-hdr">
-      <span class="sub-num">04</span>
-      <span class="sub-title">Zone Condition</span>
+      \g<0></span>
       <span class="sub-stat" id="st-zone" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
 
-      <div class="olabel" style="margin-top:0;border-top:none;padding-top:0;">Layer 1 — Zone Depth</div>
-      <div class="sq">What is the structural depth of the pullback?</div>
+      <div class="olabel" style="margin-top:0;border-top:none;padding-top:0;">Layer 1 — Pullback Depth</div>
+      <div class="sq">What is the structural depth of the pullback that created this zone?</div>
       <div class="opts" id="depth-opts">
         <input type="radio" name="zdepth" id="zd-dh" value="deep-h1" onchange="onDepth()">
         <label for="zd-dh" class="opt opt-g">Deep — H1 Validated</label>
-        <input type="radio" name="zdepth" id="zd-dsw" value="deep-sw" onchange="onDepth()">
-        <label for="zd-dsw" class="opt opt-g">Deep — H1 + Clean Consolidation Base</label>
         <input type="radio" name="zdepth" id="zd-m45" value="shallow-m45" onchange="onDepth()">
-        <label for="zd-m45" class="opt opt-n" id="l-zdm45">Shallow — M45 Validated</label>
+        <label for="zd-m45" class="opt opt-n" id="l-zdm45">Moderate — M45 Validated</label>
         <input type="radio" name="zdepth" id="zd-sh" value="shallow-none" onchange="onDepth()">
         <label for="zd-sh" class="opt opt-r" id="l-zdsh">Shallow — No Validation</label>
       </div>
@@ -604,7 +605,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 3 — 5a Asian -->
   <div class="sub" id="c-asian" style="border-top:1px solid var(--line);">
     <div class="sub-hdr">
-      <span class="sub-num">05a</span>
+      <span class="sub-num">07a</span>
       <span class="sub-title">PD Asian Range Coincidence</span>
       <span class="sub-stat" id="st-asian" style="color:var(--dim)">—</span>
     </div>
@@ -628,7 +629,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 4 — 5b DBI Asian -->
   <div class="sub" id="c-dba">
     <div class="sub-hdr">
-      <span class="sub-num">05b</span>
+      <span class="sub-num">07b</span>
       <span class="sub-title">Prior Failure at DBI Asian Range</span>
       <span class="sub-stat" id="st-dba" style="color:var(--dim)">—</span>
     </div>
@@ -646,7 +647,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 5 — 5c DBI High/Low -->
   <div class="sub" id="c-dbh">
     <div class="sub-hdr">
-      <span class="sub-num">05c</span>
+      <span class="sub-num">07c</span>
       <span class="sub-title">Prior Failure at DBI High / Low</span>
       <span class="sub-stat" id="st-dbh" style="color:var(--dim)">—</span>
     </div>
@@ -676,7 +677,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S3 · Sub 1 — ADR -->
   <div class="sub" id="c-adr">
     <div class="sub-hdr">
-      <span class="sub-num">06</span>
+      <span class="sub-num">08</span>
       <span class="sub-title">ADR Ratio</span>
       <span class="sub-stat" id="st-adr" style="color:var(--dim)">—</span>
     </div>
@@ -921,7 +922,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 // Unified system — no mode separation
 function g(id){return document.getElementById(id);}
 function rv(n){var e=document.querySelector('input[name="'+n+'"]:checked');return e?e.value:null;}
-var STEPS=['inst','gap','htf','mss','zone','asian','dba','dbh','adr'];
+var STEPS=['inst','gap','htf','mss','d1f','w1f','zone','asian','dba','dbh','adr'];
 
 // Returns the index of the first incomplete step (0-based)
 function firstIncomplete(){
@@ -955,7 +956,7 @@ document.addEventListener('change',function(e){
     gap:'gap',gpos:'gap',gdetail:'gap',
     htf:'htf',
     inst_chip:'inst',
-    mssq1:'mss',mssq2:'mss',mssq3:'mss',mssq4:'mss',mssq5:'mss',
+    mssq1:'mss',mssq2:'d1f',mssq3:'d1f',mssq4:'w1f',mssq5:'w1f',
     zdepth:'zone',zliq:'zone',d1fvgsl:'zone',
     asian:'asian',dba:'dba',dbh:'dbh',
     adr:'adr'
@@ -993,11 +994,13 @@ function showOrderError(requiredStep){
     gap:'Step 01 — Gap Day',
     htf:'Step 02 — HTF Opposing Zone',
     mss:'Step 03 — MSS Quality',
-    zone:'Step 04 — Zone Condition',
-    asian:'Step 05a — PD Asian Range Coincidence',
-    dba:'Step 05b — Prior Failure at DBI Asian Range',
-    dbh:'Step 05c — Prior Failure at DBI High / Low',
-    adr:'Step 06 — ADR Ratio'
+    d1f:'Step 04 — D1 FVG Rejection',
+    w1f:'Step 05 — W1 FVG Rejection',
+    zone:'Step 06 — Zone Condition',
+    asian:'Step 07a — PD Asian Range Coincidence',
+    dba:'Step 07b — Prior Failure at DBI Asian Range',
+    dbh:'Step 07c — Prior Failure at DBI High / Low',
+    adr:'Step 08 — ADR Ratio'
   };
   var toast=g('order-toast');
   if(!toast)return;
@@ -1024,39 +1027,21 @@ function onGapMSS(val){
 }
 
 function onMSS(q, val){
-  var q2el=document.getElementById('mss-q2');
   var q3el=document.getElementById('mss-q3');
-  var q4el=document.getElementById('mss-q4');
   var q5el=document.getElementById('mss-q5');
-  if(q===1){
-    // Q1 answered — always reveal Q2, reset Q2+Q3+Q4+Q5
-    document.querySelectorAll('input[name="mssq2"],input[name="mssq3"],input[name="mssq4"],input[name="mssq5"]').forEach(function(r){r.checked=false;});
-    q2el.style.display='block';
-    q3el.style.display='none';
-    q4el.style.display='none';
-    q5el.style.display='none';
-  }
   if(q===2){
-    // Q2 answered — reset Q3+Q4+Q5. Reveal Q3 only if yes. Always reveal Q4.
-    document.querySelectorAll('input[name="mssq3"],input[name="mssq4"],input[name="mssq5"]').forEach(function(r){r.checked=false;});
+    // D1 FVG answered — reset the D1 sweep, reveal it only if yes
+    document.querySelectorAll('input[name="mssq3"]').forEach(function(r){r.checked=false;});
     q3el.style.display= val==='yes' ? 'block' : 'none';
-    q4el.style.display='block';
-    q5el.style.display='none';
-  }
-  if(q===3){
-    // Q3 answered — no change to Q4/Q5 visibility
   }
   if(q===4){
-    // Q4 answered — reset Q5, reveal Q5 only if yes
+    // W1 FVG answered — reset the W1 sweep, reveal it only if yes
     document.querySelectorAll('input[name="mssq5"]').forEach(function(r){r.checked=false;});
     q5el.style.display= val==='yes' ? 'block' : 'none';
   }
-  if(q===5){
-    // Q5 answered — nothing further to reveal
-  }
   run();
   updateLocks();
-  }
+}
 
 function sc(id,cls){var el=g('c-'+id);if(el)el.className='sub'+(cls?' '+cls:'');}
 function ss(id,t,c){var el=g('st-'+id);if(el){el.textContent=t;el.style.color=c;}}
@@ -1086,20 +1071,17 @@ function stepDone(s){
     return !!rv('gdetail');
   }
   if(s==='inst') return !!_selectedInst;
-  if(s==='mss'){
-    // Q1 always required
-    var q1=rv('mssq1');
-    if(!q1) return false;
-    // Q2 always required once Q1 answered
+  if(s==='mss') return !!rv('mssq1');
+  if(s==='d1f'){
     var q2=rv('mssq2');
     if(!q2) return false;
-    // Q3 only required if Q2=yes
-    if(q2==='yes'){var q3=rv('mssq3');if(!q3) return false;}
-    // Q4 always required once Q2 answered
+    if(q2==='yes'){ return !!rv('mssq3'); }
+    return true;
+  }
+  if(s==='w1f'){
     var q4=rv('mssq4');
     if(!q4) return false;
-    // Q5 only required if Q4=yes
-    if(q4==='yes'){var q5=rv('mssq5');if(!q5) return false;}
+    if(q4==='yes'){ return !!rv('mssq5'); }
     return true;
   }
   if(s==='htf') return !!rv('htf');
@@ -1125,7 +1107,7 @@ function stepDone(s){
 }
 
 function allDone(){
-  return['inst','gap','htf','mss','zone','asian','dba','dbh','adr'].every(stepDone);
+  return['inst','gap','htf','mss','d1f','w1f','zone','asian','dba','dbh','adr'].every(stepDone);
   }
   
 function run(){
@@ -1163,43 +1145,27 @@ function run(){
   else if(hv==='med-d1s'){flag('D1 synthetic opposing zone');sc('htf','wa');ss('htf','Flag','var(--amber)');}
   else{sc('htf','pa');ss('htf','Clear','var(--green)');}
 
-  // ── Step 3 MSS Quality ───────────────────────────────────────
-  // Q1=broker inconsistency, Q2=D1 FVG, Q3=DBI sweep
-  var mssQ1=rv('mssq1'),mssQ2=rv('mssq2'),mssQ3=rv('mssq3');
+  // ── Step 3 MSS Quality — broker inconsistency only ───────────
+  var mssQ1=rv('mssq1');
   if(!mssQ1){sc('mss','');ss('mss','—','var(--dim)');}
-  else if(!mssQ2){sc('mss','');ss('mss','Select','var(--amber)');}
-  else if(mssQ1==='no'&&mssQ2==='no'){
-    // Both clean — pass
-    sc('mss','pa');ss('mss','Clear','var(--green)');
-  } else if(mssQ2==='no'){
-    // Q1 yes (broker inconsistency), Q2 no (no FVG) — medium flag
-    flag('Broker inconsistency on MSS close');sc('mss','wa');ss('mss','Flag','var(--amber)');
-  } else {
-    // Q2 yes (FVG confirmed) — check DBI sweep
-    if(!mssQ3){flag('D1 FVG rejection');sc('mss','wa');ss('mss','Select','var(--amber)');}
-    else if(mssQ3==='no'){
-      // FVG confirmed, no DBI sweep — medium flag (regardless of Q1)
-      flag('D1 FVG rejection');sc('mss','wa');ss('mss','Flag','var(--amber)');
-    } else {
-      // Q2 yes + Q3 yes — hard kill (regardless of Q1)
-      kills++;kr.push('MSS compound signature — D1 FVG with sweep');sc('mss','sk');ss('mss','Skip','var(--red)');
-    }
-  }
+  else if(mssQ1==='yes'){flag('Broker inconsistency on MSS close');sc('mss','wa');ss('mss','Flag','var(--amber)');}
+  else{sc('mss','pa');ss('mss','Clear','var(--green)');}
 
-  // ── W1 FVG Q4 / Q5 ───────────────────────────────────────────
+  // ── Step 4 D1 FVG Rejection ──────────────────────────────────
+  var mssQ2=rv('mssq2'),mssQ3=rv('mssq3');
+  if(!mssQ2){sc('d1f','');ss('d1f','—','var(--dim)');}
+  else if(mssQ2==='no'){sc('d1f','pa');ss('d1f','Clear','var(--green)');}
+  else if(!mssQ3){flag('D1 FVG rejection');sc('d1f','wa');ss('d1f','Select','var(--amber)');}
+  else if(mssQ3==='no'){flag('D1 FVG rejection');sc('d1f','wa');ss('d1f','Flag','var(--amber)');}
+  else{kills++;kr.push('D1 FVG rejection with DBI or 2–3 days-before high/low sweep');sc('d1f','sk');ss('d1f','Skip','var(--red)');}
+
+  // ── Step 5 W1 FVG Rejection ──────────────────────────────────
   var mssQ4=rv('mssq4'),mssQ5=rv('mssq5');
-  if(mssQ4==='yes'){
-    if(!mssQ5){
-      // Q5 not yet answered — pending, no flag added yet
-    } else if(mssQ5==='no'){
-      // W1 FVG rejection, no structural sweep — medium flag
-      flag('W1 FVG rejection');
-    } else {
-      // W1 FVG rejection + structural sweep — hard kill
-      kills++;kr.push('W1 FVG compound signature — W1 FVG with sweep');
-    }
-  }
-  // mssQ4==='no' or null — pass, no flag
+  if(!mssQ4){sc('w1f','');ss('w1f','—','var(--dim)');}
+  else if(mssQ4==='no'){sc('w1f','pa');ss('w1f','Clear','var(--green)');}
+  else if(!mssQ5){sc('w1f','');ss('w1f','Select','var(--amber)');}
+  else if(mssQ5==='no'){flag('W1 FVG rejection');sc('w1f','wa');ss('w1f','Flag','var(--amber)');}
+  else{kills++;kr.push('W1 FVG rejection with WBI or 2–3 weeks-before high/low sweep');sc('w1f','sk');ss('w1f','Skip','var(--red)');}
 
   // ── Step 4 Zone ──────────────────────────────────────────────
   // Layer 3 visibility — only show when HTF flag present and zone depth + liquidity confirmed
@@ -1220,12 +1186,12 @@ function run(){
     // Both: any overlap on valid zone = medium flag
     // Gold: shallow-none = not a kill, not a flag — needs liq for stacking to work
     var zk=false,zkr='';
-    if(depthV==='shallow-none'){zk=true;zkr='Shallow zone with no structural validation';}
+    if(depthV==='shallow-none'){zk=true;zkr='Shallow pullback — no validation';}
     // Shallow + overlap on any depth (including m45+overlap) = hard kill
     if(!zk&&hasOv&&(depthV==='shallow-none'||depthV==='shallow-m45')){
       // Only hard kill if we're on forex for shallow-none (already caught above)
       // For shallow-m45+overlap: hard kill on both
-      if(depthV==='shallow-m45'){zk=true;zkr='Shallow zone plus overlap';}
+      if(depthV==='shallow-m45'){zk=true;zkr='Moderate pullback with zone base overlap';}
     }
     // Pure shallow+overlap on forex already caught above
     // For gold shallow-none+overlap: hard kill
@@ -1236,7 +1202,7 @@ function run(){
 
     if(zk){kills++;kr.push(zkr);sc('zone','sk');ss('zone','Skip','var(--red)');}
     else if(needsLiq){sc('zone','');ss('zone','Select','var(--amber)');}
-    else if(zf){flag('Overlap');sc('zone','wa');ss('zone','Flag','var(--amber)');}
+    else if(zf){flag('Zone base overlap');sc('zone','wa');ss('zone','Flag','var(--amber)');}
     else if(depthV&&(!showL2||liqV)){sc('zone','pa');ss('zone','Clear','var(--green)');}
     else{sc('zone','');ss('zone','—','var(--dim)');}
   }
@@ -1266,7 +1232,7 @@ function run(){
       var ak=hasOv||adrFlag;
       if(ak){
         var akReasons=[];
-        if(hasOv)akReasons.push('overlap');
+        if(hasOv)akReasons.push('zone base overlap');
         if(adrFlag)akReasons.push('ADR above 1.5');
         kills++;kr.push('Asian range coincide — '+akReasons.join(' and '));sc('asian','sk');ss('asian','Skip','var(--red)');
   }
@@ -1318,7 +1284,7 @@ function run(){
     if(fl.length){nl.push(fl.length===1?'Medium flag (1)':'Medium flags ('+fl.length+')');fl.forEach(function(f){nl.push('· '+f);});}
     g('vp-note').textContent=nl.join('\n');
     g('vp').style.borderColor='rgba(224,80,80,0.3)';g('vp').style.boxShadow='0 0 30px rgba(224,80,80,0.05)';
-    g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
+    g('vps-k').textContent=kr.length>0?kr.length+' present':'None';g('vps-k').style.color=kr.length>0?'var(--red)':'var(--green)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf>=2?'var(--red)':mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent='SKIP';g('vps-g').style.color='var(--red)';
     setVBar('r','Skip — no trade','SKIP','var(--red)','rgba(224,80,80,0.4)');
@@ -1328,7 +1294,7 @@ function run(){
     var dc2=mf===0?'au':'g';
     var vbc=mf===0?'var(--gold)':'var(--green)';
     var vbb=mf===0?'rgba(201,151,58,0.4)':'rgba(45,184,130,0.4)';
-    var vnote=mf===0?'Clean trade across every filter.':'Medium flag (1)\n'+fl.map(function(f){return '· '+f;}).join('\n')+'\nOne medium flag present.';
+    var vnote=mf===0?'Clean trade across every filter.':'One medium flag present\n'+fl.map(function(f){return '· '+f;}).join('\n');
     g('vp-dec').textContent=verdict;g('vp-dec').style.color=vc;
     g('vp-note').textContent=vnote;
     g('vp').style.borderColor=mf===0?'rgba(201,151,58,0.2)':'rgba(45,184,130,0.15)';
@@ -1354,14 +1320,14 @@ function run(){
 function resetAll(){
   document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
   document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
-  ['gap','htf','mss','zone','asian','dba','dbh','adr'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
+  ['gap','htf','mss','d1f','w1f','zone','asian','dba','dbh','adr'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
   g('gap-cond').className='cond';
   if(g('gap-detail-cond'))g('gap-detail-cond').className='cond';
   document.querySelectorAll('input[name="gdetail"]').forEach(function(r){r.checked=false;});
   g('zone-l2').className='layer-div';
   g('asian-cond').className='cond';
   ['mssq1','mssq2','mssq3'].forEach(function(n){document.querySelectorAll('input[name="'+n+'"]').forEach(function(r){r.checked=false;});});
-  ['mss-q2','mss-q3','mss-q4','mss-q5'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  ['mss-q3','mss-q5'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   ['exc-ov-dot','exc-adr-dot'].forEach(function(id){var el=g(id);if(el)el.className='cdot';});
   g('exc-ov-lbl').textContent='Overlap — reading from Zone Condition';g('exc-ov-lbl').style.color='var(--dim)';
   g('exc-adr-lbl').textContent='ADR above 1.5 — enter ADR in Market State';g('exc-adr-lbl').style.color='var(--dim)';
@@ -1464,9 +1430,9 @@ window.saveToTracker = async function() {
   if (steps.htf === 'med-h4s') flags.push('H4 synthetic opposing zone');
   if (steps.htf === 'med-d1s') flags.push('D1 synthetic opposing zone');
   if (steps.htf === 'kill') flags.push('D1 standard opposing zone');
-  if (steps.zliq === 'overlap') flags.push('Overlap');
+  if (steps.zliq === 'overlap') flags.push('Zone base overlap');
   if (steps.adr && parseFloat(steps.adr) > 1.5) flags.push('ADR >1.5');
-  if (steps.mssq1 === 'yes' && steps.mssq2 === 'no') flags.push('Broker inconsistency');
+  if (steps.mssq1 === 'yes') flags.push('Broker inconsistency');
   if (steps.mssq2 === 'yes' && steps.mssq3 === 'no') flags.push('D1 FVG rejection');
   if (steps.mssq4 === 'yes' && steps.mssq5 !== 'yes') flags.push('W1 FVG rejection');
   if (steps.mssq4 === 'yes' && steps.mssq5 === 'yes') flags.push('W1 FVG + structural sweep');
