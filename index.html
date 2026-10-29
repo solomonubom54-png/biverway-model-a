@@ -161,7 +161,7 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
 .vp{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:20px;margin-top:10px;transition:border-color 0.4s,box-shadow 0.4s;}
 .vp-eye{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
 .vp-dec{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:0.05em;line-height:1;margin-bottom:8px;transition:color 0.3s;}
-.vp-note{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:16px;min-height:40px;}
+.vp-note{white-space:pre-line;font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:16px;min-height:40px;}
 .vp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
 .vps{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;}
 .vps-l{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.1em;color:var(--dim);text-transform:uppercase;margin-bottom:4px;}
@@ -326,17 +326,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   color:var(--ref-txt);padding-top:10px;
   border-top:1px solid var(--line);margin-top:4px;
 }
-/* ── MSS REFERENCE ── */
-.mss-ref{margin-top:14px;border:1px solid var(--line);border-radius:9px;overflow:hidden;}
-.mss-ref-hdr{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surf2);border-bottom:1px solid var(--line);font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent;user-select:none;}
-.mss-ref-hdr::-webkit-details-marker{display:none;}
-.mss-ref:not([open]) .mss-ref-hdr{border-bottom:none;}
-.mss-ref-chev{font-size:14px;color:var(--gold-lo);line-height:1;transition:transform .2s;}
-.mss-ref[open] .mss-ref-chev{transform:rotate(180deg);}
-.mss-ref-row{padding:9px 12px;border-bottom:1px solid var(--line);}
-.mss-ref-term{font-family:'Space Mono',monospace;font-size:8px;color:var(--ref-name);font-weight:700;letter-spacing:0.04em;margin-bottom:3px;}
-.mss-ref-desc{font-size:9px;color:var(--ref-txt);line-height:1.55;opacity:0.85;}
-
 /* ── SAVE PROMPT ── */
 .save-prompt{display:none;margin-top:10px;padding:14px 16px;background:rgba(201,151,58,0.04);border:1px solid rgba(201,151,58,0.18);border-radius:10px;}
 .save-prompt.show{display:block;}
@@ -463,11 +452,11 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <input type="radio" name="htf" id="htf-h4" value="med" onchange="run()">
         <label for="htf-h4" class="opt opt-a">H4 standard — decisional or extreme</label>
         <input type="radio" name="htf" id="htf-h4s" value="med-h4s" onchange="run()">
-        <label for="htf-h4s" class="opt opt-a">H4 synthetic — same timeframe internal range structure</label>
+        <label for="htf-h4s" class="opt opt-a">H4 synthetic</label>
         <input type="radio" name="htf" id="htf-d1s" value="med-d1s" onchange="run()">
-        <label for="htf-d1s" class="opt opt-a">D1 synthetic — same timeframe internal range structure</label>
+        <label for="htf-d1s" class="opt opt-a">D1 synthetic</label>
         <input type="radio" name="htf" id="htf-d1" value="kill" onchange="run()">
-        <label for="htf-d1" class="opt opt-r">D1 standard — alone or combined with H4</label>
+        <label for="htf-d1" class="opt opt-r">D1 standard — decisional or extreme</label>
       </div>
     </div>
   </div>
@@ -549,33 +538,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       </div>
 
       <!-- Reference panel -->
-      <details class="mss-ref" style="margin-top:14px;">
-        <summary class="mss-ref-hdr">Reference<span class="mss-ref-chev">&#8964;</span></summary>
-        <div class="mss-ref-row">
-          <div class="mss-ref-term">Broker inconsistency (Q1)</div>
-          <div class="mss-ref-desc">Pepperstone and IC Markets disagree on whether the MSS candle closed as a body beyond the swing high or low, or swept it as a wick. One confirms the body close, the other reads it as a wick. Both platforms are already open during analysis — this check is instantaneous.</div>
-        </div>
-        <div class="mss-ref-row">
-          <div class="mss-ref-term">D1 FVG (Q2)</div>
-          <div class="mss-ref-desc">A fair value gap on the Daily timeframe within the Daily impulse leg or Daily pullback leg. Not the same as a D1 Decisional or Extreme zone. The M15 impulse leg taps this gap and the market turns — confirming non-acceptance from a higher timeframe inefficiency.</div>
-        </div>
-        <div class="mss-ref-row">
-          <div class="mss-ref-term">DBI or 2–3 day sweep (Q3)</div>
-          <div class="mss-ref-desc">The rejecting leg clears the Day-Before-It's high or low, or a high or low from 2 to 3 days prior. Only checked when Q2 is confirmed. Determines whether the condition escalates from medium flag to hard kill.</div>
-        </div>
-        <div class="mss-ref-row">
-          <div class="mss-ref-term">W1 FVG (Q4)</div>
-          <div class="mss-ref-desc">A fair value gap on the Weekly timeframe. The M15 impulse leg taps this gap and rejects from it. Carries medium flag weight. Higher timeframe than D1 FVG so the opposing energy is stronger.</div>
-        </div>
-        <div class="mss-ref-row">
-          <div class="mss-ref-term">W1 structural sweep (Q5)</div>
-          <div class="mss-ref-desc">The rejecting leg sweeps a weekly high or low or significant prior swing. Only checked when Q4 is confirmed. Escalates W1 FVG rejection from medium flag to hard kill — compound signature.</div>
-        </div>
-        <div class="mss-ref-row" style="border-bottom:none;">
-          <div class="mss-ref-term">Outcome map</div>
-          <div class="mss-ref-desc">Q1 No, Q2 No, Q4 No → clean pass. Q1 Yes, Q2 No → medium flag. Q2 Yes, Q3 No → medium flag. Q2 Yes, Q3 Yes → hard kill. Q4 Yes, Q5 No → medium flag. Q4 Yes, Q5 Yes → hard kill.</div>
-        </div>
-      </details>
 
     </div>
   </div>
@@ -953,7 +915,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 
 </div></div><!-- end main / wrap -->
 
-<footer>Biverway Trading System &nbsp;·&nbsp; Model A &nbsp;·&nbsp; Supply &amp; Demand Day Trading</footer>
+<footer>Biverway &nbsp;·&nbsp; Model A &nbsp;·&nbsp; &copy; <span id="ft-yr">2026</span></footer>
 
 <script>
 // Unified system — no mode separation
@@ -1167,7 +1129,8 @@ function allDone(){
   }
   
 function run(){
-  var kills=0,mf=0,kr=[];
+  var kills=0,mf=0,kr=[],fl=[];
+  function flag(n){mf++;fl.push(n);}
   var adrV=parseFloat(g('adr').value);
   var hasA=!isNaN(adrV);
   var depthV=rv('zdepth'),liqV=rv('zliq');
@@ -1186,8 +1149,7 @@ function run(){
       if(!gdv){sc('gap','');ss('gap','Select','var(--amber)');}
       else if(gdv==='organic'){sc('gap','pa');ss('gap','Organic','var(--green)');}
       else{
-        var gReason=gdv==='jump'?'the gap itself broke the structural level — no candle did it':'the first or second candle after the gap caused the MSS';
-        kills++;kr.push('Gap-concerned MSS — '+gReason);sc('gap','sk');ss('gap','Skip','var(--red)');
+        kills++;kr.push('Gap-concerned MSS');sc('gap','sk');ss('gap','Skip','var(--red)');
       }
     }
   }
@@ -1195,10 +1157,10 @@ function run(){
   // ── Step 2 HTF ───────────────────────────────────────────────
   var hv=rv('htf');
   if(!hv){sc('htf','');ss('htf','—','var(--dim)');}
-  else if(hv==='kill'){kills++;kr.push('D1 standard opposing zone — impulse that created the zone reached into a D1 decisional or extreme opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
-  else if(hv==='med'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
-  else if(hv==='med-h4s'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
-  else if(hv==='med-d1s'){mf++;sc('htf','wa');ss('htf','Flag','var(--amber)');}
+  else if(hv==='kill'){kills++;kr.push('D1 standard opposing zone');sc('htf','sk');ss('htf','Skip','var(--red)');}
+  else if(hv==='med'){flag('H4 standard opposing zone');sc('htf','wa');ss('htf','Flag','var(--amber)');}
+  else if(hv==='med-h4s'){flag('H4 synthetic opposing zone');sc('htf','wa');ss('htf','Flag','var(--amber)');}
+  else if(hv==='med-d1s'){flag('D1 synthetic opposing zone');sc('htf','wa');ss('htf','Flag','var(--amber)');}
   else{sc('htf','pa');ss('htf','Clear','var(--green)');}
 
   // ── Step 3 MSS Quality ───────────────────────────────────────
@@ -1211,16 +1173,16 @@ function run(){
     sc('mss','pa');ss('mss','Clear','var(--green)');
   } else if(mssQ2==='no'){
     // Q1 yes (broker inconsistency), Q2 no (no FVG) — medium flag
-    mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');
+    flag('Broker inconsistency on MSS close');sc('mss','wa');ss('mss','Flag','var(--amber)');
   } else {
     // Q2 yes (FVG confirmed) — check DBI sweep
-    if(!mssQ3){mf++;sc('mss','wa');ss('mss','Select','var(--amber)');}
+    if(!mssQ3){flag('D1 FVG rejection');sc('mss','wa');ss('mss','Select','var(--amber)');}
     else if(mssQ3==='no'){
       // FVG confirmed, no DBI sweep — medium flag (regardless of Q1)
-      mf++;sc('mss','wa');ss('mss','Flag','var(--amber)');
+      flag('D1 FVG rejection');sc('mss','wa');ss('mss','Flag','var(--amber)');
     } else {
       // Q2 yes + Q3 yes — hard kill (regardless of Q1)
-      kills++;kr.push('MSS compound signature — D1 FVG rejection confirmed' + (mssQ1==='yes'?' with broker inconsistency on MSS close':'') + ' and structural sweep present');sc('mss','sk');ss('mss','Skip','var(--red)');
+      kills++;kr.push('MSS compound signature — D1 FVG with sweep');sc('mss','sk');ss('mss','Skip','var(--red)');
     }
   }
 
@@ -1231,10 +1193,10 @@ function run(){
       // Q5 not yet answered — pending, no flag added yet
     } else if(mssQ5==='no'){
       // W1 FVG rejection, no structural sweep — medium flag
-      mf++;
+      flag('W1 FVG rejection');
     } else {
       // W1 FVG rejection + structural sweep — hard kill
-      kills++;kr.push('W1 FVG compound signature — Weekly FVG rejection with structural sweep confirmed');
+      kills++;kr.push('W1 FVG compound signature — W1 FVG with sweep');
     }
   }
   // mssQ4==='no' or null — pass, no flag
@@ -1258,12 +1220,12 @@ function run(){
     // Both: any overlap on valid zone = medium flag
     // Gold: shallow-none = not a kill, not a flag — needs liq for stacking to work
     var zk=false,zkr='';
-    if(depthV==='shallow-none'){zk=true;zkr='Shallow zone — no structural validation. Immediate hard kill';}
+    if(depthV==='shallow-none'){zk=true;zkr='Shallow zone with no structural validation';}
     // Shallow + overlap on any depth (including m45+overlap) = hard kill
     if(!zk&&hasOv&&(depthV==='shallow-none'||depthV==='shallow-m45')){
       // Only hard kill if we're on forex for shallow-none (already caught above)
       // For shallow-m45+overlap: hard kill on both
-      if(depthV==='shallow-m45'){zk=true;zkr='Shallow plus overlap — M45 validation with overlapping structure. Hard kill';}
+      if(depthV==='shallow-m45'){zk=true;zkr='Shallow zone plus overlap';}
     }
     // Pure shallow+overlap on forex already caught above
     // For gold shallow-none+overlap: hard kill
@@ -1274,7 +1236,7 @@ function run(){
 
     if(zk){kills++;kr.push(zkr);sc('zone','sk');ss('zone','Skip','var(--red)');}
     else if(needsLiq){sc('zone','');ss('zone','Select','var(--amber)');}
-    else if(zf){mf++;sc('zone','wa');ss('zone','Flag','var(--amber)');}
+    else if(zf){flag('Overlap');sc('zone','wa');ss('zone','Flag','var(--amber)');}
     else if(depthV&&(!showL2||liqV)){sc('zone','pa');ss('zone','Clear','var(--green)');}
     else{sc('zone','');ss('zone','—','var(--dim)');}
   }
@@ -1282,7 +1244,7 @@ function run(){
   // ── D1 FVG At SL Boundary (Layer 3) — fires when HTF flag + D1 FVG at SL ──
   var d1fvgslV=rv('d1fvgsl');
   if(showL3&&d1fvgslV==='yes'){
-    kills++;kr.push('D1 FVG at SL Boundary — HTF opposing zone present and D1 FVG sits at the zone SL boundary. Two forces with the same destructive outcome');
+    kills++;kr.push('D1 FVG at SL boundary with HTF opposing zone');
   }
 
   // ── Step 5a Asian ────────────────────────────────────────────
@@ -1304,9 +1266,9 @@ function run(){
       var ak=hasOv||adrFlag;
       if(ak){
         var akReasons=[];
-        if(hasOv)akReasons.push('overlap present');
+        if(hasOv)akReasons.push('overlap');
         if(adrFlag)akReasons.push('ADR above 1.5');
-        kills++;kr.push('Asian range coincide — '+akReasons.join(', '));sc('asian','sk');ss('asian','Skip','var(--red)');
+        kills++;kr.push('Asian range coincide — '+akReasons.join(' and '));sc('asian','sk');ss('asian','Skip','var(--red)');
   }
       else{sc('asian','au');ss('asian','Conditional','var(--gold)');}
     }
@@ -1315,18 +1277,18 @@ function run(){
   // ── Step 5b DBA ──────────────────────────────────────────────
   var dbav=rv('dba');
   if(!dbav){sc('dba','');ss('dba','—','var(--dim)');}
-  else if(dbav==='kill'){kills++;kr.push('Prior failure at DBI Asian range — prior visit rejected without candle closing or sweeping through');sc('dba','sk');ss('dba','Skip','var(--red)');}
+  else if(dbav==='kill'){kills++;kr.push('Prior failure at DBI Asian range');sc('dba','sk');ss('dba','Skip','var(--red)');}
   else{sc('dba','pa');ss('dba','Clear','var(--green)');}
 
   // ── Step 5c DBH ──────────────────────────────────────────────
   var dbhv=rv('dbh');
   if(!dbhv){sc('dbh','');ss('dbh','—','var(--dim)');}
-  else if(dbhv==='kill'){kills++;kr.push('Prior failure at DBI high or low — prior visit reached DBI high or low without convincing break');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
+  else if(dbhv==='kill'){kills++;kr.push('Prior failure at DBI high or low');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
   else{sc('dbh','pa');ss('dbh','Clear','var(--green)');}
 
   // ── Step 6 ADR ───────────────────────────────────────────────
   if(hasA){
-    if(adrFlag)mf++;
+    if(adrFlag)flag('ADR above 1.5');
     g('adr-dot').className='cdot '+(adrFlag?'bad':'ok');
     g('adr-txt').textContent=adrFlag?'ADR '+adrV+' — above 1.5, medium flag':'ADR '+adrV+' — below 1.5, clear';
     g('adr-txt').style.color=adrFlag?'var(--amber)':'var(--green)';
@@ -1351,9 +1313,10 @@ function run(){
 
   if(hasKill){
     g('vp-dec').textContent='SKIP'; g('vp-dec').style.color='var(--red)';
-    var skipKills=[...kr];
-    if(mf>=2){var flagNames=[];if(rv('htf')==='med'||rv('htf')==='med-h4s'||rv('htf')==='med-d1s')flagNames.push('HTF opposing zone');if(rv('zliq')==='overlap')flagNames.push('Overlap');if(hasA&&adrV>1.5)flagNames.push('ADR above 1.5');if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')flagNames.push('D1 FVG rejection');if(rv('mssq4')==='yes'&&rv('mssq5')!=='yes')flagNames.push('W1 FVG rejection');if(!skipKills.some(function(k){return k.indexOf('flag')>-1;}))skipKills.push('Medium flag stack — '+flagNames.join(', '));}
-    g('vp-note').textContent=skipKills.join(' · ');
+    var nl=[];
+    if(kr.length){nl.push(kr.length===1?'Hard kill (1)':'Hard kills ('+kr.length+')');kr.forEach(function(k){nl.push('· '+k);});}
+    if(fl.length){nl.push(fl.length===1?'Medium flag (1)':'Medium flags ('+fl.length+')');fl.forEach(function(f){nl.push('· '+f);});}
+    g('vp-note').textContent=nl.join('\n');
     g('vp').style.borderColor='rgba(224,80,80,0.3)';g('vp').style.boxShadow='0 0 30px rgba(224,80,80,0.05)';
     g('vps-k').textContent=kills+' active';g('vps-k').style.color='var(--red)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf>=2?'var(--red)':mf===1?'var(--amber)':'var(--green)';
@@ -1365,16 +1328,7 @@ function run(){
     var dc2=mf===0?'au':'g';
     var vbc=mf===0?'var(--gold)':'var(--green)';
     var vbb=mf===0?'rgba(201,151,58,0.4)':'rgba(45,184,130,0.4)';
-    var activeFlags=[];
-    if(rv('htf')==='med')activeFlags.push('H4 standard opposing zone');
-    if(rv('htf')==='med-h4s')activeFlags.push('H4 synthetic opposing zone');
-    if(rv('htf')==='med-d1s')activeFlags.push('D1 synthetic opposing zone');
-    if(rv('zliq')==='overlap')activeFlags.push('Overlap');
-    if(hasA&&adrV>1.5)activeFlags.push('ADR above 1.5');
-    if(rv('mssq2')==='yes'&&rv('mssq3')!=='yes')activeFlags.push('D1 FVG rejection');
-    if(rv('mssq4')==='yes'&&rv('mssq5')!=='yes')activeFlags.push('W1 FVG rejection');
-    var vnote=mf===0?'Clean trade across every filter. Zero flags. Execute with full conviction and hold to the full 1:3 target.':'One medium flag present. Structure holds — the setup is valid. Acknowledge the flag, execute with awareness, and hold to the full 1:3 target.';
-    if(activeFlags.length)vnote+=' Active flag: '+activeFlags.join(', ')+'.';
+    var vnote=mf===0?'Clean trade across every filter.':'Medium flag (1)\n'+fl.map(function(f){return '· '+f;}).join('\n')+'\nOne medium flag present.';
     g('vp-dec').textContent=verdict;g('vp-dec').style.color=vc;
     g('vp-note').textContent=vnote;
     g('vp').style.borderColor=mf===0?'rgba(201,151,58,0.2)':'rgba(45,184,130,0.15)';
@@ -1398,7 +1352,6 @@ function run(){
 }
 
 function resetAll(){
-  var mssRef=document.querySelector('.mss-ref');if(mssRef)mssRef.removeAttribute('open');
   document.querySelectorAll('input[type="radio"]').forEach(function(r){r.checked=false;});
   document.querySelectorAll('input[type="number"]').forEach(function(n){n.value='';});
   ['gap','htf','mss','zone','asian','dba','dbh','adr'].forEach(function(id){sc(id,'');ss(id,'—','var(--dim)');});
@@ -1606,7 +1559,9 @@ function toggleDetail(id) {
 
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
+  (function(){var y=document.getElementById('ft-yr');if(y)y.textContent=new Date().getFullYear();})();
+
+window.addEventListener('load', function() {
     navigator.serviceWorker.register('./sw.js');
   });
 }
