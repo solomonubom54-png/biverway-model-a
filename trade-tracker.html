@@ -787,9 +787,9 @@ window.openEditModal = function(id) {
   html += section('02','HTF Opposing Zone',
     radioRow('htf','pass','No HTF opposing zone') +
     radioRow('htf','med','H4 standard — decisional or extreme — medium flag') +
-    radioRow('htf','med-h4s','H4 synthetic — same timeframe internal range structure — medium flag') +
-    radioRow('htf','med-d1s','D1 synthetic — same timeframe internal range structure — medium flag') +
-    radioRow('htf','kill','D1 standard — alone or combined with H4 — hard kill'));
+    radioRow('htf','med-h4s','H4 synthetic — medium flag') +
+    radioRow('htf','med-d1s','D1 synthetic — medium flag') +
+    radioRow('htf','kill','D1 standard — decisional or extreme — hard kill'));
   
   // S2 — Zone Structure
   html += section('03 MSS Q1','Broker Inconsistency',
@@ -883,8 +883,7 @@ window.computeEditVerdict = function() {
   var flags = [];
 
   var gposV=getR('gpos'),gdetailV=getR('gdetail');
-  if(gposV==='concerned'&&gdetailV==='jump') kills.push('Gap-concerned MSS — gap itself broke structural level');
-  if(gposV==='concerned'&&gdetailV==='near') kills.push('Gap-concerned MSS — first or second candle after gap caused MSS');
+  if(gposV==='concerned'&&(gdetailV==='jump'||gdetailV==='near')) kills.push('Gap-concerned MSS');
   if (getR('htf')==='kill')    kills.push('D1 standard opposing zone');
   if (getR('htf')==='med')     flags.push('H4 standard opposing zone');
   if (getR('htf')==='med-h4s') flags.push('H4 synthetic opposing zone');
@@ -892,28 +891,28 @@ window.computeEditVerdict = function() {
 
   var q1=getR('mssq1'), q2=getR('mssq2'), q3=getR('mssq3');
   var q4=getR('mssq4'), q5=getR('mssq5');
-  if (q2==='yes' && q3==='yes') kills.push('MSS compound signature');
+  if (q2==='yes' && q3==='yes') kills.push('MSS compound signature — D1 FVG with sweep');
   else if (q2==='yes' && q3==='no') flags.push('D1 FVG rejection');
   else if (q1==='yes' && q2==='no') flags.push('Broker inconsistency');
-  if (q4==='yes' && q5==='yes') kills.push('W1 FVG compound signature — Weekly FVG rejection with structural sweep');
+  if (q4==='yes' && q5==='yes') kills.push('W1 FVG compound signature — W1 FVG with sweep');
   else if (q4==='yes' && q5==='no') flags.push('W1 FVG rejection');
   
   var zd=getR('zdepth'), zl=getR('zliq');
-  if (zd==='shallow-none') kills.push('Shallow — no validation');
-  else if (zd==='shallow-m45' && zl==='overlap') kills.push('Shallow M45 + Overlap');
+  if (zd==='shallow-none') kills.push('Shallow zone with no structural validation');
+  else if (zd==='shallow-m45' && zl==='overlap') kills.push('Shallow zone plus overlap');
   else if (zl==='overlap') flags.push('Overlap');
 
   // D1 FVG At SL Boundary — hard kill only when HTF flag present
   var d1fvgslV=getR('d1fvgsl');
   var htfV=getR('htf');
   var htfHasFlag=(htfV==='med'||htfV==='med-h4s'||htfV==='med-d1s');
-  if(d1fvgslV==='yes'&&htfHasFlag) kills.push('D1 FVG at SL Boundary — HTF opposing zone present');
+  if(d1fvgslV==='yes'&&htfHasFlag) kills.push('D1 FVG at SL boundary with HTF opposing zone');
 
   var asian=getR('asian');
   if (asian==='yes') {
     var adrA=getN('adr');
     var hasOv=(zl==='overlap'), adrFlag=!isNaN(adrA)&&adrA>1.5;
-    if (hasOv||adrFlag) kills.push('Asian coincide condition triggered');
+    if (hasOv||adrFlag) kills.push('Asian range coincide — '+(hasOv&&adrFlag?'overlap and ADR above 1.5':hasOv?'overlap':'ADR above 1.5'));
   }
 
   if (getR('dba')==='kill') kills.push('Prior failure at DBI Asian range');
@@ -925,16 +924,16 @@ window.computeEditVerdict = function() {
   var verdict, color, detail;
   if (kills.length > 0) {
     verdict='SKIP'; color='var(--red)';
-    detail='Hard kill — '+kills.join(' · ');
+    detail=(kills.length===1?'Hard kill (1)':'Hard kills ('+kills.length+')')+' — '+kills.join(' · ');
   } else if (flags.length >= 2) {
     verdict='SKIP'; color='var(--red)';
-    detail='Two or more flags — '+flags.join(' · ');
+    detail='Medium flags ('+flags.length+') — '+flags.join(' · ');
   } else if (flags.length === 1) {
     verdict='VALID'; color='var(--green)';
-    detail='One flag — '+flags[0];
+    detail='Medium flag (1) — '+flags[0];
   } else {
     verdict='PRIME'; color='var(--gold)';
-    detail='All steps clean — zero flags';
+    detail='Clean trade across every filter';
   }
 
   preview.innerHTML = '<span style="color:var(--dim);">Computed verdict: </span>'
