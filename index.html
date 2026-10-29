@@ -549,7 +549,8 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <!-- S2 · Sub 1 — Zone Condition -->
   <div class="sub" id="c-zone">
     <div class="sub-hdr">
-      \g<0></span>
+      <span class="sub-num">06</span>
+      <span class="sub-title">Zone Condition</span>
       <span class="sub-stat" id="st-zone" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
@@ -702,7 +703,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
     <div class="fcpip" id="mp2"></div>
     <div class="fcpip" id="mp3"></div>
   </div>
-  <span class="fctxt" id="fctxt" style="color:var(--dim)">Medium flags: 0 — two or more triggers a skip</span>
+  <span class="fctxt" id="fctxt" style="color:var(--dim)">Medium flags: 0</span>
 </div>
 
 <!-- ── VERDICT ── -->
@@ -1336,7 +1337,7 @@ function resetAll(){
   g('adr-dot').className='cdot';g('adr-txt').textContent='Enter value to evaluate';g('adr-txt').style.color='var(--dim)';
   ['mp1','mp2','mp3'].forEach(function(id){g(id).className='fcpip';});
   ['fp1','fp2','fp3'].forEach(function(id){g(id).className='fpip';});
-  g('fctxt').textContent='Medium flags: 0 — two or more triggers a skip';g('fctxt').style.color='var(--dim)';
+  g('fctxt').textContent='Medium flags: 0';g('fctxt').style.color='var(--dim)';
   g('vp').style.borderColor='var(--line)';g('vp').style.boxShadow='none';
   g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
   g('vp-note').textContent='Complete all steps above to receive your verdict.';
