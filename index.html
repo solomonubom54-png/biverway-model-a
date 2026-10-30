@@ -500,7 +500,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <span class="sub-stat" id="st-d1f" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">Did the M15 impulse leg tap into a D1 Fair Value Gap within the Daily impulse leg or Daily pullback leg, and reject from it?</div>
+      <div class="sq">Did the impulse leg that caused the M15 MSS tap into a D1 Fair Value Gap and reject from it?</div>
       <div class="opts">
           <input type="radio" name="mssq2" id="mssq2-y" value="yes" onchange="onMSS(2,'yes')">
           <label for="mssq2-y" class="opt opt-a">Yes</label>
@@ -527,7 +527,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <span class="sub-stat" id="st-w1f" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">Did the M15 impulse leg tap into a Weekly (W1) Fair Value Gap and reject from it?</div>
+      <div class="sq">Did the impulse leg that caused the M15 MSS tap into a W1 Fair Value Gap and reject from it?</div>
       <div class="opts">
           <input type="radio" name="mssq4" id="mssq4-y" value="yes" onchange="onMSS(4,'yes')">
           <label for="mssq4-y" class="opt opt-a">Yes</label>
@@ -573,7 +573,7 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <input type="radio" name="zliq" id="zl-cl" value="clean" onchange="run()">
           <label for="zl-cl" class="opt opt-g">Clean — no overlap</label>
           <input type="radio" name="zliq" id="zl-ov" value="overlap" onchange="run()">
-          <label for="zl-ov" class="opt opt-a">Overlapping — staircase structure present</label>
+          <label for="zl-ov" class="opt opt-a">Overlap present</label>
         </div>
       </div>
 
@@ -607,16 +607,16 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <div class="sub" id="c-asian" style="border-top:1px solid var(--line);">
     <div class="sub-hdr">
       <span class="sub-num">07a</span>
-      <span class="sub-title">PD Asian Range Coincidence</span>
+      <span class="sub-title">Asian Range Coincidence</span>
       <span class="sub-stat" id="st-asian" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">Is this zone the same price as yesterday's Asian range high or low — where price never broke outside that range, making the Asian boundary the PDH or PDL by default?</div>
+      <div class="sq">Is the high or low that originated this zone the same as the Asian range high or low of the day it formed?</div>
       <div class="opts">
         <input type="radio" name="asian" id="asian-y" value="yes" onchange="run()">
-        <label for="asian-y" class="opt opt-au">Yes — coincides with PD Asian range</label>
+        <label for="asian-y" class="opt opt-au">Yes</label>
         <input type="radio" name="asian" id="asian-n" value="no" onchange="run()">
-        <label for="asian-n" class="opt opt-g">No — independent of PD Asian range</label>
+        <label for="asian-n" class="opt opt-g">No</label>
       </div>
       <div class="cond" id="asian-cond">
         <div class="ctitle">Conditional check — any one triggers a hard kill</div>
@@ -631,16 +631,16 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <div class="sub" id="c-dba">
     <div class="sub-hdr">
       <span class="sub-num">07b</span>
-      <span class="sub-title">Prior Failure at DBI Asian Range</span>
+      <span class="sub-title">Rejection at Asian Range High / Low</span>
       <span class="sub-stat" id="st-dba" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">On a prior visit, did this zone reach the Day-Before-It's Asian range boundary and reject without a candle closing or sweeping through it?</div>
+      <div class="sq">Did the high or low that originated this zone retrace into an Asian range high or low — from the structure's own day, the DBI, or 2–3 days back — and respect it, without sweeping it?</div>
       <div class="opts">
         <input type="radio" name="dba" id="dba-y" value="kill" onchange="run()">
-        <label for="dba-y" class="opt opt-r">Yes — rejected at DBI Asian range, no body through</label>
+        <label for="dba-y" class="opt opt-r">Yes</label>
         <input type="radio" name="dba" id="dba-n" value="pass" onchange="run()">
-        <label for="dba-n" class="opt opt-g">No — or fresh zone with no prior visits</label>
+        <label for="dba-n" class="opt opt-g">No</label>
       </div>
     </div>
   </div>
@@ -649,16 +649,16 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
   <div class="sub" id="c-dbh">
     <div class="sub-hdr">
       <span class="sub-num">07c</span>
-      <span class="sub-title">Prior Failure at DBI High / Low</span>
+      <span class="sub-title">Rejection at Prior Day High / Low</span>
       <span class="sub-stat" id="st-dbh" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">On a prior visit, did this zone reach the Day-Before-It's high or low without convincingly breaking through? That level remains uncleared.</div>
+      <div class="sq">Did the high or low that originated this zone retrace into the high or low of the DBI, or of 2–3 days back, and respect it, without sweeping it?</div>
       <div class="opts">
         <input type="radio" name="dbh" id="dbh-y" value="kill" onchange="run()">
-        <label for="dbh-y" class="opt opt-r">Yes — reached DBI high/low, no convincing break</label>
+        <label for="dbh-y" class="opt opt-r">Yes</label>
         <input type="radio" name="dbh" id="dbh-n" value="pass" onchange="run()">
-        <label for="dbh-n" class="opt opt-g">No — or fresh zone with no prior visits</label>
+        <label for="dbh-n" class="opt opt-g">No</label>
       </div>
     </div>
   </div>
@@ -998,9 +998,9 @@ function showOrderError(requiredStep){
     d1f:'Step 04 — D1 FVG Rejection',
     w1f:'Step 05 — W1 FVG Rejection',
     zone:'Step 06 — Zone Condition',
-    asian:'Step 07a — PD Asian Range Coincidence',
-    dba:'Step 07b — Prior Failure at DBI Asian Range',
-    dbh:'Step 07c — Prior Failure at DBI High / Low',
+    asian:'Step 07a — Asian Range Coincidence',
+    dba:'Step 07b — Rejection at Asian Range High / Low',
+    dbh:'Step 07c — Rejection at Prior Day High / Low',
     adr:'Step 08 — ADR Ratio'
   };
   var toast=g('order-toast');
@@ -1244,13 +1244,13 @@ function run(){
   // ── Step 5b DBA ──────────────────────────────────────────────
   var dbav=rv('dba');
   if(!dbav){sc('dba','');ss('dba','—','var(--dim)');}
-  else if(dbav==='kill'){kills++;kr.push('Prior failure at DBI Asian range');sc('dba','sk');ss('dba','Skip','var(--red)');}
+  else if(dbav==='kill'){kills++;kr.push('Rejection at Asian range high or low');sc('dba','sk');ss('dba','Skip','var(--red)');}
   else{sc('dba','pa');ss('dba','Clear','var(--green)');}
 
   // ── Step 5c DBH ──────────────────────────────────────────────
   var dbhv=rv('dbh');
   if(!dbhv){sc('dbh','');ss('dbh','—','var(--dim)');}
-  else if(dbhv==='kill'){kills++;kr.push('Prior failure at DBI high or low');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
+  else if(dbhv==='kill'){kills++;kr.push('Rejection at prior day high or low');sc('dbh','sk');ss('dbh','Skip','var(--red)');}
   else{sc('dbh','pa');ss('dbh','Clear','var(--green)');}
 
   // ── Step 6 ADR ───────────────────────────────────────────────
@@ -1303,7 +1303,7 @@ function run(){
     g('vps-k').textContent='None';g('vps-k').style.color='var(--green)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent=verdict;g('vps-g').style.color=vc;
-    setVBar(dc2,verdict==='PRIME'?'Prime — full conviction':'Valid — one flag present',verdict,vbc,vbb);
+    setVBar(dc2,verdict==='PRIME'?'Prime — clean trade':'Valid — one flag present',verdict,vbc,vbb);
   }else{
     // Not done, no kill — show placeholder state
     g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
