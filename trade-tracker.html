@@ -423,10 +423,10 @@ function stepLabel(key, val, steps) {
     mssq5:{yes:'W1 sweep: Yes',no:'W1 sweep: No'},
     d1fvgsl:{yes:'D1 FVG at SL boundary: Yes',no:'D1 FVG at SL boundary: No'},
     zdepth:{'deep-h1':'Deep H1','deep-sw':'Deep H1 + Sideways','shallow-m45':'Moderate M45','shallow-none':'Shallow — No validation'},
-    zliq:{clean:'Clean',overlap:'Overlapping'},
-    asian:{yes:'Coincides with Asian range',no:'Independent'},
-    dba:{kill:'Prior failure — DBI Asian',pass:'No failure'},
-    dbh:{kill:'Prior failure — DBI H/L',pass:'No failure'},
+    zliq:{clean:'Clean',overlap:'Overlap present'},
+    asian:{yes:'Same as Asian range high/low',no:'Independent'},
+    dba:{kill:'Rejected at Asian range',pass:'No'},
+    dbh:{kill:'Rejected at prior day high/low',pass:'No'},
   };
   return (map[key] && map[key][val]) || val;
   }
@@ -511,7 +511,7 @@ function openTrade(id) {
     ['02 HTF Opposing Zone','htf'],['03 MSS Broker','mssq1'],['04 D1 FVG Rejection','mssq2'],
     ['04 D1 Sweep','mssq3'],['05 W1 FVG Rejection','mssq4'],['05 W1 Sweep','mssq5'],
     ['06 Pullback Depth','zdepth'],['06 Zone Liquidity','zliq'],['06 D1 FVG At SL Boundary','d1fvgsl'],
-    ['07a Asian Coincide','asian'],['07b DBI Asian Range','dba'],['07c DBI H/L','dbh'],
+    ['07a Asian Range Coincidence','asian'],['07b Asian Range Rejection','dba'],['07c Prior Day H/L Rejection','dbh'],
     ['08 ADR Ratio','adr']
   ];
 
@@ -819,23 +819,23 @@ window.openEditModal = function(id) {
 
   html += section('06','Zone Liquidity',
     radioRow('zliq','clean','Clean — no overlap') +
-    radioRow('zliq','overlap','Overlapping — medium flag'));
+    radioRow('zliq','overlap','Overlap present — medium flag'));
 
   html += section('06','D1 FVG At SL Boundary',
     radioRow('d1fvgsl','no','No — no D1 FVG at SL boundary') +
     radioRow('d1fvgsl','yes','Yes — D1 FVG present at SL boundary (hard kill when HTF flag present)'));
 
-  html += section('07a','PD Asian Range Coincidence',
-    radioRow('asian','no','No — independent of PD Asian range') +
-    radioRow('asian','yes','Yes — coincides with PD Asian range'));
+  html += section('07a','Asian Range Coincidence',
+    radioRow('asian','no','No') +
+    radioRow('asian','yes','Yes — hard kill only with overlap or ADR above 1.5'));
 
-  html += section('07b','Prior Failure at DBI Asian Range',
-    radioRow('dba','pass','No failure — or fresh zone') +
-    radioRow('dba','kill','Yes — rejected at DBI Asian range — hard kill'));
+  html += section('07b','Rejection at Asian Range High / Low',
+    radioRow('dba','pass','No') +
+    radioRow('dba','kill','Yes — hard kill'));
 
-  html += section('07c','Prior Failure at DBI High / Low',
-    radioRow('dbh','pass','No failure — or fresh zone') +
-    radioRow('dbh','kill','Yes — reached DBI high or low without convincing break — hard kill'));
+  html += section('07c','Rejection at Prior Day High / Low',
+    radioRow('dbh','pass','No') +
+    radioRow('dbh','kill','Yes — hard kill'));
 
   // S3 — Market State
   html += '<div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);">'
@@ -914,8 +914,8 @@ window.computeEditVerdict = function() {
     if (hasOv||adrFlag) kills.push('Asian range coincide — '+(hasOv&&adrFlag?'zone base overlap and ADR above 1.5':hasOv?'zone base overlap':'ADR above 1.5'));
   }
 
-  if (getR('dba')==='kill') kills.push('Prior failure at DBI Asian range');
-  if (getR('dbh')==='kill') kills.push('Prior failure at DBI high or low');
+  if (getR('dba')==='kill') kills.push('Rejection at Asian range high or low');
+  if (getR('dbh')==='kill') kills.push('Rejection at prior day high or low');
 
   var adr=getN('adr');
   if (!isNaN(adr) && adr>1.5) flags.push('ADR ratio above 1.5');
