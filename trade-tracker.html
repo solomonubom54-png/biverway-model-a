@@ -511,7 +511,7 @@ function openTrade(id) {
     ['02 HTF Opposing Zone','htf'],['03 MSS Broker','mssq1'],['04 D1 FVG Rejection','mssq2'],
     ['04 D1 Sweep','mssq3'],['05 W1 FVG Rejection','mssq4'],['05 W1 Sweep','mssq5'],
     ['06 Pullback Depth','zdepth'],['06 Zone Liquidity','zliq'],['06 D1 FVG At SL Boundary','d1fvgsl'],
-    ['07a Asian Range Coincidence','asian'],['07b Asian Range Rejection','dba'],['07c Prior Day H/L Rejection','dbh'],
+    ['07a Asian Range Coincidence','asian'],['07b Asian High / Low Rejection','dba'],['07c Prior Day H/L Rejection','dbh'],
     ['08 ADR Ratio','adr']
   ];
 
@@ -829,7 +829,7 @@ window.openEditModal = function(id) {
     radioRow('asian','no','No') +
     radioRow('asian','yes','Yes — hard kill only with overlap or ADR above 1.5'));
 
-  html += section('07b','Rejection at Asian Range High / Low',
+  html += section('07b','Rejection at Asian High / Low',
     radioRow('dba','pass','No') +
     radioRow('dba','kill','Yes — hard kill'));
 
@@ -914,7 +914,7 @@ window.computeEditVerdict = function() {
     if (hasOv||adrFlag) kills.push('Asian range coincide — '+(hasOv&&adrFlag?'zone base overlap and ADR above 1.5':hasOv?'zone base overlap':'ADR above 1.5'));
   }
 
-  if (getR('dba')==='kill') kills.push('Rejection at Asian range high or low');
+  if (getR('dba')==='kill') kills.push('Rejection at Asian high or low');
   if (getR('dbh')==='kill') kills.push('Rejection at prior day high or low');
 
   var adr=getN('adr');
