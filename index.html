@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biverway — Model A</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#08090e">
 <meta name="mobile-web-app-capable" content="yes">
@@ -41,18 +41,17 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 .wrap{max-width:660px;margin:0 auto;padding:0 20px;}
 
 /* ── HEADER ── */
-header{padding:28px 0 20px;border-bottom:1px solid var(--line);}
-.hdr{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.brand-eye{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
-.brand-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,7vw,46px);letter-spacing:0.05em;line-height:1;color:#fff;}
-.brand-name span{color:var(--gold);}
-.mode-sw{display:flex;gap:4px;background:var(--surf);border:1px solid var(--line2);border-radius:8px;padding:3px;}
-.msw{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:6px 13px;border-radius:6px;border:none;background:transparent;color:var(--dim);cursor:pointer;transition:all 0.2s;}
-.msw.on-fx{background:rgba(74,143,212,0.15);color:var(--blue);}
-.msw.on-au{background:rgba(201,151,58,0.15);color:var(--gold);}
-.tracker-link{font-family:'Space Mono',monospace;font-size:7px;letter-spacing:0.12em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line2);padding:5px 10px;border-radius:6px;transition:all 0.2s;align-self:flex-end;}
-.tracker-link:hover{color:var(--gold-lo);border-color:var(--gold-lo);}
-
+header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
+/* ── HEADER (shared look: logo + wordmark, quiet cross-link, subtitle row) ── */
+.bh-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;}
+.bh-brand{display:flex;align-items:center;gap:10px;min-width:0;text-decoration:none;}
+.bh-logo{width:36px;height:36px;border-radius:8px;display:block;flex-shrink:0;}
+.bh-word{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:0.02em;line-height:1;color:#fff;white-space:nowrap;}
+.bh-link{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:5px 9px;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:color 0.2s,border-color 0.2s;}
+.bh-link:hover{color:var(--text2);border-color:var(--line2);}
+.bh-sub{margin-top:10px;font-family:'DM Mono','Space Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text2);white-space:nowrap;}
+.bh-sub b{font-weight:500;color:var(--gold);margin-right:0.6em;}
+@media(max-width:360px){.bh-word{font-size:20px;}.bh-logo{width:32px;height:32px;}.bh-brand{gap:8px;}.bh-sub{font-size:10px;letter-spacing:0.14em;}}
 /* ── VERDICT BAR ── */
 .vbar{position:sticky;top:0;z-index:200;background:rgba(8,9,14,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
 .vbar-in{display:flex;align-items:center;gap:10px;padding:10px 20px;}
@@ -360,13 +359,11 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 
 <div class="wrap">
 <header>
-  <div class="hdr">
-    <div>
-      <div class="brand-eye">Day Trading · Decision Engine</div>
-      <div class="brand-name">Biverway <span>Model A</span></div>
-    </div>
-    <a href="https://solomonubom54-png.github.io/biverway-model-a/trade-tracker.html" target="_blank" class="tracker-link" title="Open Trade Tracker">Tracker ↗</a>
+  <div class="bh-row">
+    <div class="bh-brand"><img class="bh-logo" src="icon-512.png" alt="Biverway" width="36" height="36"><span class="bh-word">BIVERWAY</span></div>
+    <a href="https://solomonubom54-png.github.io/biverway-model-a/trade-tracker.html" target="_blank" class="bh-link" title="Open Trade Tracker">Tracker ↗</a>
   </div>
+  <div class="bh-sub"><b>Model A</b>Decision Engine</div>
 </header>
 </div>
 
