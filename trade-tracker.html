@@ -423,7 +423,7 @@ function stepLabel(key, val, steps) {
     mssq5:{yes:'W1 sweep: Yes',no:'W1 sweep: No'},
     d1fvgsl:{yes:'D1 FVG at SL boundary: Yes',no:'D1 FVG at SL boundary: No'},
     zdepth:{'deep-h1':'Deep H1','deep-sw':'Deep H1 + Sideways','shallow-m45':'Moderate M45','shallow-none':'Shallow — No validation'},
-    zliq:{clean:'Clean',overlap:'Overlap present'},
+    zliq:{clean:'No overlap',overlap:'Prior-structure overlap'},
     asian:{yes:'Same as Asian range high/low',no:'Independent'},
     dba:{kill:'Rejected at Asian range',pass:'No'},
     dbh:{kill:'Rejected at prior day high/low',pass:'No'},
@@ -508,11 +508,13 @@ function openTrade(id) {
   var s = t.steps || {};
   var stepDefs = [
     ['01 Gap Day','gap'],['01 Gap MSS Type','gpos'],['01 Gap Detail','gdetail'],
-    ['02 HTF Opposing Zone','htf'],['03 MSS Broker','mssq1'],['04 D1 FVG Rejection','mssq2'],
-    ['04 D1 Sweep','mssq3'],['05 W1 FVG Rejection','mssq4'],['05 W1 Sweep','mssq5'],
-    ['06 Pullback Depth','zdepth'],['06 Zone Liquidity','zliq'],['06 D1 FVG At SL Boundary','d1fvgsl'],
-    ['07a Asian Range Coincidence','asian'],['07b Asian High / Low Rejection','dba'],['07c Prior Day H/L Rejection','dbh'],
-    ['08 ADR Ratio','adr']
+    ['02 ADR Ratio','adr'],
+    ['03 HTF Opposing Zone','htf'],['03b D1 FVG At SL Boundary','d1fvgsl'],
+    ['04 D1 FVG Rejection','mssq2'],['04 D1 Sweep','mssq3'],
+    ['05 W1 FVG Rejection','mssq4'],['05 W1 Sweep','mssq5'],
+    ['06 MSS Quality','mssq1'],['07 Pullback Depth','zdepth'],
+    ['08a Prior-Structure Overlap','zliq'],['08b Asian Range Coincidence','asian'],
+    ['08c Asian High / Low Rejection','dba'],['08d Prior Day H/L Rejection','dbh']
   ];
 
   var stepItems = stepDefs.map(function(d){
@@ -770,10 +772,10 @@ window.openEditModal = function(id) {
   var html = '<div style="font-family:Space Mono,monospace;font-size:7px;color:var(--dim);letter-spacing:0.08em;margin-bottom:14px;">'
     +instFull(t.instrument)+' &nbsp;·&nbsp; '+fmtDate(t.created_at)+'</div>';
 
-  // S1 — Market Conditions
+  // Market Conditions
   html += section('01','Gap Day',
-    radioRow('gap','no','No gap') +
-    radioRow('gap','yes','Yes — gap present'));
+    radioRow('gap','no','No') +
+    radioRow('gap','yes','Yes'));
 
   html += section('01','Gap MSS Type',
     radioRow('gpos','independent','Gap-Independent — the MSS formed on its own, unrelated to the gap') +
@@ -784,17 +786,25 @@ window.openEditModal = function(id) {
     radioRow('gdetail','near','The first or second candle after the gap caused the MSS') +
     radioRow('gdetail','organic','Several candles printed organically after the gap before MSS formed'));
 
-  html += section('02','HTF Opposing Zone',
+  html += '<div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);">'
+    +'<div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:8px;">02 · ADR Ratio</div>'
+    +'<input type="number" id="er_adr" step="0.01" min="0" placeholder="e.g. 0.94" value="'+(s.adr||'')+'" '
+    +'style="font-family:Space Mono,monospace;font-size:12px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);'
+    +'border-radius:7px;color:var(--text);width:160px;outline:none;" oninput="computeEditVerdict()">'
+    +'<div style="font-family:Space Mono,monospace;font-size:7px;color:var(--dim);margin-top:4px;">Flag if above 1.5</div>'
+    +'</div>';
+
+  // HTF Opposition
+  html += section('03','HTF Opposing Zone',
     radioRow('htf','pass','No HTF opposing zone') +
     radioRow('htf','med-h4s','H4 synthetic — medium flag') +
     radioRow('htf','med-d1s','D1 synthetic — medium flag') +
     radioRow('htf','med','H4 standard — decisional or extreme — medium flag') +
     radioRow('htf','kill','D1 standard — decisional or extreme — hard kill'));
-  
-  // S2 — Zone Structure
-  html += section('03','Broker Agreement on MSS Close',
-    radioRow('mssq1','no','Agree — both show the same close') +
-    radioRow('mssq1','yes','Disagree — one shows a body close, the other a wick sweep'));
+
+  html += section('03b','D1 FVG At SL Boundary',
+    radioRow('d1fvgsl','no','No — no D1 FVG at SL boundary') +
+    radioRow('d1fvgsl','yes','Yes — D1 FVG present at SL boundary (hard kill with H4 synthetic, D1 synthetic or H4 standard; recorded only with D1 standard)'));
 
   html += section('04','D1 FVG Tap and Rejection',
     radioRow('mssq2','no','No') +
@@ -812,39 +822,32 @@ window.openEditModal = function(id) {
     radioRow('mssq5','no','No') +
     radioRow('mssq5','yes','Yes — high or low swept — hard kill'));
 
-  html += section('06','Pullback Depth',
+  // Structure Formation
+  html += section('06','MSS Quality — Pepperstone and IC Markets',
+    radioRow('mssq1','no','Agree — both show the same close') +
+    radioRow('mssq1','yes','Disagree — one shows a body close, the other a wick sweep'));
+
+  html += section('07','Pullback Depth',
     radioRow('zdepth','deep-h1','Deep — H1 validated') +
     radioRow('zdepth','shallow-m45','Moderate — M45 validated') +
     radioRow('zdepth','shallow-none','Shallow — no validation — hard kill'));
 
-  html += section('06','Zone Liquidity',
-    radioRow('zliq','clean','Clean — no overlap') +
-    radioRow('zliq','overlap','Overlap present — medium flag'));
+  // Origin Interactions
+  html += section('08a','Prior-Structure Overlap',
+    radioRow('zliq','overlap','Yes — overlap present (medium flag with Deep, hard kill with Moderate)') +
+    radioRow('zliq','clean','No — the base is clean'));
 
-  html += section('06','D1 FVG At SL Boundary',
-    radioRow('d1fvgsl','no','No — no D1 FVG at SL boundary') +
-    radioRow('d1fvgsl','yes','Yes — D1 FVG present at SL boundary (hard kill when HTF flag present)'));
-
-  html += section('07a','Asian Range Coincidence',
+  html += section('08b','Asian Range Coincidence',
     radioRow('asian','no','No') +
-    radioRow('asian','yes','Yes — hard kill only with overlap or ADR above 1.5'));
+    radioRow('asian','yes','Yes — hard kill only with prior-structure overlap or ADR above 1.5'));
 
-  html += section('07b','Rejection at Asian High / Low',
+  html += section('08c','Rejection at Asian High / Low',
     radioRow('dba','pass','No') +
     radioRow('dba','kill','Yes — hard kill'));
 
-  html += section('07c','Rejection at Prior Day High / Low',
+  html += section('08d','Rejection at Prior Day High / Low',
     radioRow('dbh','pass','No') +
     radioRow('dbh','kill','Yes — hard kill'));
-
-  // S3 — Market State
-  html += '<div style="margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--line);">'
-    +'<div style="font-family:Space Mono,monospace;font-size:7px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-lo);margin-bottom:8px;">08 · ADR Ratio</div>'
-    +'<input type="number" id="er_adr" step="0.01" min="0" placeholder="e.g. 0.94" value="'+(s.adr||'')+'" '
-    +'style="font-family:Space Mono,monospace;font-size:12px;padding:8px 10px;background:var(--bg);border:1px solid var(--line2);'
-    +'border-radius:7px;color:var(--text);width:160px;outline:none;" oninput="computeEditVerdict()">'
-    +'<div style="font-family:Space Mono,monospace;font-size:7px;color:var(--dim);margin-top:4px;">Flag if above 1.5</div>'
-    +'</div>';
 
   // Computed verdict preview
   html += '<div id="edit-verdict-preview" style="margin-bottom:16px;padding:10px 14px;border-radius:8px;'
@@ -898,10 +901,10 @@ window.computeEditVerdict = function() {
   
   var zd=getR('zdepth'), zl=getR('zliq');
   if (zd==='shallow-none') kills.push('Shallow pullback — no validation');
-  else if (zd==='shallow-m45' && zl==='overlap') kills.push('Moderate pullback with zone base overlap');
-  else if (zl==='overlap') flags.push('Zone base overlap');
+  else if (zd==='shallow-m45' && zl==='overlap') kills.push('Moderate pullback with prior-structure overlap');
+  else if (zl==='overlap') flags.push('Prior-structure overlap');
 
-  // D1 FVG At SL Boundary — hard kill only when HTF flag present
+  // 03b D1 FVG At SL Boundary — hard kill only with a flag-type HTF zone (H4 synthetic, D1 synthetic, H4 standard); with D1 standard it is recorded only
   var d1fvgslV=getR('d1fvgsl');
   var htfV=getR('htf');
   var htfHasFlag=(htfV==='med'||htfV==='med-h4s'||htfV==='med-d1s');
@@ -911,7 +914,7 @@ window.computeEditVerdict = function() {
   if (asian==='yes') {
     var adrA=getN('adr');
     var hasOv=(zl==='overlap'), adrFlag=!isNaN(adrA)&&adrA>1.5;
-    if (hasOv||adrFlag) kills.push('Asian range coincide — '+(hasOv&&adrFlag?'zone base overlap and ADR above 1.5':hasOv?'zone base overlap':'ADR above 1.5'));
+    if (hasOv||adrFlag) kills.push('Asian range coincide — '+(hasOv&&adrFlag?'prior-structure overlap and ADR above 1.5':hasOv?'prior-structure overlap':'ADR above 1.5'));
   }
 
   if (getR('dba')==='kill') kills.push('Rejection at Asian high or low');
@@ -996,7 +999,7 @@ function mediumFlagsFromSteps(st) {
   if (st.htf === 'med') f.push('H4 standard opposing zone');
   if (st.htf === 'med-h4s') f.push('H4 synthetic opposing zone');
   if (st.htf === 'med-d1s') f.push('D1 synthetic opposing zone');
-  if (st.zliq === 'overlap') f.push('Zone base overlap');
+  if (st.zliq === 'overlap') f.push('Prior-structure overlap');
   if (st.adr && parseFloat(st.adr) > 1.5) f.push('ADR >1.5');
   if (st.mssq1 === 'yes') f.push('Broker inconsistency');
   if (st.mssq2 === 'yes' && st.mssq3 === 'no') f.push('D1 FVG rejection');
@@ -1126,9 +1129,9 @@ function renderAnalytics() {
   var valid = complete.filter(function(t){ return t.verdict !== 'PRIME'; });
   var P = rec(prime), V = rec(valid);
   var FLAG_LIST = ['H4 standard opposing zone', 'H4 synthetic opposing zone', 'D1 synthetic opposing zone',
-    'Zone base overlap', 'ADR >1.5',
+    'Prior-structure overlap', 'ADR >1.5',
     'Broker inconsistency', 'D1 FVG rejection', 'W1 FVG rejection'];
-  var legacyFlag = { 'H4 HTF opposing zone': 'H4 standard opposing zone' };
+  var legacyFlag = { 'H4 HTF opposing zone': 'H4 standard opposing zone', 'Zone base overlap': 'Prior-structure overlap' };
   var byFlag = {};
   FLAG_LIST.forEach(function(f){ byFlag[f] = []; });
   var unrecorded = [];
