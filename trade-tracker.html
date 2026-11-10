@@ -188,10 +188,11 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
       </select>
       <select class="fsel" id="f-inst" onchange="renderLog()">
         <option value="">All Instruments</option>
-        <option value="EU">EURUSD</option>
-        <option value="GU">GBPUSD</option>
-        <option value="UC">USDCHF</option>
-        <option value="XU">XAUUSD</option>
+        <option value="EURUSD">EURUSD</option>
+        <option value="GBPUSD">GBPUSD</option>
+        <option value="USDCHF">USDCHF</option>
+        <option value="USDCAD">USDCAD</option>
+        <option value="XAUUSD">XAUUSD</option>
       </select>
       <select class="fsel" id="f-grade" onchange="renderLog()">
         <option value="">All Grades</option>
@@ -404,7 +405,7 @@ function fmtDate(ts) {
 }
 
 function instFull(i) {
-  return {EU:'EURUSD',GU:'GBPUSD',UC:'USDCHF',XU:'XAUUSD'}[i] || i || '—';
+  return {EURUSD:'EURUSD',GBPUSD:'GBPUSD',USDCHF:'USDCHF',USDCAD:'USDCAD',XAUUSD:'XAUUSD'}[i] || i || '—';
 }
 
 function stepLabel(key, val, steps) {
@@ -1110,7 +1111,7 @@ function renderAnalytics() {
     '</div></div>';
 
   // ── By Instrument ──
-  var instRows = ['EU', 'GU', 'UC', 'XU'].map(function(i){
+  var instRows = ['EURUSD', 'GBPUSD', 'USDCHF', 'USDCAD', 'XAUUSD'].map(function(i){
     var ts = complete.filter(function(t){ return t.instrument === i; });
     if (!ts.length) return '';
     var s = rec(ts);
