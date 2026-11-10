@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biverway — Model A</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#08090e">
 <meta name="mobile-web-app-capable" content="yes">
@@ -42,16 +42,17 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;
 
 /* ── HEADER ── */
 header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
-/* ── HEADER (shared look: logo + wordmark, quiet cross-link, subtitle row) ── */
+/* ── HEADER (shared lockup: logo + two lines) ── */
 .bh-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;}
-.bh-brand{display:flex;align-items:center;gap:10px;min-width:0;text-decoration:none;}
-.bh-logo{width:36px;height:36px;border-radius:8px;display:block;flex-shrink:0;}
-.bh-word{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:0.02em;line-height:1;color:#fff;white-space:nowrap;}
+.bh-brand{display:flex;align-items:center;gap:10px;min-width:0;}
+.bh-logo{width:30px;height:30px;border-radius:7px;display:block;flex-shrink:0;}
+.bh-txt{min-width:0;font-family:'DM Mono','Space Mono',monospace;text-transform:uppercase;white-space:nowrap;}
+.bh-l1{font-weight:500;font-size:12px;letter-spacing:0.2em;line-height:1.15;color:var(--text3);}
+.bh-l1 b{font-weight:500;color:var(--gold);}
+.bh-l2{margin-top:4px;font-weight:400;font-size:10px;letter-spacing:0.13em;line-height:1.15;color:var(--text2);}
 .bh-link{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:5px 9px;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:color 0.2s,border-color 0.2s;}
 .bh-link:hover{color:var(--text2);border-color:var(--line2);}
-.bh-sub{margin-top:10px;font-family:'DM Mono','Space Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text2);white-space:nowrap;}
-.bh-sub b{font-weight:500;color:var(--gold);margin-right:0.6em;}
-@media(max-width:360px){.bh-word{font-size:20px;}.bh-logo{width:32px;height:32px;}.bh-brand{gap:8px;}.bh-sub{font-size:10px;letter-spacing:0.14em;}}
+@media(max-width:359px){.bh-row,.bh-brand{gap:8px;}.bh-logo{width:28px;height:28px;}.bh-l1{font-size:11px;letter-spacing:0.16em;}.bh-l2{font-size:9px;letter-spacing:0.12em;}.bh-link{padding:5px 7px;}}
 /* ── VERDICT BAR ── */
 .vbar{position:sticky;top:0;z-index:200;background:rgba(8,9,14,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);}
 .vbar-in{display:flex;align-items:center;gap:10px;padding:10px 20px;}
@@ -162,7 +163,6 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
 .rbtn{display:block;width:100%;padding:10px;background:transparent;border:1px solid var(--line2);border-radius:8px;color:var(--dim);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:4px;}
 .rbtn:hover{border-color:var(--gold-lo);color:var(--gold);}
 
-footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.1em;}
 
 /* ══════════════════════════════════════════
    DATASET FOUNDATION
@@ -339,18 +339,13 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 /* ── INSTRUMENT SELECTOR ── */
 .inst-block{margin-bottom:12px;padding:14px 16px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surf);}
 .inst-cap{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;}
-.inst-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;}
-.inst-tab{padding:12px 0;border-radius:8px;border:1px solid var(--line2);background:transparent;color:var(--dim);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.16em;cursor:pointer;transition:all .18s;}
-.inst-tab:hover{border-color:rgba(201,151,58,.35);color:var(--gold);}
-.inst-tab.active{background:rgba(201,151,58,.08);border-color:var(--gold);color:var(--gold);font-weight:700;}
-.pair-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;animation:pairIn .25s ease;}
-.pair-row[hidden]{display:none;}
-.symbol-btn{padding:11px 2px;border-radius:7px;border:1px solid var(--line2);background:transparent;color:var(--dim);font-family:'Space Mono',monospace;font-size:11px;letter-spacing:0.02em;cursor:pointer;transition:all .18s;min-width:0;}
-.symbol-btn:hover{border-color:rgba(201,151,58,.35);color:var(--gold);}
-.symbol-btn.active{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700;}
-.inst-hint{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.08em;color:var(--dim);margin-top:10px;}
-@keyframes pairIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
-@media(max-width:360px){.symbol-btn{font-size:9px;padding:11px 1px;letter-spacing:0;}.inst-tab{font-size:10px;}}
+.inst-select{width:100%;-webkit-appearance:none;appearance:none;border:1px solid var(--line2);border-radius:8px;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%234a5878' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center;color:var(--dim);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:0.06em;padding:13px 38px 13px 12px;cursor:pointer;outline:none;transition:border-color .18s,color .18s;}
+.inst-select:focus{border-color:rgba(201,151,58,.5);}
+.inst-select.on{border-color:var(--gold);color:var(--gold);background-color:rgba(201,151,58,.08);}
+.inst-select option{background:#0d0f18;color:#d0daf0;}
+.hang{align-items:flex-start;}
+.hang .ol{flex:none;white-space:pre;}
+.hang .od{min-width:0;}
 </style>
 </head>
 <body>
@@ -360,10 +355,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 <div class="wrap">
 <header>
   <div class="bh-row">
-    <div class="bh-brand"><img class="bh-logo" src="icon-512.png" alt="Biverway" width="36" height="36"><span class="bh-word">BIVERWAY</span></div>
+    <div class="bh-brand"><img class="bh-logo" src="icon-512.png" alt="Biverway" width="30" height="30"><div class="bh-txt"><div class="bh-l1">Biverway <b>Model A</b></div><div class="bh-l2">Trade Decision Engine</div></div></div>
     <a href="https://solomonubom54-png.github.io/biverway-model-a/trade-tracker.html" target="_blank" class="bh-link" title="Open Trade Tracker">Tracker ↗</a>
   </div>
-  <div class="bh-sub"><b>Model A</b>Decision Engine</div>
 </header>
 </div>
 
@@ -386,17 +380,14 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 
 <div class="inst-block">
   <div class="inst-cap">Instrument</div>
-  <div class="inst-tabs">
-    <button type="button" class="inst-tab" id="tab-forex" onclick="pickTab('forex')">FOREX</button>
-    <button type="button" class="inst-tab" id="tab-gold" onclick="pickTab('gold')">XAUUSD</button>
-  </div>
-  <div class="pair-row" id="forex-pairs" hidden>
-    <button type="button" class="symbol-btn" id="pair-EURUSD" onclick="selectInst('EURUSD')">EURUSD</button>
-    <button type="button" class="symbol-btn" id="pair-GBPUSD" onclick="selectInst('GBPUSD')">GBPUSD</button>
-    <button type="button" class="symbol-btn" id="pair-USDCHF" onclick="selectInst('USDCHF')">USDCHF</button>
-    <button type="button" class="symbol-btn" id="pair-USDCAD" onclick="selectInst('USDCAD')">USDCAD</button>
-  </div>
-  <div class="inst-hint" id="inst-hint">Select an instrument to begin</div>
+  <select autocomplete="off" id="inst-select" class="inst-select" aria-label="Instrument" onchange="selectInst(this.value)">
+    <option value="" disabled selected>Select an instrument to begin</option>
+    <option value="EURUSD">EURUSD</option>
+    <option value="GBPUSD">GBPUSD</option>
+    <option value="USDCHF">USDCHF</option>
+    <option value="USDCAD">USDCAD</option>
+    <option value="XAUUSD">XAUUSD</option>
+  </select>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -426,9 +417,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="sq" style="margin-bottom:10px;">Was the MSS that created this zone gap-concerned or gap-independent?</div>
         <div class="opts">
           <input autocomplete="off" type="radio" name="gpos" id="gpos-b" value="independent" onchange="onGapMSS('independent')">
-          <label for="gpos-b" class="opt opt-g">Gap-Independent — the MSS formed on its own, unrelated to the gap</label>
+          <label for="gpos-b" class="opt opt-g hang"><span class="ol">Gap-Independent — </span><span class="od">the MSS formed on its own, unrelated to the gap</span></label>
           <input autocomplete="off" type="radio" name="gpos" id="gpos-a" value="concerned" onchange="onGapMSS('concerned')">
-          <label for="gpos-a" class="opt opt-a">Gap-Concerned — the gap played a role in how this MSS formed</label>
+          <label for="gpos-a" class="opt opt-a hang"><span class="ol">Gap-Concerned — </span><span class="od">the gap played a role in how this MSS formed</span></label>
         </div>
 
         <!-- Sub-question 2 — only shown when Gap-Concerned is selected -->
@@ -437,9 +428,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
           <div class="sq" style="margin-bottom:10px;">How exactly did the gap contribute to the MSS?</div>
           <div class="opts">
             <input autocomplete="off" type="radio" name="gdetail" id="gdetail-jump" value="jump" onchange="run()">
-            <label for="gdetail-jump" class="opt opt-r">The gap itself broke the structural level — no candle did it, candles afterward just continued from there</label>
+            <label for="gdetail-jump" class="opt opt-r hang"><span class="ol">The gap itself broke the structural level — </span><span class="od">no candle did it, candles afterward just continued from there</span></label>
             <input autocomplete="off" type="radio" name="gdetail" id="gdetail-near" value="near" onchange="run()">
-            <label for="gdetail-near" class="opt opt-r">The first or second candle after the gap caused the MSS — still gap-influenced momentum</label>
+            <label for="gdetail-near" class="opt opt-r hang"><span class="ol">The first or second candle after the gap caused the MSS — </span><span class="od">still gap-influenced momentum</span></label>
             <input autocomplete="off" type="radio" name="gdetail" id="gdetail-organic" value="organic" onchange="run()">
             <label for="gdetail-organic" class="opt opt-g">Several candles printed organically after the gap before the MSS eventually formed</label>
           </div>
@@ -489,9 +480,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <input autocomplete="off" type="radio" name="htf" id="htf-d1s" value="med-d1s" onchange="run()">
         <label for="htf-d1s" class="opt opt-a">D1 synthetic</label>
         <input autocomplete="off" type="radio" name="htf" id="htf-h4" value="med" onchange="run()">
-        <label for="htf-h4" class="opt opt-a">H4 standard — decisional or extreme</label>
+        <label for="htf-h4" class="opt opt-a hang"><span class="ol">H4 standard — </span><span class="od">decisional or extreme</span></label>
         <input autocomplete="off" type="radio" name="htf" id="htf-d1" value="kill" onchange="run()">
-        <label for="htf-d1" class="opt opt-r">D1 standard — decisional or extreme</label>
+        <label for="htf-d1" class="opt opt-r hang"><span class="ol">D1 standard — </span><span class="od">decisional or extreme</span></label>
       </div>
     </div>
   </div>
@@ -506,9 +497,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <div class="sq">Is there an unfilled D1 Fair Value Gap sitting below or above this zone — such that the zone's SL boundary overlaps with or rests on the FVG?</div>
       <div class="opts">
         <input autocomplete="off" type="radio" name="d1fvgsl" id="d1fvgsl-n" value="no" onchange="run()">
-        <label for="d1fvgsl-n" class="opt opt-g">No — no D1 FVG at SL boundary</label>
+        <label for="d1fvgsl-n" class="opt opt-g hang"><span class="ol">No — </span><span class="od">no D1 FVG at SL boundary</span></label>
         <input autocomplete="off" type="radio" name="d1fvgsl" id="d1fvgsl-y" value="yes" onchange="run()">
-        <label for="d1fvgsl-y" class="opt opt-r">Yes — D1 FVG present at SL boundary</label>
+        <label for="d1fvgsl-y" class="opt opt-r hang"><span class="ol">Yes — </span><span class="od">D1 FVG present at SL boundary</span></label>
       </div>
       <div id="sl-note" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">Hard kill when HTF opposing zone is present. The HTF zone pushes price back while the D1 FVG draws price through the zone SL boundary — two forces with the same destructive outcome.</div>
     </div>
@@ -532,9 +523,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="sq">Did the rejecting leg sweep the DBI high or low, or a high or low from 2 to 3 days before it, in the process of that rejection?</div>
         <div class="opts">
             <input autocomplete="off" type="radio" name="mssq3" id="mssq3-y" value="yes" onchange="onMSS(3,'yes')">
-            <label for="mssq3-y" class="opt opt-a">Yes — high or low swept</label>
+            <label for="mssq3-y" class="opt opt-a hang"><span class="ol">Yes — </span><span class="od">high or low swept</span></label>
             <input autocomplete="off" type="radio" name="mssq3" id="mssq3-n" value="no" onchange="onMSS(3,'no')">
-            <label for="mssq3-n" class="opt opt-g">No — rejection only, no sweep</label>
+            <label for="mssq3-n" class="opt opt-g hang"><span class="ol">No — </span><span class="od">rejection only, no sweep</span></label>
         </div>
       </div>
     </div>
@@ -558,9 +549,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
         <div class="sq">Did the rejecting leg sweep the WBI high or low, or a high or low from 2 to 3 weeks before it, in the process of that W1 FVG rejection?</div>
         <div class="opts">
             <input autocomplete="off" type="radio" name="mssq5" id="mssq5-y" value="yes" onchange="onMSS(5,'yes')">
-            <label for="mssq5-y" class="opt opt-a">Yes — high or low swept</label>
+            <label for="mssq5-y" class="opt opt-a hang"><span class="ol">Yes — </span><span class="od">high or low swept</span></label>
             <input autocomplete="off" type="radio" name="mssq5" id="mssq5-n" value="no" onchange="onMSS(5,'no')">
-            <label for="mssq5-n" class="opt opt-g">No — rejection only, no sweep</label>
+            <label for="mssq5-n" class="opt opt-g hang"><span class="ol">No — </span><span class="od">rejection only, no sweep</span></label>
         </div>
       </div>
     </div>
@@ -587,9 +578,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <div class="sq">Do Pepperstone and IC Markets agree or disagree on the MSS candle close?</div>
       <div class="opts">
           <input autocomplete="off" type="radio" name="mssq1" id="mssq1-n" value="no" onchange="onMSS(1,'no')">
-          <label for="mssq1-n" class="opt opt-g">Agree — both show the same close</label>
+          <label for="mssq1-n" class="opt opt-g hang"><span class="ol">Agree — </span><span class="od">both show the same close</span></label>
           <input autocomplete="off" type="radio" name="mssq1" id="mssq1-y" value="yes" onchange="onMSS(1,'yes')">
-          <label for="mssq1-y" class="opt opt-a">Disagree — one shows a body close, the other a wick sweep</label>
+          <label for="mssq1-y" class="opt opt-a hang"><span class="ol">Disagree — </span><span class="od">one shows a body close, the other a wick sweep</span></label>
       </div>
     </div>
   </div>
@@ -604,11 +595,11 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <div class="sq">What is the depth of the retracement that forms this structure?</div>
       <div class="opts" id="depth-opts">
         <input autocomplete="off" type="radio" name="zdepth" id="zd-dh" value="deep-h1" onchange="run()">
-        <label for="zd-dh" class="opt opt-g">Deep — H1 Validated</label>
+        <label for="zd-dh" class="opt opt-g hang"><span class="ol">Deep — </span><span class="od">H1 Validated</span></label>
         <input autocomplete="off" type="radio" name="zdepth" id="zd-m45" value="shallow-m45" onchange="run()">
-        <label for="zd-m45" class="opt opt-n" id="l-zdm45">Moderate — M45 Validated</label>
+        <label for="zd-m45" class="opt opt-n hang" id="l-zdm45"><span class="ol">Moderate — </span><span class="od">M45 Validated</span></label>
         <input autocomplete="off" type="radio" name="zdepth" id="zd-sh" value="shallow-none" onchange="run()">
-        <label for="zd-sh" class="opt opt-r" id="l-zdsh">Shallow — No Validation</label>
+        <label for="zd-sh" class="opt opt-r hang" id="l-zdsh"><span class="ol">Shallow — </span><span class="od">No Validation</span></label>
       </div>
     </div>
   </div>
@@ -634,9 +625,9 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
       <div class="sq">Did the originating swing level of this structure tap the extreme or decisional order block of a prior structure?</div>
       <div class="opts stack">
         <input autocomplete="off" type="radio" name="zliq" id="zl-ov" value="overlap" onchange="run()">
-        <label for="zl-ov" class="opt opt-a">Yes — overlap present</label>
+        <label for="zl-ov" class="opt opt-a hang"><span class="ol">Yes — </span><span class="od">overlap present</span></label>
         <input autocomplete="off" type="radio" name="zliq" id="zl-cl" value="clean" onchange="run()">
-        <label for="zl-cl" class="opt opt-g">No — the base is clean</label>
+        <label for="zl-cl" class="opt opt-g hang"><span class="ol">No — </span><span class="od">the base is clean</span></label>
       </div>
     </div>
   </div>
@@ -921,7 +912,6 @@ footer{text-align:center;padding:20px;border-top:1px solid var(--line);font-fami
 
 </div></div><!-- end main / wrap -->
 
-<footer>Biverway &nbsp;·&nbsp; Model A &nbsp;·&nbsp; &copy; <span id="ft-yr">2026</span></footer>
 
 <script>
 // Unified system — no mode separation
@@ -938,7 +928,6 @@ function firstIncomplete(){
 // Lock/unlock steps based on completion
 function updateLocks(){
   var fi=firstIncomplete();
-  var hint=g('inst-hint');if(hint)hint.style.display=_selectedInst?'none':'block';
   STEPS.forEach(function(s,i){
     var locked=i>fi;
     var subEl=g('c-'+s);
@@ -1316,7 +1305,7 @@ function resetAll(){
   _beforeImgFile = null;
   updateLocks();
   refreshPrompt();
-  _forexOpen=false;renderInst();
+  renderInst();
   var fi0=document.getElementById('before-img-input');if(fi0)fi0.value='';
   var saved=document.getElementById('sp-saved');if(saved)saved.style.display='none';
   var btn=document.getElementById('sp-save-btn');if(btn){btn.textContent='Save Record & Open Tracker';btn.disabled=false;}
@@ -1330,32 +1319,16 @@ updateLocks();
 var _selectedInst = null;
 var _beforeImgFile = null;
 
-var INST_FOREX = ['EURUSD','GBPUSD','USDCHF','USDCAD'];
-var _forexOpen = false;
 function renderInst() {
-  var isForex = INST_FOREX.indexOf(_selectedInst) > -1;
-  var tf = g('tab-forex'), tg = g('tab-gold'), row = g('forex-pairs');
-  if (tf) tf.className = 'inst-tab' + ((_forexOpen || isForex) ? ' active' : '');
-  if (tg) tg.className = 'inst-tab' + (_selectedInst === 'XAUUSD' ? ' active' : '');
-  if (row) row.hidden = !(_forexOpen || isForex);
-  INST_FOREX.forEach(function(p){ var b = g('pair-' + p); if (b) b.className = 'symbol-btn' + (_selectedInst === p ? ' active' : ''); });
-  var h = g('inst-hint'); if (h) h.style.display = _selectedInst ? 'none' : 'block';
+  var s = g('inst-select');
+  if (s) { s.value = _selectedInst || ''; s.className = 'inst-select' + (_selectedInst ? ' on' : ''); }
 }
-
-// Tab tap: FOREX reveals the pair row; XAUUSD selects directly.
-window.pickTab = function(tab) {
-  if (tab === 'gold') { selectInst('XAUUSD'); return; }
-  if (INST_FOREX.indexOf(_selectedInst) > -1) { _forexOpen = true; renderInst(); return; }
-  if (_selectedInst) resetAll();   // leaving XAUUSD for forex: clear everything
-  _forexOpen = true; renderInst(); updateLocks();
-};
 
 // Switching instrument clears everything first, no confirmation. Same instrument: nothing.
 window.selectInst = function(inst) {
-  if (inst === _selectedInst) return;
+  if (!inst || inst === _selectedInst) return;
   if (_selectedInst) resetAll();
   _selectedInst = inst;
-  _forexOpen = INST_FOREX.indexOf(inst) > -1;
   renderInst();
   updateLocks();
   refreshPrompt();
@@ -1512,7 +1485,6 @@ function toggleDetail(id) {
 </script>
 
 <script>
-(function(){var y=document.getElementById('ft-yr');if(y)y.textContent=new Date().getFullYear();})();
 // Always open fresh: clear anything the browser restored, on load and on back/forward-cache restores.
 resetAll();
 window.addEventListener('pageshow', function(){ resetAll(); });

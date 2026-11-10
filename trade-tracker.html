@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Biverway — Trade Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#08090e">
 <meta name="mobile-web-app-capable" content="yes">
@@ -24,16 +24,17 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .wrap{max-width:760px;margin:0 auto;padding:0 18px;}
 
 header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
-/* ── HEADER (shared look: logo + wordmark, quiet cross-link, subtitle row) ── */
+/* ── HEADER (shared lockup: logo + two lines) ── */
 .bh-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;}
-.bh-brand{display:flex;align-items:center;gap:10px;min-width:0;text-decoration:none;}
-.bh-logo{width:36px;height:36px;border-radius:8px;display:block;flex-shrink:0;}
-.bh-word{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;letter-spacing:0.02em;line-height:1;color:#fff;white-space:nowrap;}
+.bh-brand{display:flex;align-items:center;gap:10px;min-width:0;}
+.bh-logo{width:30px;height:30px;border-radius:7px;display:block;flex-shrink:0;}
+.bh-txt{min-width:0;font-family:'DM Mono','Space Mono',monospace;text-transform:uppercase;white-space:nowrap;}
+.bh-l1{font-weight:500;font-size:12px;letter-spacing:0.2em;line-height:1.15;color:var(--text3);}
+.bh-l1 b{font-weight:500;color:var(--gold);}
+.bh-l2{margin-top:4px;font-weight:400;font-size:10px;letter-spacing:0.13em;line-height:1.15;color:var(--text2);}
 .bh-link{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:5px 9px;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:color 0.2s,border-color 0.2s;}
 .bh-link:hover{color:var(--text2);border-color:var(--line2);}
-.bh-sub{margin-top:10px;font-family:'DM Mono','Space Mono',monospace;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text2);white-space:nowrap;}
-.bh-sub b{font-weight:500;color:var(--gold);margin-right:0.6em;}
-@media(max-width:360px){.bh-word{font-size:20px;}.bh-logo{width:32px;height:32px;}.bh-brand{gap:8px;}.bh-sub{font-size:10px;letter-spacing:0.14em;}}
+@media(max-width:359px){.bh-row,.bh-brand{gap:8px;}.bh-logo{width:28px;height:28px;}.bh-l1{font-size:11px;letter-spacing:0.16em;}.bh-l2{font-size:9px;letter-spacing:0.12em;}.bh-link{padding:5px 7px;}}
 
 .nav{display:flex;border-bottom:1px solid var(--line);background:var(--surf2);}
 .nav-tab{flex:1;padding:10px 0;text-align:center;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--dim);cursor:pointer;border:none;background:transparent;border-right:1px solid var(--line);transition:all 0.18s;position:relative;}
@@ -158,10 +159,9 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 <div class="wrap">
 <header>
   <div class="bh-row">
-    <div class="bh-brand"><img class="bh-logo" src="icon-512.png" alt="Biverway" width="36" height="36"><span class="bh-word">BIVERWAY</span></div>
+    <div class="bh-brand"><img class="bh-logo" src="icon-512.png" alt="Biverway" width="30" height="30"><div class="bh-txt"><div class="bh-l1">Biverway <b>Model A</b></div><div class="bh-l2">Trade Tracker</div></div></div>
     <a href="https://solomonubom54-png.github.io/biverway-model-a/" class="bh-link" title="Open Decision Engine">← Engine</a>
   </div>
-  <div class="bh-sub"><b>Model A</b>Trade Tracker</div>
 </header>
 
 <nav class="nav">
