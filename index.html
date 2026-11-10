@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biverway — Model A</title>
+<title>Biverway Model A</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#08090e">
@@ -47,7 +47,7 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 .bh-brand{display:flex;align-items:center;gap:10px;min-width:0;}
 .bh-logo{width:30px;height:30px;border-radius:7px;display:block;flex-shrink:0;}
 .bh-txt{min-width:0;font-family:'DM Mono','Space Mono',monospace;text-transform:uppercase;white-space:nowrap;}
-.bh-l1{font-weight:500;font-size:12px;letter-spacing:0.2em;line-height:1.15;color:var(--text3);}
+.bh-l1{font-weight:500;font-size:12px;letter-spacing:0.2em;line-height:1.15;color:var(--text);}
 .bh-l1 b{font-weight:500;color:var(--gold);}
 .bh-l2{margin-top:4px;font-weight:400;font-size:10px;letter-spacing:0.13em;line-height:1.15;color:var(--text2);}
 .bh-link{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:5px 9px;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:color 0.2s,border-color 0.2s;}
@@ -100,8 +100,8 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 
 /* ── CHIPS ── */
 input[type="radio"]{display:none;}
-.opts{display:flex;flex-wrap:wrap;gap:7px;}
-.opts.stack{flex-direction:column;align-items:flex-start;}
+.opts{display:flex;flex-direction:column;align-items:flex-start;gap:7px;}
+.opts.row{flex-direction:row;flex-wrap:wrap;}
 .olabel{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase;width:100%;margin-top:12px;margin-bottom:3px;padding-top:10px;border-top:1px solid var(--line);}
 .olabel:first-child{margin-top:0;border-top:none;padding-top:0;}
 .opt{display:inline-flex;align-items:center;padding:8px 14px;border-radius:8px;border:1px solid var(--line2);background:var(--bg);cursor:pointer;font-family:'Space Mono',monospace;font-size:10px;color:var(--opt-txt);transition:all 0.15s;user-select:none;line-height:1.3;letter-spacing:0.02em;}
@@ -343,9 +343,6 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
 .inst-select:focus{border-color:rgba(201,151,58,.5);}
 .inst-select.on{border-color:var(--gold);color:var(--gold);background-color:rgba(201,151,58,.08);}
 .inst-select option{background:#0d0f18;color:#d0daf0;}
-.hang{align-items:flex-start;}
-.hang .ol{flex:none;white-space:pre;}
-.hang .od{min-width:0;}
 </style>
 </head>
 <body>
@@ -406,7 +403,7 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
     </div>
     <div class="sub-body">
       <div class="sq">Did today open with a gap from yesterday's close?</div>
-      <div class="opts">
+      <div class="opts row">
         <input autocomplete="off" type="radio" name="gap" id="gap-y" value="yes" onchange="run()">
         <label for="gap-y" class="opt opt-a">Yes</label>
         <input autocomplete="off" type="radio" name="gap" id="gap-n" value="no" onchange="run()">
@@ -417,9 +414,9 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
         <div class="sq" style="margin-bottom:10px;">Was the MSS that created this zone gap-concerned or gap-independent?</div>
         <div class="opts">
           <input autocomplete="off" type="radio" name="gpos" id="gpos-b" value="independent" onchange="onGapMSS('independent')">
-          <label for="gpos-b" class="opt opt-g hang"><span class="ol">Gap-Independent — </span><span class="od">the MSS formed on its own, unrelated to the gap</span></label>
+          <label for="gpos-b" class="opt opt-g">Gap-Independent: the MSS formed on its own, unrelated to the gap</label>
           <input autocomplete="off" type="radio" name="gpos" id="gpos-a" value="concerned" onchange="onGapMSS('concerned')">
-          <label for="gpos-a" class="opt opt-a hang"><span class="ol">Gap-Concerned — </span><span class="od">the gap played a role in how this MSS formed</span></label>
+          <label for="gpos-a" class="opt opt-a">Gap-Concerned: the gap played a role in how this MSS formed</label>
         </div>
 
         <!-- Sub-question 2 — only shown when Gap-Concerned is selected -->
@@ -428,9 +425,9 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
           <div class="sq" style="margin-bottom:10px;">How exactly did the gap contribute to the MSS?</div>
           <div class="opts">
             <input autocomplete="off" type="radio" name="gdetail" id="gdetail-jump" value="jump" onchange="run()">
-            <label for="gdetail-jump" class="opt opt-r hang"><span class="ol">The gap itself broke the structural level — </span><span class="od">no candle did it, candles afterward just continued from there</span></label>
+            <label for="gdetail-jump" class="opt opt-r">The gap itself broke the structural level: no candle did it, candles afterward just continued from there</label>
             <input autocomplete="off" type="radio" name="gdetail" id="gdetail-near" value="near" onchange="run()">
-            <label for="gdetail-near" class="opt opt-r hang"><span class="ol">The first or second candle after the gap caused the MSS — </span><span class="od">still gap-influenced momentum</span></label>
+            <label for="gdetail-near" class="opt opt-r">The first or second candle after the gap caused the MSS: still gap-influenced momentum</label>
             <input autocomplete="off" type="radio" name="gdetail" id="gdetail-organic" value="organic" onchange="run()">
             <label for="gdetail-organic" class="opt opt-g">Several candles printed organically after the gap before the MSS eventually formed</label>
           </div>
@@ -471,7 +468,7 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
       <span class="sub-stat" id="st-htf" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">Did the impulse leg that caused the M15 MSS — the same impulse that created your zone — reach into a D1 or H4 decisional or extreme opposing zone?</div>
+      <div class="sq">Did the impulse leg that caused the M15 MSS, the same impulse that created your zone, reach into a D1 or H4 decisional or extreme opposing zone?</div>
       <div class="opts stack">
         <input autocomplete="off" type="radio" name="htf" id="htf-n" value="pass" onchange="run()">
         <label for="htf-n" class="opt opt-g">No HTF opposing zone</label>
@@ -480,9 +477,9 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
         <input autocomplete="off" type="radio" name="htf" id="htf-d1s" value="med-d1s" onchange="run()">
         <label for="htf-d1s" class="opt opt-a">D1 synthetic</label>
         <input autocomplete="off" type="radio" name="htf" id="htf-h4" value="med" onchange="run()">
-        <label for="htf-h4" class="opt opt-a hang"><span class="ol">H4 standard — </span><span class="od">decisional or extreme</span></label>
+        <label for="htf-h4" class="opt opt-a">H4 standard: decisional or extreme</label>
         <input autocomplete="off" type="radio" name="htf" id="htf-d1" value="kill" onchange="run()">
-        <label for="htf-d1" class="opt opt-r hang"><span class="ol">D1 standard — </span><span class="od">decisional or extreme</span></label>
+        <label for="htf-d1" class="opt opt-r">D1 standard: decisional or extreme</label>
       </div>
     </div>
   </div>
@@ -494,14 +491,14 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
       <span class="sub-stat" id="st-sl" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">Is there an unfilled D1 Fair Value Gap sitting below or above this zone — such that the zone's SL boundary overlaps with or rests on the FVG?</div>
+      <div class="sq">Is there an unfilled D1 Fair Value Gap sitting below or above this zone, such that the zone's SL boundary overlaps with or rests on the FVG?</div>
       <div class="opts">
         <input autocomplete="off" type="radio" name="d1fvgsl" id="d1fvgsl-n" value="no" onchange="run()">
-        <label for="d1fvgsl-n" class="opt opt-g hang"><span class="ol">No — </span><span class="od">no D1 FVG at SL boundary</span></label>
+        <label for="d1fvgsl-n" class="opt opt-g">No: no D1 FVG at SL boundary</label>
         <input autocomplete="off" type="radio" name="d1fvgsl" id="d1fvgsl-y" value="yes" onchange="run()">
-        <label for="d1fvgsl-y" class="opt opt-r hang"><span class="ol">Yes — </span><span class="od">D1 FVG present at SL boundary</span></label>
+        <label for="d1fvgsl-y" class="opt opt-r">Yes: D1 FVG present at SL boundary</label>
       </div>
-      <div id="sl-note" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">Hard kill when HTF opposing zone is present. The HTF zone pushes price back while the D1 FVG draws price through the zone SL boundary — two forces with the same destructive outcome.</div>
+      <div id="sl-note" style="margin-top:10px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">Hard kill when HTF opposing zone is present. The HTF zone pushes price back while the D1 FVG draws price through the zone SL boundary: two forces with the same destructive outcome.</div>
     </div>
   </div>
 
@@ -513,7 +510,7 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
     </div>
     <div class="sub-body">
       <div class="sq">Did the impulse leg that caused the M15 MSS tap into a D1 Fair Value Gap and reject from it?</div>
-      <div class="opts">
+      <div class="opts row">
           <input autocomplete="off" type="radio" name="mssq2" id="mssq2-y" value="yes" onchange="onMSS(2,'yes')">
           <label for="mssq2-y" class="opt opt-a">Yes</label>
           <input autocomplete="off" type="radio" name="mssq2" id="mssq2-n" value="no" onchange="onMSS(2,'no')">
@@ -523,9 +520,9 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
         <div class="sq">Did the rejecting leg sweep the DBI high or low, or a high or low from 2 to 3 days before it, in the process of that rejection?</div>
         <div class="opts">
             <input autocomplete="off" type="radio" name="mssq3" id="mssq3-y" value="yes" onchange="onMSS(3,'yes')">
-            <label for="mssq3-y" class="opt opt-a hang"><span class="ol">Yes — </span><span class="od">high or low swept</span></label>
+            <label for="mssq3-y" class="opt opt-a">Yes: high or low swept</label>
             <input autocomplete="off" type="radio" name="mssq3" id="mssq3-n" value="no" onchange="onMSS(3,'no')">
-            <label for="mssq3-n" class="opt opt-g hang"><span class="ol">No — </span><span class="od">rejection only, no sweep</span></label>
+            <label for="mssq3-n" class="opt opt-g">No: rejection only, no sweep</label>
         </div>
       </div>
     </div>
@@ -539,7 +536,7 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
     </div>
     <div class="sub-body">
       <div class="sq">Did the impulse leg that caused the M15 MSS tap into a W1 Fair Value Gap and reject from it?</div>
-      <div class="opts">
+      <div class="opts row">
           <input autocomplete="off" type="radio" name="mssq4" id="mssq4-y" value="yes" onchange="onMSS(4,'yes')">
           <label for="mssq4-y" class="opt opt-a">Yes</label>
           <input autocomplete="off" type="radio" name="mssq4" id="mssq4-n" value="no" onchange="onMSS(4,'no')">
@@ -549,9 +546,9 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
         <div class="sq">Did the rejecting leg sweep the WBI high or low, or a high or low from 2 to 3 weeks before it, in the process of that W1 FVG rejection?</div>
         <div class="opts">
             <input autocomplete="off" type="radio" name="mssq5" id="mssq5-y" value="yes" onchange="onMSS(5,'yes')">
-            <label for="mssq5-y" class="opt opt-a hang"><span class="ol">Yes — </span><span class="od">high or low swept</span></label>
+            <label for="mssq5-y" class="opt opt-a">Yes: high or low swept</label>
             <input autocomplete="off" type="radio" name="mssq5" id="mssq5-n" value="no" onchange="onMSS(5,'no')">
-            <label for="mssq5-n" class="opt opt-g hang"><span class="ol">No — </span><span class="od">rejection only, no sweep</span></label>
+            <label for="mssq5-n" class="opt opt-g">No: rejection only, no sweep</label>
         </div>
       </div>
     </div>
@@ -578,9 +575,9 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
       <div class="sq">Do Pepperstone and IC Markets agree or disagree on the MSS candle close?</div>
       <div class="opts">
           <input autocomplete="off" type="radio" name="mssq1" id="mssq1-n" value="no" onchange="onMSS(1,'no')">
-          <label for="mssq1-n" class="opt opt-g hang"><span class="ol">Agree — </span><span class="od">both show the same close</span></label>
+          <label for="mssq1-n" class="opt opt-g">Agree: both show the same close</label>
           <input autocomplete="off" type="radio" name="mssq1" id="mssq1-y" value="yes" onchange="onMSS(1,'yes')">
-          <label for="mssq1-y" class="opt opt-a hang"><span class="ol">Disagree — </span><span class="od">one shows a body close, the other a wick sweep</span></label>
+          <label for="mssq1-y" class="opt opt-a">Disagree: one shows a body close, the other a wick sweep</label>
       </div>
     </div>
   </div>
@@ -595,11 +592,11 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
       <div class="sq">What is the depth of the retracement that forms this structure?</div>
       <div class="opts" id="depth-opts">
         <input autocomplete="off" type="radio" name="zdepth" id="zd-dh" value="deep-h1" onchange="run()">
-        <label for="zd-dh" class="opt opt-g hang"><span class="ol">Deep — </span><span class="od">H1 Validated</span></label>
+        <label for="zd-dh" class="opt opt-g">Deep: H1 Validated</label>
         <input autocomplete="off" type="radio" name="zdepth" id="zd-m45" value="shallow-m45" onchange="run()">
-        <label for="zd-m45" class="opt opt-n hang" id="l-zdm45"><span class="ol">Moderate — </span><span class="od">M45 Validated</span></label>
+        <label for="zd-m45" class="opt opt-n" id="l-zdm45">Moderate: M45 Validated</label>
         <input autocomplete="off" type="radio" name="zdepth" id="zd-sh" value="shallow-none" onchange="run()">
-        <label for="zd-sh" class="opt opt-r hang" id="l-zdsh"><span class="ol">Shallow — </span><span class="od">No Validation</span></label>
+        <label for="zd-sh" class="opt opt-r" id="l-zdsh">Shallow: No Validation</label>
       </div>
     </div>
   </div>
@@ -625,9 +622,9 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
       <div class="sq">Did the originating swing level of this structure tap the extreme or decisional order block of a prior structure?</div>
       <div class="opts stack">
         <input autocomplete="off" type="radio" name="zliq" id="zl-ov" value="overlap" onchange="run()">
-        <label for="zl-ov" class="opt opt-a hang"><span class="ol">Yes — </span><span class="od">overlap present</span></label>
+        <label for="zl-ov" class="opt opt-a">Yes: overlap present</label>
         <input autocomplete="off" type="radio" name="zliq" id="zl-cl" value="clean" onchange="run()">
-        <label for="zl-cl" class="opt opt-g hang"><span class="ol">No — </span><span class="od">the base is clean</span></label>
+        <label for="zl-cl" class="opt opt-g">No: the base is clean</label>
       </div>
     </div>
   </div>
@@ -640,17 +637,17 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
     </div>
     <div class="sub-body">
       <div class="sq">Is the high or low that originated this structure the same as the Asian range high or low of the day it formed?</div>
-      <div class="opts">
+      <div class="opts row">
         <input autocomplete="off" type="radio" name="asian" id="asian-y" value="yes" onchange="run()">
         <label for="asian-y" class="opt opt-au">Yes</label>
         <input autocomplete="off" type="radio" name="asian" id="asian-n" value="no" onchange="run()">
         <label for="asian-n" class="opt opt-g">No</label>
       </div>
       <div class="cond" id="asian-cond">
-        <div class="ctitle">Conditional check — any one triggers a hard kill</div>
-        <div class="crow"><div class="cdot" id="exc-ov-dot"></div><div class="clabel" id="exc-ov-lbl">Prior-structure overlap — answer 08a first</div></div>
+        <div class="ctitle">Conditional check: any one triggers a hard kill</div>
+        <div class="crow"><div class="cdot" id="exc-ov-dot"></div><div class="clabel" id="exc-ov-lbl">Prior-structure overlap: answer 08a first</div></div>
         <div class="crow" id="exc-adr-row" style="display:none;"><div class="cdot" id="exc-adr-dot"></div><div class="clabel" id="exc-adr-lbl"></div></div>
-        <div style="margin-top:9px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">Both clear — proceed. Either present — hard kill.</div>
+        <div style="margin-top:9px;font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);line-height:1.65;">Both clear: proceed. Either present: hard kill.</div>
       </div>
     </div>
   </div>
@@ -662,8 +659,8 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
       <span class="sub-stat" id="st-dba" style="color:var(--dim)">—</span>
     </div>
     <div class="sub-body">
-      <div class="sq">Did the high or low that originated this structure retrace into an Asian range high or low — from the structure's own day, the DBI, or 2–3 days back — and respect it, without sweeping it?</div>
-      <div class="opts">
+      <div class="sq">Did the high or low that originated this structure retrace into an Asian range high or low, from the structure's own day, the DBI, or 2–3 days back, and respect it, without sweeping it?</div>
+      <div class="opts row">
         <input autocomplete="off" type="radio" name="dba" id="dba-y" value="kill" onchange="run()">
         <label for="dba-y" class="opt opt-r">Yes</label>
         <input autocomplete="off" type="radio" name="dba" id="dba-n" value="pass" onchange="run()">
@@ -680,7 +677,7 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
     </div>
     <div class="sub-body">
       <div class="sq">Did the high or low that originated this structure retrace into the high or low of the DBI, or of 2–3 days back, and respect it, without sweeping it?</div>
-      <div class="opts">
+      <div class="opts row">
         <input autocomplete="off" type="radio" name="dbh" id="dbh-y" value="kill" onchange="run()">
         <label for="dbh-y" class="opt opt-r">Yes</label>
         <input autocomplete="off" type="radio" name="dbh" id="dbh-n" value="pass" onchange="run()">
@@ -986,18 +983,18 @@ document.addEventListener('input',function(e){
 var orderToast=null;
 function showOrderError(requiredStep){
   var names={
-    gap:'Step 01 — Gap Day',
-    adr:'Step 02 — ADR Ratio',
-    htf:'Step 03 — HTF Opposing Zone',
-    sl:'Step 03b — D1 FVG At SL Boundary',
-    d1f:'Step 04 — D1 FVG Rejection',
-    w1f:'Step 05 — W1 FVG Rejection',
-    mss:'Step 06 — MSS Quality',
-    depth:'Step 07 — Pullback Depth',
-    ovl:'Step 08a — Prior-Structure Overlap',
-    asian:'Step 08b — Asian Range Coincidence',
-    dba:'Step 08c — Rejection at Asian High / Low',
-    dbh:'Step 08d — Rejection at Prior Day High / Low'
+    gap:'Step 01: Gap Day',
+    adr:'Step 02: ADR Ratio',
+    htf:'Step 03: HTF Opposing Zone',
+    sl:'Step 03b: D1 FVG At SL Boundary',
+    d1f:'Step 04: D1 FVG Rejection',
+    w1f:'Step 05: W1 FVG Rejection',
+    mss:'Step 06: MSS Quality',
+    depth:'Step 07: Pullback Depth',
+    ovl:'Step 08a: Prior-Structure Overlap',
+    asian:'Step 08b: Asian Range Coincidence',
+    dba:'Step 08c: Rejection at Asian High / Low',
+    dbh:'Step 08d: Rejection at Prior Day High / Low'
   };
   var toast=g('order-toast');
   if(!toast)return;
@@ -1093,7 +1090,7 @@ function allDone(){
   return STEPS.every(stepDone);
   }
   
-var SL_NOTE='Hard kill when HTF opposing zone is present. The HTF zone pushes price back while the D1 FVG draws price through the zone SL boundary — two forces with the same destructive outcome.';
+var SL_NOTE='Hard kill when HTF opposing zone is present. The HTF zone pushes price back while the D1 FVG draws price through the zone SL boundary: two forces with the same destructive outcome.';
 function run(){
   var kills=0,mf=0,kr=[],fl=[];
   function flag(n){mf++;fl.push(n);}
@@ -1173,7 +1170,7 @@ function run(){
 
   // ── Step 07 Pullback Depth ───────────────────────────────────
   if(!depthV){sc('depth','');ss('depth','—','var(--dim)');}
-  else if(depthV==='shallow-none'){kills++;kr.push('Shallow pullback — no validation');sc('depth','sk');ss('depth','Skip','var(--red)');}
+  else if(depthV==='shallow-none'){kills++;kr.push('Shallow pullback: no validation');sc('depth','sk');ss('depth','Skip','var(--red)');}
   else{sc('depth','pa');ss('depth','Clear','var(--green)');}
 
   // ── Step 08a Prior-Structure Overlap (always shown, always required) ──
@@ -1187,10 +1184,10 @@ function run(){
   var asv=rv('asian');
   g('asian-cond').className='cond'+(asv==='yes'?' show':'');
   if(asv==='yes'){
-    if(liqV){g('exc-ov-dot').className='cdot '+(hasOv?'bad':'ok');g('exc-ov-lbl').textContent=hasOv?'Prior-structure overlap present — kill condition triggered':'No prior-structure overlap — clear';g('exc-ov-lbl').style.color=hasOv?'var(--red)':'var(--green)';}
-    else{g('exc-ov-dot').className='cdot';g('exc-ov-lbl').textContent='Prior-structure overlap — answer 08a first';g('exc-ov-lbl').style.color='var(--dim)';}
+    if(liqV){g('exc-ov-dot').className='cdot '+(hasOv?'bad':'ok');g('exc-ov-lbl').textContent=hasOv?'Prior-structure overlap present: kill condition triggered':'No prior-structure overlap: clear';g('exc-ov-lbl').style.color=hasOv?'var(--red)':'var(--green)';}
+    else{g('exc-ov-dot').className='cdot';g('exc-ov-lbl').textContent='Prior-structure overlap: answer 08a first';g('exc-ov-lbl').style.color='var(--dim)';}
     g('exc-adr-row').style.display=hasA?'':'none';
-    if(hasA){g('exc-adr-dot').className='cdot '+(adrFlag?'bad':'ok');g('exc-adr-lbl').textContent='ADR '+adrV+(adrFlag?' — above 1.5, kill condition':' — at or below 1.5, clear');g('exc-adr-lbl').style.color=adrFlag?'var(--red)':'var(--green)';}
+    if(hasA){g('exc-adr-dot').className='cdot '+(adrFlag?'bad':'ok');g('exc-adr-lbl').textContent='ADR '+adrV+(adrFlag?': above 1.5, kill condition':': at or below 1.5, clear');g('exc-adr-lbl').style.color=adrFlag?'var(--red)':'var(--green)';}
     else{g('exc-adr-dot').className='cdot';g('exc-adr-lbl').textContent='';}
   }
   if(!asv){sc('asian','');ss('asian','—','var(--dim)');}
@@ -1203,7 +1200,7 @@ function run(){
         var akReasons=[];
         if(hasOv)akReasons.push('prior-structure overlap');
         if(adrFlag)akReasons.push('ADR above 1.5');
-        kills++;kr.push('Asian range coincide — '+akReasons.join(' and '));sc('asian','sk');ss('asian','Skip','var(--red)');
+        kills++;kr.push('Asian range coincide: '+akReasons.join(' and '));sc('asian','sk');ss('asian','Skip','var(--red)');
       }
       else{sc('asian','au');ss('asian','Conditional','var(--gold)');}
     }
@@ -1225,7 +1222,7 @@ function run(){
   var sf=Math.min(mf,3);
   ['mp1','mp2','mp3'].forEach(function(id,i){g(id).className='fcpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
   ['fp1','fp2','fp3'].forEach(function(id,i){g(id).className='fpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
-  var fct=mf===0?'Medium flags: 0 — clear':mf===1?'Medium flags: 1 — one flag present':'Medium flags: '+mf+' — skip triggered';
+  var fct=mf===0?'Medium flags: 0 (clear)':mf===1?'Medium flags: 1 (one flag present)':'Medium flags: '+mf+' (skip triggered)';
   g('fctxt').textContent=fct;g('fctxt').style.color=mf===0?'var(--green)':mf===1?'var(--amber)':'var(--red)';
   if(mf>=2){kills++;}
 
@@ -1246,7 +1243,7 @@ function run(){
     g('vps-k').textContent=kr.length>0?kr.length+' present':'None';g('vps-k').style.color=kr.length>0?'var(--red)':'var(--green)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf>=2?'var(--red)':mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent='SKIP';g('vps-g').style.color='var(--red)';
-    setVBar('r','Skip — no trade','SKIP','var(--red)','rgba(224,80,80,0.4)');
+    setVBar('r','Skip: no trade','SKIP','var(--red)','rgba(224,80,80,0.4)');
   }else if(done){
     var verdict=mf===0?'PRIME':'VALID';
     var vc=mf===0?'var(--gold)':'var(--green)';
@@ -1261,7 +1258,7 @@ function run(){
     g('vps-k').textContent='None';g('vps-k').style.color='var(--green)';
     g('vps-f').textContent=mf>0?mf+' present':'None';g('vps-f').style.color=mf===1?'var(--amber)':'var(--green)';
     g('vps-g').textContent=verdict;g('vps-g').style.color=vc;
-    setVBar(dc2,verdict==='PRIME'?'Prime — clean trade':'Valid — one flag present',verdict,vbc,vbb);
+    setVBar(dc2,verdict==='PRIME'?'Prime: clean trade':'Valid: one flag present',verdict,vbc,vbb);
   }else{
     // Not done, no kill — show placeholder state
     g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
@@ -1288,7 +1285,7 @@ function resetAll(){
   ['mssq1','mssq2','mssq3'].forEach(function(n){document.querySelectorAll('input[name="'+n+'"]').forEach(function(r){r.checked=false;});});
   ['mss-q3','mss-q5'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   ['exc-ov-dot','exc-adr-dot'].forEach(function(id){var el=g(id);if(el)el.className='cdot';});
-  g('exc-ov-lbl').textContent='Prior-structure overlap — answer 08a first';g('exc-ov-lbl').style.color='var(--dim)';
+  g('exc-ov-lbl').textContent='Prior-structure overlap: answer 08a first';g('exc-ov-lbl').style.color='var(--dim)';
   g('exc-adr-lbl').textContent='';g('exc-adr-lbl').style.color='var(--dim)';g('exc-adr-row').style.display='none';
   document.querySelectorAll('input[name="mssq4"],input[name="mssq5"],input[name="d1fvgsl"]').forEach(function(r){r.checked=false;});
   ['mp1','mp2','mp3'].forEach(function(id){g(id).className='fcpip';});
@@ -1398,8 +1395,8 @@ window.saveToTracker = async function() {
   if (steps.mssq4 === 'yes' && steps.mssq5 !== 'yes') flags.push('W1 FVG rejection');
   if (steps.mssq4 === 'yes' && steps.mssq5 === 'yes') flags.push('W1 FVG + structural sweep');
   if (steps.d1fvgsl === 'yes') flags.push('D1 FVG at SL Boundary');
-  if (steps.gpos === 'concerned' && steps.gdetail === 'jump') flags.push('Gap-concerned MSS — gap itself broke structural level');
-  if (steps.gpos === 'concerned' && steps.gdetail === 'near') flags.push('Gap-concerned MSS — first or second candle after gap caused MSS');
+  if (steps.gpos === 'concerned' && steps.gdetail === 'jump') flags.push('Gap-concerned MSS: gap itself broke structural level');
+  if (steps.gpos === 'concerned' && steps.gdetail === 'near') flags.push('Gap-concerned MSS: first or second candle after gap caused MSS');
   var btn = document.getElementById('sp-save-btn');
   var savedEl = document.getElementById('sp-saved');
   if (btn) { btn.textContent = 'Saving...'; btn.disabled = true; }

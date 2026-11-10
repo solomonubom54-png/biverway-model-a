@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biverway — Trade Tracker</title>
+<title>Biverway Trade Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#08090e">
@@ -29,7 +29,7 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 .bh-brand{display:flex;align-items:center;gap:10px;min-width:0;}
 .bh-logo{width:30px;height:30px;border-radius:7px;display:block;flex-shrink:0;}
 .bh-txt{min-width:0;font-family:'DM Mono','Space Mono',monospace;text-transform:uppercase;white-space:nowrap;}
-.bh-l1{font-weight:500;font-size:12px;letter-spacing:0.2em;line-height:1.15;color:var(--text3);}
+.bh-l1{font-weight:500;font-size:12px;letter-spacing:0.2em;line-height:1.15;color:var(--text);}
 .bh-l1 b{font-weight:500;color:var(--gold);}
 .bh-l2{margin-top:4px;font-weight:400;font-size:10px;letter-spacing:0.13em;line-height:1.15;color:var(--text2);}
 .bh-link{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;border:1px solid var(--line);padding:5px 9px;border-radius:6px;white-space:nowrap;flex-shrink:0;transition:color 0.2s,border-color 0.2s;}
@@ -251,7 +251,7 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
       <button class="export-btn" onclick="doExport()">Export Complete Records as CSV</button>
     </div>
     <div class="export-section" style="margin-top:10px;">
-      <div class="export-desc">One-time migration — converts old trades stored with label text to short value codes so they appear correctly in Filter Performance analytics. Export your CSV backup before running. Run once only.</div>
+      <div class="export-desc">One-time migration: converts old trades stored with label text to short value codes so they appear correctly in Filter Performance analytics. Export your CSV backup before running. Run once only.</div>
       <button class="export-btn" style="border-color:rgba(201,151,58,0.3);background:rgba(201,151,58,0.07);color:var(--gold);" onclick="runBackfillMigration()">Migrate Old Trade Records</button>
     </div>
   </div>
@@ -325,7 +325,7 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
       <input type="hidden" id="discard-trade-id">
       <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;margin-bottom:14px;line-height:1.65;">Select the reason this setup is being discarded. Stored with the record.</div>
       <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
-        <label class="discard-opt"><input type="radio" name="discard-reason" value="Setup invalidated — structure broke"> Setup invalidated &mdash; structure broke</label>
+        <label class="discard-opt"><input type="radio" name="discard-reason" value="Setup invalidated — structure broke"> Setup invalidated: structure broke</label>
         <label class="discard-opt"><input type="radio" name="discard-reason" value="Didn't trigger within trading time range"> Didn&rsquo;t trigger within our trading time range</label>
         <label class="discard-opt"><input type="radio" name="discard-reason" value="News or external event"> News or external event</label>
         <label class="discard-opt"><input type="radio" name="discard-reason" value="Other" onchange="document.getElementById('discard-other-row').style.display='block'"> Other</label>
@@ -413,7 +413,7 @@ function stepLabel(key, val, steps) {
   if (steps && steps._labels && steps._labels[key]) return steps._labels[key];
   var map = {
     gap:{yes:'Gap present',no:'No gap'},
-    gdetail:{jump:'Gap itself broke level — hard kill',near:'1st/2nd candle after gap — hard kill',organic:'Several organic candles — pass'},
+    gdetail:{jump:'Gap itself broke level: hard kill',near:'1st/2nd candle after gap: hard kill',organic:'Several organic candles: pass'},
     gpos:{independent:'Gap-independent MSS',concerned:'Gap-concerned MSS'},
     htf:{pass:'No HTF zone',med:'H4 standard',kill:'D1 standard','med-h4s':'H4 synthetic','med-d1s':'D1 synthetic'},
     mssq1:{yes:'Brokers disagree',no:'Brokers agree'},
@@ -422,7 +422,7 @@ function stepLabel(key, val, steps) {
     mssq4:{yes:'W1 FVG: Yes',no:'W1 FVG: No'},
     mssq5:{yes:'W1 sweep: Yes',no:'W1 sweep: No'},
     d1fvgsl:{yes:'D1 FVG at SL boundary: Yes',no:'D1 FVG at SL boundary: No'},
-    zdepth:{'deep-h1':'Deep H1','deep-sw':'Deep H1 + Sideways','shallow-m45':'Moderate M45','shallow-none':'Shallow — No validation'},
+    zdepth:{'deep-h1':'Deep H1','deep-sw':'Deep H1 + Sideways','shallow-m45':'Moderate M45','shallow-none':'Shallow: No validation'},
     zliq:{clean:'No overlap',overlap:'Prior-structure overlap'},
     asian:{yes:'Same as Asian range high/low',no:'Independent'},
     dba:{kill:'Rejected at Asian range',pass:'No'},
@@ -739,7 +739,7 @@ window.openEditModal = function(id) {
     var nowMs = Date.now();
     var hoursElapsed = (nowMs - completedMs) / (1000 * 60 * 60);
     if (hoursElapsed > 24) {
-      showToast('Editing locked — more than 24 hours since outcome was recorded');
+      showToast('Editing locked: more than 24 hours since outcome was recorded');
       return;
     }
   }
@@ -778,11 +778,11 @@ window.openEditModal = function(id) {
     radioRow('gap','yes','Yes'));
 
   html += section('01','Gap MSS Type',
-    radioRow('gpos','independent','Gap-Independent — the MSS formed on its own, unrelated to the gap') +
-    radioRow('gpos','concerned','Gap-Concerned — the gap played a role in how this MSS formed'));
+    radioRow('gpos','independent','Gap-Independent: the MSS formed on its own, unrelated to the gap') +
+    radioRow('gpos','concerned','Gap-Concerned: the gap played a role in how this MSS formed'));
 
-  html += section('01','Gap Detail — How was the gap involved?',
-    radioRow('gdetail','jump','The gap itself broke the structural level — no candle did it') +
+  html += section('01','Gap Detail: How was the gap involved?',
+    radioRow('gdetail','jump','The gap itself broke the structural level: no candle did it') +
     radioRow('gdetail','near','The first or second candle after the gap caused the MSS') +
     radioRow('gdetail','organic','Several candles printed organically after the gap before MSS formed'));
 
@@ -797,57 +797,57 @@ window.openEditModal = function(id) {
   // HTF Opposition
   html += section('03','HTF Opposing Zone',
     radioRow('htf','pass','No HTF opposing zone') +
-    radioRow('htf','med-h4s','H4 synthetic — medium flag') +
-    radioRow('htf','med-d1s','D1 synthetic — medium flag') +
-    radioRow('htf','med','H4 standard — decisional or extreme — medium flag') +
-    radioRow('htf','kill','D1 standard — decisional or extreme — hard kill'));
+    radioRow('htf','med-h4s','H4 synthetic: medium flag') +
+    radioRow('htf','med-d1s','D1 synthetic: medium flag') +
+    radioRow('htf','med','H4 standard: decisional or extreme, medium flag') +
+    radioRow('htf','kill','D1 standard: decisional or extreme, hard kill'));
 
   html += section('03b','D1 FVG At SL Boundary',
-    radioRow('d1fvgsl','no','No — no D1 FVG at SL boundary') +
-    radioRow('d1fvgsl','yes','Yes — D1 FVG present at SL boundary (hard kill with H4 synthetic, D1 synthetic or H4 standard; recorded only with D1 standard)'));
+    radioRow('d1fvgsl','no','No: no D1 FVG at SL boundary') +
+    radioRow('d1fvgsl','yes','Yes: D1 FVG present at SL boundary (hard kill with H4 synthetic, D1 synthetic or H4 standard; recorded only with D1 standard)'));
 
   html += section('04','D1 FVG Tap and Rejection',
     radioRow('mssq2','no','No') +
-    radioRow('mssq2','yes','Yes — D1 FVG tapped and rejected'));
+    radioRow('mssq2','yes','Yes: D1 FVG tapped and rejected'));
 
   html += section('04','DBI or 2–3 Days-Before High/Low Sweep',
     radioRow('mssq3','no','No') +
-    radioRow('mssq3','yes','Yes — high or low swept — hard kill'));
+    radioRow('mssq3','yes','Yes: high or low swept, hard kill'));
 
   html += section('05','W1 FVG Rejection',
     radioRow('mssq4','no','No') +
-    radioRow('mssq4','yes','Yes — Weekly FVG tapped and rejected'));
+    radioRow('mssq4','yes','Yes: Weekly FVG tapped and rejected'));
 
   html += section('05','WBI or 2–3 Weeks-Before High/Low Sweep',
     radioRow('mssq5','no','No') +
-    radioRow('mssq5','yes','Yes — high or low swept — hard kill'));
+    radioRow('mssq5','yes','Yes: high or low swept, hard kill'));
 
   // Structure Formation
-  html += section('06','MSS Quality — Pepperstone and IC Markets',
-    radioRow('mssq1','no','Agree — both show the same close') +
-    radioRow('mssq1','yes','Disagree — one shows a body close, the other a wick sweep'));
+  html += section('06','MSS Quality: Pepperstone and IC Markets',
+    radioRow('mssq1','no','Agree: both show the same close') +
+    radioRow('mssq1','yes','Disagree: one shows a body close, the other a wick sweep'));
 
   html += section('07','Pullback Depth',
-    radioRow('zdepth','deep-h1','Deep — H1 validated') +
-    radioRow('zdepth','shallow-m45','Moderate — M45 validated') +
-    radioRow('zdepth','shallow-none','Shallow — no validation — hard kill'));
+    radioRow('zdepth','deep-h1','Deep: H1 validated') +
+    radioRow('zdepth','shallow-m45','Moderate: M45 validated') +
+    radioRow('zdepth','shallow-none','Shallow: no validation, hard kill'));
 
   // Origin Interactions
   html += section('08a','Prior-Structure Overlap',
-    radioRow('zliq','overlap','Yes — overlap present (medium flag with Deep, hard kill with Moderate)') +
-    radioRow('zliq','clean','No — the base is clean'));
+    radioRow('zliq','overlap','Yes: overlap present (medium flag with Deep, hard kill with Moderate)') +
+    radioRow('zliq','clean','No: the base is clean'));
 
   html += section('08b','Asian Range Coincidence',
     radioRow('asian','no','No') +
-    radioRow('asian','yes','Yes — hard kill only with prior-structure overlap or ADR above 1.5'));
+    radioRow('asian','yes','Yes: hard kill only with prior-structure overlap or ADR above 1.5'));
 
   html += section('08c','Rejection at Asian High / Low',
     radioRow('dba','pass','No') +
-    radioRow('dba','kill','Yes — hard kill'));
+    radioRow('dba','kill','Yes: hard kill'));
 
   html += section('08d','Rejection at Prior Day High / Low',
     radioRow('dbh','pass','No') +
-    radioRow('dbh','kill','Yes — hard kill'));
+    radioRow('dbh','kill','Yes: hard kill'));
 
   // Computed verdict preview
   html += '<div id="edit-verdict-preview" style="margin-bottom:16px;padding:10px 14px;border-radius:8px;'
@@ -900,7 +900,7 @@ window.computeEditVerdict = function() {
   else if (q4==='yes' && q5==='no') flags.push('W1 FVG rejection');
   
   var zd=getR('zdepth'), zl=getR('zliq');
-  if (zd==='shallow-none') kills.push('Shallow pullback — no validation');
+  if (zd==='shallow-none') kills.push('Shallow pullback: no validation');
   else if (zd==='shallow-m45' && zl==='overlap') kills.push('Moderate pullback with prior-structure overlap');
   else if (zl==='overlap') flags.push('Prior-structure overlap');
 
@@ -914,7 +914,7 @@ window.computeEditVerdict = function() {
   if (asian==='yes') {
     var adrA=getN('adr');
     var hasOv=(zl==='overlap'), adrFlag=!isNaN(adrA)&&adrA>1.5;
-    if (hasOv||adrFlag) kills.push('Asian range coincide — '+(hasOv&&adrFlag?'prior-structure overlap and ADR above 1.5':hasOv?'prior-structure overlap':'ADR above 1.5'));
+    if (hasOv||adrFlag) kills.push('Asian range coincide: '+(hasOv&&adrFlag?'prior-structure overlap and ADR above 1.5':hasOv?'prior-structure overlap':'ADR above 1.5'));
   }
 
   if (getR('dba')==='kill') kills.push('Rejection at Asian high or low');
@@ -926,13 +926,13 @@ window.computeEditVerdict = function() {
   var verdict, color, detail;
   if (kills.length > 0) {
     verdict='SKIP'; color='var(--red)';
-    detail=(kills.length===1?'Hard kill (1)':'Hard kills ('+kills.length+')')+' — '+kills.join(' · ');
+    detail=(kills.length===1?'Hard kill (1)':'Hard kills ('+kills.length+')')+': '+kills.join(' · ');
   } else if (flags.length >= 2) {
     verdict='SKIP'; color='var(--red)';
-    detail='Medium flags ('+flags.length+') — '+flags.join(' · ');
+    detail='Medium flags ('+flags.length+'): '+flags.join(' · ');
   } else if (flags.length === 1) {
     verdict='VALID'; color='var(--green)';
-    detail='One medium flag present — '+flags[0];
+    detail='One medium flag present: '+flags[0];
   } else {
     verdict='PRIME'; color='var(--gold)';
     detail='Clean trade across every filter';
@@ -984,7 +984,7 @@ window.saveEdit = async function(id) {
   try {
     await supaUpdate(id, updatePayload);
     document.getElementById('edit-modal').classList.remove('open');
-    showToast('Record corrected — verdict updated to '+newVerdict);
+    showToast('Record corrected: verdict updated to '+newVerdict);
     await loadTrades();
     closeModal();
   } catch(err) {
@@ -1075,9 +1075,9 @@ function renderAnalytics() {
   // ── Alerts ──
   var alerts = [];
   if (curType === 'Loss' && curLen >= 4) {
-    alerts.push({ stop: true, title: curLen + ' losses in a row — stop', body: 'No new trades until you have done your review.' });
+    alerts.push({ stop: true, title: curLen + ' losses in a row: stop', body: 'No new trades until you have done your review.' });
   } else if (curType === 'Loss' && curLen === 3) {
-    alerts.push({ stop: false, title: '3 losses in a row — caution', body: 'Re-check the inputs on your last 3 trades before taking the next one.' });
+    alerts.push({ stop: false, title: '3 losses in a row: caution', body: 'Re-check the inputs on your last 3 trades before taking the next one.' });
   }
   if (all.n >= 10 && all.w * 2 <= all.n) {
     alerts.push({ stop: false, title: 'Win rate is 50% or lower after ' + all.n + ' trades', body: 'Current win rate is ' + all.wr + '%. Review your last trades for grading mistakes and check Total R below.' });
@@ -1302,7 +1302,7 @@ window.runBackfillMigration = async function() {
   });
 
   if (!needsMigration.length) {
-    showToast('No trades need migration — all steps already use short codes');
+    showToast('No trades need migration: all steps already use short codes');
     return;
   }
 
@@ -1340,9 +1340,9 @@ window.runBackfillMigration = async function() {
   }
 
   if (errors) {
-    showToast('Migration complete — ' + errors + ' errors, check console');
+    showToast('Migration complete: ' + errors + ' errors, check console');
   } else {
-    showToast('Migration complete — ' + needsMigration.length + ' trades updated');
+    showToast('Migration complete: ' + needsMigration.length + ' trades updated');
   }
 
   await loadTrades();
