@@ -152,6 +152,11 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--surf2);border:1px solid var(--line2);color:var(--text2);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.06em;padding:9px 18px;border-radius:7px;opacity:0;transition:all 0.3s;pointer-events:none;z-index:900;}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 @media(max-width:480px){.detail-grid{grid-template-columns:1fr;}.img-pair{grid-template-columns:1fr;}.analytics-grid{grid-template-columns:1fr;}.filter-bar{gap:4px;}}
+
+/* ── Wide screens and desktop mode: keep text proportional, scale the whole page ── */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+@media(min-width:900px){body{zoom:1.3;min-height:calc(100vh / 1.3);}}
+@media(min-width:1500px){body{zoom:1.5;min-height:calc(100vh / 1.5);}}
 </style>
 </head>
 <body>
