@@ -51,8 +51,8 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.08em;color:var(--text3);}
 .count-badge{font-family:'Space Mono',monospace;font-size:8px;color:var(--meta);}
 
-.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.fsel{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.06em;padding:6px 26px 6px 10px;border-radius:6px;border:1px solid var(--line2);background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M0.5 0.5L4.5 5.5L8.5 0.5' fill='none' stroke='%237888aa' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 9px center;-webkit-appearance:none;appearance:none;color:var(--text2);cursor:pointer;outline:none;}
+.filter-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;}
+.fsel{width:100%;min-width:0;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.06em;padding:6px 26px 6px 10px;border-radius:6px;border:1px solid var(--line2);background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' viewBox='0 0 9 6'%3E%3Cpath d='M0.5 0.5L4.5 5.5L8.5 0.5' fill='none' stroke='%237888aa' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 9px center;-webkit-appearance:none;appearance:none;color:var(--text2);cursor:pointer;outline:none;}
 
 .trade-list{display:flex;flex-direction:column;gap:6px;}
 .trade-card{background:var(--surf);border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
@@ -149,9 +149,9 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 .alert-card.stop{background:rgba(224,80,80,0.05);border-color:rgba(224,80,80,0.3);}
 .alert-card.stop .alert-title{color:var(--red);}
 .alert-clear{font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);letter-spacing:0.04em;padding:2px 0;}
-.export-section{background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:18px;}
-.export-desc{font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);line-height:1.7;letter-spacing:0.04em;margin-bottom:16px;}
-.export-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:10px 20px;border-radius:8px;border:1px solid rgba(45,184,130,0.3);background:rgba(45,184,130,0.07);color:var(--green);cursor:pointer;transition:all 0.2s;}
+.export-section{background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;}
+.export-desc{font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);line-height:1.7;letter-spacing:0.04em;margin-bottom:0;}
+.export-btn{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:0.12em;text-transform:uppercase;padding:0;width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid rgba(45,184,130,0.3);background:rgba(45,184,130,0.07);color:var(--green);cursor:pointer;transition:all 0.2s;}
 .act-btn.gold{background:rgba(201,151,58,0.08);border-color:rgba(201,151,58,0.3);color:var(--gold);}
 .edit-section{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--line);}
 .edit-section:last-of-type{border-bottom:none;}
@@ -168,8 +168,11 @@ textarea.modal-notes{width:100%;background:var(--bg);border:1px solid var(--line
 
 /* ── Wide screens and desktop mode: keep text proportional, scale the whole page ── */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
-@media(min-width:900px){body{zoom:1.3;min-height:calc(100vh / 1.3);}}
-@media(min-width:1500px){body{zoom:1.5;min-height:calc(100vh / 1.5);}}
+@media(max-width:420px){.filter-bar{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1100px){.filter-bar{grid-template-columns:repeat(6,1fr);}}
+@media(min-width:900px){body{zoom:1.4;min-height:calc(100vh / 1.4);}}
+@media(min-width:1300px){body{zoom:1.6;min-height:calc(100vh / 1.6);}}
+@media(min-width:1700px){body{zoom:1.9;min-height:calc(100vh / 1.9);}}
 ::placeholder{color:var(--meta);opacity:1;}
 </style>
 </head>
@@ -266,8 +269,8 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
   <div style="padding-top:14px;">
     <div class="sec-hdr"><span class="sec-title">Export</span></div>
     <div class="export-section">
-      <div class="export-desc">Exports Complete records as CSV, with chart links. Pending, Triggered and Discarded records are excluded.</div>
-      <button class="export-btn" onclick="doExport()">Export Complete Records as CSV</button>
+      <div class="export-desc">Export Complete records as CSV, with chart links. Pending, Triggered and Discarded records are excluded.</div>
+      <button class="export-btn" onclick="doExport()" aria-label="Export Complete records as CSV" title="Export Complete records as CSV"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5v10M5.8 8.6L10 12.8l4.2-4.2"/><path d="M3 14.5v1.2a1.8 1.8 0 0 0 1.8 1.8h10.4a1.8 1.8 0 0 0 1.8-1.8v-1.2"/></svg></button>
     </div>
   </div>
 </div>
