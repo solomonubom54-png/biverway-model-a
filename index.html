@@ -141,14 +141,6 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
 /* ── INLINE RESULT ── */
 .iresult{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:8px;background:var(--dim2);border:1px solid var(--line);font-family:'Space Mono',monospace;font-size:9px;margin-top:8px;}
 
-/* ── FLAG COUNTER ── */
-.fc{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--surf2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
-.fcpips{display:flex;gap:5px;}
-.fcpip{width:10px;height:10px;border-radius:50%;background:var(--line);border:1px solid var(--line2);transition:all 0.25s;}
-.fcpip.warn{background:var(--amber);border-color:var(--amber);box-shadow:0 0 7px var(--amber);}
-.fcpip.kill{background:var(--red);border-color:var(--red);box-shadow:0 0 7px var(--red);}
-.fctxt{font-family:'Space Mono',monospace;font-size:9px;flex:1;transition:color 0.25s;}
-
 /* ── GOLD NOTE ── */
 .gnote{display:none;font-family:'Space Mono',monospace;font-size:8px;color:var(--gold-text);line-height:1.7;letter-spacing:0.03em;padding:9px 13px;background:rgba(201,151,58,0.03);border:1px solid rgba(201,151,58,0.12);border-radius:8px;margin-bottom:10px;}
 .gnote.show{display:block;}
@@ -302,11 +294,22 @@ input[type="number"]:focus{border-color:var(--gold-lo);}
 .save-prompt{display:none;margin-top:10px;padding:14px 16px;background:rgba(201,151,58,0.04);border:1px solid rgba(201,151,58,0.18);border-radius:10px;}
 .save-prompt.show{display:block;}
 .sp-title{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold-text);margin-bottom:10px;}
-.upload-zone{border:1px dashed var(--line2);border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:all 0.2s;background:var(--bg);}
+/* upload zone: picture-shaped drop area */
+.upload-zone{border:1px dashed #3a4466;border-radius:12px;min-height:96px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;text-align:center;cursor:pointer;transition:border-color 0.2s;background:#05060a;}
 .upload-zone:hover{border-color:var(--gold-lo);}
 .upload-zone input{display:none;}
-.upload-zone-txt{font-family:'Space Mono',monospace;font-size:8px;color:var(--text2);letter-spacing:0.06em;}
-.upload-preview{width:100%;border-radius:6px;margin-top:8px;max-height:140px;object-fit:cover;display:none;}
+.upload-zone-txt{font-family:'Space Mono',monospace;font-size:9px;color:var(--text2);letter-spacing:0.06em;}
+.uz-ic{width:26px;height:22px;flex-shrink:0;}
+.upload-preview{width:100%;border-radius:6px;max-height:140px;object-fit:cover;display:none;}
+.upload-zone.has-img{gap:8px;}
+.upload-zone.has-img .uz-ic{display:none;}
+.upload-zone.has-img .upload-preview{order:-1;}
+.upload-zone.need{border-color:rgba(201,151,58,0.7);}
+.upload-zone.fail{border-color:rgba(212,130,26,0.7);}
+.upz-err{display:none;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.06em;color:var(--amber);margin-top:7px;}
+.upz-lbl{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;color:var(--meta);margin-bottom:6px;}
+.sp-inst{color:var(--text2);}
+.sp-err{display:none;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.06em;color:var(--amber);margin-top:7px;}
 .sp-save{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:0.1em;text-transform:uppercase;padding:9px 16px;border-radius:7px;border:1px solid rgba(201,151,58,0.3);background:rgba(201,151,58,0.08);color:var(--gold);cursor:pointer;transition:all 0.2s;margin-top:10px;width:100%;}
 .sp-save:hover{background:rgba(201,151,58,0.15);}
 .sp-saved{font-family:'Space Mono',monospace;font-size:8px;color:var(--green);margin-top:6px;display:none;letter-spacing:0.06em;}
@@ -351,7 +354,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
       <div class="fpips">
         <div class="fpip" id="fp1"></div>
         <div class="fpip" id="fp2"></div>
-        <div class="fpip" id="fp3"></div>
       </div>
       <div class="vbadge" id="vbadge">—</div>
     </div>
@@ -672,16 +674,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 
 </div>
 
-<!-- ── FLAG COUNTER ── -->
-<div class="fc">
-  <div class="fcpips">
-    <div class="fcpip" id="mp1"></div>
-    <div class="fcpip" id="mp2"></div>
-    <div class="fcpip" id="mp3"></div>
-  </div>
-  <span class="fctxt" id="fctxt" style="color:var(--dim)">Medium flags: 0</span>
-</div>
-
 <!-- ── VERDICT ── -->
 <div class="vp" id="vp">
   <div class="vp-eye">Final Decision</div>
@@ -697,16 +689,18 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 
 <!-- ── SAVE TO TRACKER ── -->
 <div class="save-prompt" id="save-prompt">
-  <div class="sp-title">Save to Trade Tracker</div>
-  <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.06em;margin-bottom:10px;">Instrument selected above. Attach the before chart, then save.</div>
-  <div style="font-family:'Space Mono',monospace;font-size:8px;color:var(--dim);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;">Before Chart</div>
-  <div class="upload-zone" onclick="document.getElementById('before-img-input').click()">
+  <div class="sp-title">Save record <span class="sp-inst" id="sp-inst"></span></div>
+  <div class="upz-lbl">Setup chart</div>
+  <div class="upload-zone" id="before-zone" onclick="document.getElementById('before-img-input').click()">
     <input autocomplete="off" type="file" id="before-img-input" accept="image/*" onchange="previewBefore(this)">
-    <div class="upload-zone-txt">Tap to attach before chart screenshot</div>
+    <svg class="uz-ic" viewBox="0 0 26 22" fill="none" stroke="#6f7fa0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1.5" y="1.5" width="23" height="19" rx="3"/><circle cx="8" cy="8" r="2"/><path d="M2 17l6-5 5 4 4-3 7 5"/></svg>
+    <div class="upload-zone-txt" id="before-zone-txt">Attach image</div>
     <img id="before-img-preview" class="upload-preview">
   </div>
-  <button class="sp-save" id="sp-save-btn" onclick="saveToTracker()" style="margin-top:10px;">Save &amp; Open Tracker</button>
+  <div class="sp-err" id="sp-err">Chart upload failed.</div>
+  <button class="sp-save" id="sp-save-btn" onclick="saveToTracker()" style="margin-top:10px;">Save &amp; open tracker</button>
   <div class="sp-saved" id="sp-saved">Saved. Opening tracker...</div>
+</div>
 </div>
 
 
@@ -1097,11 +1091,8 @@ function run(){
   else{sc('dbh','pa');ss('dbh','Clear','var(--green)');}
 
   // ── Flag pips ────────────────────────────────────────────────
-  var sf=Math.min(mf,3);
-  ['mp1','mp2','mp3'].forEach(function(id,i){g(id).className='fcpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
-  ['fp1','fp2','fp3'].forEach(function(id,i){g(id).className='fpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
-  var fct=mf===0?'Medium flags: 0 (clear)':mf===1?'Medium flags: 1 (one flag present)':'Medium flags: '+mf+' (skip triggered)';
-  g('fctxt').textContent=fct;g('fctxt').style.color=mf===0?'var(--green)':mf===1?'var(--amber)':'var(--red)';
+  var sf=Math.min(mf,2);
+  ['fp1','fp2'].forEach(function(id,i){g(id).className='fpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
   if(mf>=2){kills++;}
 
   // ── Verdict ──────────────────────────────────────────────────
@@ -1166,9 +1157,7 @@ function resetAll(){
   g('exc-ov-lbl').textContent='Prior-structure overlap: answer 08a first';g('exc-ov-lbl').style.color='var(--dim)';
   g('exc-adr-lbl').textContent='';g('exc-adr-lbl').style.color='var(--dim)';g('exc-adr-row').style.display='none';
   document.querySelectorAll('input[name="mssq4"],input[name="mssq5"],input[name="d1fvgsl"]').forEach(function(r){r.checked=false;});
-  ['mp1','mp2','mp3'].forEach(function(id){g(id).className='fcpip';});
-  ['fp1','fp2','fp3'].forEach(function(id){g(id).className='fpip';});
-  g('fctxt').textContent='Medium flags: 0';g('fctxt').style.color='var(--dim)';
+  ['fp1','fp2'].forEach(function(id){g(id).className='fpip';});
   g('vp').style.borderColor='var(--line)';g('vp').style.boxShadow='none';
   g('vp-dec').textContent='—';g('vp-dec').style.color='var(--dim)';
   g('vp-note').textContent='Complete all steps above to receive your verdict.';
@@ -1181,11 +1170,7 @@ function resetAll(){
   updateLocks();
   refreshPrompt();
   renderInst();
-  var fi0=document.getElementById('before-img-input');if(fi0)fi0.value='';
-  var saved=document.getElementById('sp-saved');if(saved)saved.style.display='none';
-  var btn=document.getElementById('sp-save-btn');if(btn){btn.textContent='Save Record & Open Tracker';btn.disabled=false;}
-  _beforeImgFile=null;
-  var prev=document.getElementById('before-img-preview');if(prev){prev.src='';prev.style.display='none';}
+  resetSavePanel();
 }
 // Initial lock state on page load
 updateLocks();
@@ -1193,6 +1178,7 @@ updateLocks();
 // ── TRACKER INTEGRATION ───────────────────────────────────────────
 var _selectedInst = null;
 var _beforeImgFile = null;
+var _spOverride = false;   // true once the person has chosen to save without a chart
 
 function renderInst() {
   var s = g('inst-select');
@@ -1209,13 +1195,37 @@ window.selectInst = function(inst) {
   refreshPrompt();
 };
 
+function resetSavePanel() {
+  _beforeImgFile = null; _spOverride = false;
+  var fi = document.getElementById('before-img-input'); if (fi) fi.value = '';
+  var z = document.getElementById('before-zone'); if (z) z.className = 'upload-zone';
+  var tx = document.getElementById('before-zone-txt'); if (tx) tx.textContent = 'Attach image';
+  var prev = document.getElementById('before-img-preview'); if (prev) { prev.src = ''; prev.style.display = 'none'; }
+  var er = document.getElementById('sp-err'); if (er) er.style.display = 'none';
+  var sv = document.getElementById('sp-saved'); if (sv) sv.style.display = 'none';
+  var btn = document.getElementById('sp-save-btn'); if (btn) { btn.textContent = 'Save & open tracker'; btn.disabled = false; }
+}
+
+// kind: 'need' (no chart yet) or 'fail' (upload failed). Nothing is saved; the next tap is the deliberate override.
+function setSaveState(kind) {
+  _spOverride = true;
+  var z = document.getElementById('before-zone');
+  if (z) z.className = 'upload-zone' + (_beforeImgFile ? ' has-img' : '') + (kind === 'fail' ? ' fail' : ' need');
+  var er = document.getElementById('sp-err'); if (er) er.style.display = kind === 'fail' ? 'block' : 'none';
+  var btn = document.getElementById('sp-save-btn'); if (btn) { btn.textContent = 'Save without chart'; btn.disabled = false; }
+}
+
 window.previewBefore = function(input) {
   var file = input.files[0];
   if (!file) return;
-  _beforeImgFile = file;
+  _beforeImgFile = file; _spOverride = false;
   var preview = document.getElementById('before-img-preview');
   preview.src = URL.createObjectURL(file);
   preview.style.display = 'block';
+  var z = document.getElementById('before-zone'); if (z) z.className = 'upload-zone has-img';
+  var tx = document.getElementById('before-zone-txt'); if (tx) tx.textContent = 'Replace image';
+  var er = document.getElementById('sp-err'); if (er) er.style.display = 'none';
+  var btn = document.getElementById('sp-save-btn'); if (btn) btn.textContent = 'Save & open tracker';
 };
 
 function captureSteps() {
@@ -1252,6 +1262,7 @@ function refreshPrompt() {
   var prompt = document.getElementById('save-prompt');
   if (!prompt) return;
   prompt.className = (verdict === 'PRIME' || verdict === 'VALID') ? 'save-prompt show' : 'save-prompt';
+  var si = document.getElementById('sp-inst'); if (si) si.textContent = _selectedInst ? '· ' + _selectedInst : '';
 }
 
 window.saveToTracker = async function() {
@@ -1259,6 +1270,8 @@ window.saveToTracker = async function() {
   var vp = document.getElementById('vp-dec');
   var verdict = vp ? vp.textContent.trim() : '';
   if (verdict !== 'PRIME' && verdict !== 'VALID') return;
+  // Chart is expected: the first tap without one saves nothing and offers the deliberate override.
+  if (!_beforeImgFile && !_spOverride) { setSaveState('need'); return; }
 
   var steps = captureSteps();
   var flags = [];
@@ -1284,17 +1297,20 @@ window.saveToTracker = async function() {
 
   try {
     var beforeUrl = null;
-    if (_beforeImgFile) {
-      var ext = (_beforeImgFile.name||'img').split('.').pop()||'jpg';
-      var imgPath = 'before_' + Date.now() + '.' + ext;
-      var uploadResp = await fetch(SUPA_URL + '/storage/v1/object/trade-images/' + imgPath, {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': _beforeImgFile.type||'image/jpeg' },
-        body: _beforeImgFile
-      });
-      if (uploadResp.ok) {
-        beforeUrl = SUPA_URL + '/storage/v1/object/public/trade-images/' + imgPath;
-      }
+    if (_beforeImgFile && !_spOverride) {   // override = the person chose to save without this chart
+      var upOk = false;
+      try {
+        var ext = (_beforeImgFile.name||'img').split('.').pop()||'jpg';
+        var imgPath = 'before_' + Date.now() + '.' + ext;
+        var uploadResp = await fetch(SUPA_URL + '/storage/v1/object/trade-images/' + imgPath, {
+          method: 'POST',
+          headers: { 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': _beforeImgFile.type||'image/jpeg' },
+          body: _beforeImgFile
+        });
+        if (uploadResp.ok) { beforeUrl = SUPA_URL + '/storage/v1/object/public/trade-images/' + imgPath; upOk = true; }
+      } catch (upErr) { upOk = false; }
+      // A chart that did not upload is never saved as if it had: stop and offer the deliberate override.
+      if (!upOk) { setSaveState('fail'); return; }
     }
 
     var payload = {
@@ -1329,7 +1345,7 @@ window.saveToTracker = async function() {
 
   } catch(err) {
     console.error('Save error:', err);
-    if (btn) { btn.textContent = 'Save Record & Open Tracker'; btn.disabled = false; }
+    if (btn) { btn.textContent = _beforeImgFile ? 'Save & open tracker' : 'Save without chart'; btn.disabled = false; }
     alert('Save failed: ' + err.message);
   }
 };
