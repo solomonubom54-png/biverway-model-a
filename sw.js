@@ -1,5 +1,5 @@
 // Biverway Model A — Service Worker
-var CACHE = 'biverway-v2';
+var CACHE = 'biverway-v3';
 var ASSETS = ['./', './index.html', './trade-tracker.html', './manifest.json', './icon-512.png'];
 
 self.addEventListener('install', function(e) {

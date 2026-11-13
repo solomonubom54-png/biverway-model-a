@@ -4,8 +4,8 @@
   "description": "Biverway Model A \u2014 Day Trading Decision Engine",
   "start_url": "/biverway-model-a/",
   "display": "standalone",
-  "background_color": "#08090e",
-  "theme_color": "#08090e",
+  "background_color": "#00182E",
+  "theme_color": "#00182E",
   "orientation": "portrait-primary",
   "icons": [
     {
