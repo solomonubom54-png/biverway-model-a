@@ -13,7 +13,7 @@
 <link rel="apple-touch-icon" href="icon-512.png">
 <style>
 :root{
-  --bg:#0D1B2A;--surf:#141D29;--surf2:#1B2635;--line:#34465C;--line2:#6A767D;
+  --gnd:#000000;--bg:#0D1B2A;--surf:#141D29;--surf2:#1B2635;--line:#34465C;--line2:#6A767D;
   --id:#3F9CB8;--id-text:#3F9CB8;
   --prime:#EAE4D7;--green:#32C997;--red:#FA867D;--amber:#E29D30;
   --dim:#8C9293;--dim2:#1B2635;--meta:#8C9293;
@@ -21,12 +21,15 @@
   --opt-txt:#A8ABA8;--ref-txt:#8C9293;--ref-name:#8C9293;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body{background:var(--gnd);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:9000;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");}
 .wrap{max-width:660px;margin:0 auto;padding:0 20px;}
 
 /* ── HEADER ── */
 header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
+/* Black ground, brand-navy header band (full width, no horizontal overflow) */
+header{position:relative;background:var(--bg);box-shadow:0 0 0 100vmax var(--bg);clip-path:inset(0 -100vmax);}
+
 /* ── HEADER (shared lockup: logo + two lines) ── */
 .bh-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;}
 .bh-brand{display:flex;align-items:center;gap:10px;min-width:0;}
@@ -47,7 +50,7 @@ header{padding:20px 0 16px;border-bottom:1px solid var(--line);}
 .vdot.au{background:var(--id);box-shadow:0 0 8px var(--id);animation:breathe 2s infinite;}
 .vdot.r{background:var(--red);box-shadow:0 0 8px var(--red);}
 @keyframes breathe{0%,100%{opacity:1}50%{opacity:0.4}}
-.vtxt{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.04em;flex:1;color:var(--text2);transition:color 0.3s;}
+.vtxt{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.04em;flex:1;white-space:nowrap;min-height:1em;color:var(--text2);transition:color 0.3s;}
 .fpips{display:flex;gap:4px;align-items:center;}
 .fpip{width:7px;height:7px;border-radius:50%;background:var(--dim2);border:1px solid var(--line2);transition:all 0.25s;}
 .fpip.warn{background:var(--amber);border-color:var(--amber);box-shadow:0 0 5px var(--amber);}
@@ -135,8 +138,8 @@ input[type="number"]:focus{border-color:var(--id);}
 .vp-dec{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:0.05em;line-height:1;margin-bottom:8px;transition:color 0.3s;}
 .vp-note{white-space:pre-line;font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:16px;min-height:40px;}
 .vp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
-.vps{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 11px;}
-.vps-l{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;color:var(--meta);text-transform:uppercase;margin-bottom:4px;}
+.vps{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 9px;min-width:0;}
+.vps-l{white-space:nowrap;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.06em;color:var(--meta);text-transform:uppercase;margin-bottom:4px;}
 .vps-v{font-size:13px;font-weight:600;}
 .rbtn{display:block;width:100%;padding:10px;background:transparent;border:1px solid var(--line2);border-radius:8px;color:var(--text2);font-family:'Space Mono',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-top:4px;}
 .rbtn:hover{border-color:var(--id);color:var(--id);}
@@ -182,7 +185,7 @@ input[type="number"]:focus{border-color:var(--id);}
 .df-hdr{
   padding:16px 20px 14px;
   border-bottom:1px solid var(--line);
-  display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+  display:flex;align-items:center;justify-content:space-between;gap:6px 12px;flex-wrap:wrap;
 }
 .df-eyebrow{
   font-family:'Space Mono',monospace;font-size:10px;
@@ -190,13 +193,13 @@ input[type="number"]:focus{border-color:var(--id);}
   text-transform:uppercase;margin-bottom:5px;
 }
 .df-title{
-  font-family:'Bebas Neue',sans-serif;font-size:22px;
-  letter-spacing:0.08em;color:var(--text3);line-height:1;
+  font-family:'Bebas Neue',sans-serif;font-size:16px;
+  letter-spacing:0.1em;color:var(--text3);line-height:1;white-space:nowrap;
 }
 .df-size{
   font-family:'Space Mono',monospace;font-size:10px;
   color:var(--ref-name);letter-spacing:0.06em;text-align:right;
-  line-height:1.6;
+  line-height:1.6;white-space:nowrap;
 }
 .df-pane{display:none;padding:16px 20px;}
 .df-pane.active{display:block;}
@@ -327,6 +330,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 @media(min-width:1300px){body{zoom:1.6;min-height:calc(100vh / 1.6);}}
 @media(min-width:1700px){body{zoom:1.9;min-height:calc(100vh / 1.9);}}
 ::placeholder{color:var(--meta);opacity:1;}
+@media(max-width:340px){.sub-title{font-size:10.5px;letter-spacing:0;}.sub-hdr{gap:8px;}}
 </style>
 </head>
 <body>
@@ -345,7 +349,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
   <div class="wrap">
     <div class="vbar-in">
       <div class="vdot" id="vdot"></div>
-      <div class="vtxt" id="vtxt">Complete all steps to receive verdict</div>
+      <div class="vtxt" id="vtxt"></div>
       <div class="fpips">
         <div class="fpip" id="fp1"></div>
         <div class="fpip" id="fp2"></div>
@@ -369,11 +373,11 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
 </div>
 
 <!-- ══════════════════════════════════════════════
-     SECTION 1 — MARKET CONDITIONS
+     SECTION 1 — DAY CONDITIONS
 ══════════════════════════════════════════════ -->
 <div class="section">
   <div class="section-hdr">
-    <span class="section-name">Market Conditions</span>
+    <span class="section-name">Day Conditions</span>
   </div>
 
   <div class="sub" id="c-gap">
@@ -801,7 +805,9 @@ function updateLocks(){
     var subEl=g('c-'+s);
     if(!subEl)return;
     // Visual lock state
+    var stEl=g('st-'+s);
     if(locked){
+      if(stEl&&stEl.textContent==='—')stEl.textContent='';
       subEl.style.opacity='0.6';
       subEl.style.pointerEvents='none';
     }else{
@@ -1092,7 +1098,7 @@ function run(){
 
   // ── Flag pips ────────────────────────────────────────────────
   var sf=Math.min(mf,2);
-  ['fp1','fp2'].forEach(function(id,i){g(id).className='fpip'+(i<sf?(mf>=2?' kill':' warn'):'');});
+  ['fp1','fp2'].forEach(function(id,i){g(id).className='fpip'+(i<sf?' warn':'');});
   if(mf>=2){kills++;}
 
   // ── Verdict ──────────────────────────────────────────────────
@@ -1136,7 +1142,8 @@ function run(){
     g('vps-k').textContent='—';g('vps-k').style.color='var(--dim)';
     g('vps-f').textContent='—';g('vps-f').style.color='var(--dim)';
     g('vps-g').textContent='—';g('vps-g').style.color='var(--dim)';
-    setVBar('','Complete all steps to receive verdict','—','var(--dim)','var(--line2)');
+    var fi0=firstIncomplete();
+    setVBar('',fi0>=1?(fi0-1)+' of 12 completed':'','—','var(--dim)','var(--line2)');
   }
   updateLocks();
   refreshPrompt();
@@ -1164,7 +1171,7 @@ function resetAll(){
   g('vps-k').textContent='—';g('vps-k').style.color='var(--dim)';
   g('vps-f').textContent='—';g('vps-f').style.color='var(--dim)';
   g('vps-g').textContent='—';g('vps-g').style.color='var(--dim)';
-  setVBar('','Complete all steps to receive verdict','—','var(--dim)','var(--line2)');
+  setVBar('','','—','var(--dim)','var(--line2)');
   _selectedInst = null;
   _beforeImgFile = null;
   updateLocks();
@@ -1191,8 +1198,7 @@ window.selectInst = function(inst) {
   if (_selectedInst) resetAll();
   _selectedInst = inst;
   renderInst();
-  updateLocks();
-  refreshPrompt();
+  run();
 };
 
 function resetSavePanel() {
