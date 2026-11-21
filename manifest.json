@@ -1,25 +1,17 @@
 {
   "name": "Biverway Model A",
   "short_name": "Biverway Model A",
-  "description": "Biverway Model A \u2014 Day Trading Decision Engine",
+  "description": "Biverway Model A — Day Trading Decision Engine",
   "start_url": "/biverway-model-a/",
+  "scope": "/biverway-model-a/",
   "display": "standalone",
-  "background_color": "#00182E",
-  "theme_color": "#00182E",
+  "background_color": "#000000",
+  "theme_color": "#0D1B2A",
   "orientation": "portrait-primary",
   "icons": [
-    {
-      "src": "icon-512.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ],
-  "scope": "/biverway-model-a/"
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
 }
