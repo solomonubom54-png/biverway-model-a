@@ -1,9 +1,9 @@
 // Biverway Model A — Service Worker
-var CACHE = 'biverway-v5';
+var CACHE = 'biverway-v6';
 var ASSETS = ['./', './index.html', './trade-tracker.html', './manifest.json', './icon-512.png', './icon-maskable-512.png'];
 
 self.addEventListener('install', function(e) {
-  e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(ASSETS); }));
+  e.waitUntil(caches.open(CACHE).then(function(c){ return Promise.all(ASSETS.map(function(a){ return c.add(a).catch(function(){}); })); }));
   self.skipWaiting();
 });
 
